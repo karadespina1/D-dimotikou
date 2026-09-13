@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Μάθημα 30ό – Κριτήρια αξιολόγησης πηγών στο διαδίκτυο</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1c2a4a;
+    --navy-2:#28386b;
+    --cream:#fffaf1;
+    --card:#ffffff;
+    --coral:#ff6b4a;
+    --coral-dark:#e25336;
+    --teal:#2496b8;
+    --teal-dark:#1c7a96;
+    --purple:#8c6bff;
+    --purple-dark:#6f4fe0;
+    --yellow:#ffc145;
+    --ink:#1c2a4a;
+    --muted:#68709a;
+    --good:#1fa876;
+    --bad:#e0533f;
+    --good-bg:#e4f8f0;
+    --bad-bg:#fdeceb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 10% 0%, #2c3d80 0%, transparent 45%),
+      radial-gradient(circle at 90% 100%, #142352 0%, transparent 40%),
+      var(--navy);
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  h1,h2,h3, .tab-btn, .brand-eyebrow{font-family:'Baloo 2', sans-serif;}
+
+  .wrap{max-width:760px; margin:0 auto;}
+
+  .top{text-align:center; color:#fff; margin-bottom:22px;}
+  .brand-eyebrow{
+    display:inline-block;
+    background:var(--yellow);
+    color:var(--navy);
+    font-weight:700;
+    font-size:0.82rem;
+    padding:5px 14px;
+    border-radius:100px;
+    margin-bottom:10px;
+    transform:rotate(-2deg);
+  }
+  .top h1{font-size:1.55rem; margin:0 0 6px; line-height:1.28;}
+  .top p{margin:0; color:#c7ceef; font-size:0.98rem;}
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    background:rgba(255,255,255,0.08);
+    padding:6px;
+    border-radius:100px;
+    margin:22px 0 20px;
+  }
+  .tab-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:#c7ceef;
+    font-size:0.84rem;
+    font-weight:600;
+    padding:10px 6px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:background .2s, color .2s;
+  }
+  .tab-btn.active{background:var(--cream); color:var(--navy);}
+  .tab-btn:focus-visible{outline:3px solid var(--yellow); outline-offset:2px;}
+
+  .panel{
+    display:none;
+    background:var(--card);
+    border-radius:24px;
+    padding:26px 22px 28px;
+    box-shadow:0 20px 45px rgba(8,12,38,0.35);
+  }
+  .panel.active{display:block;}
+  .panel h2{margin:0 0 4px; font-size:1.28rem; color:var(--navy);}
+  .panel .sub{margin:0 0 20px; color:var(--muted); font-size:0.94rem; line-height:1.45;}
+
+  .btn{
+    border:none;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    padding:11px 22px;
+    border-radius:100px;
+    cursor:pointer;
+    color:#fff;
+    background:var(--coral);
+    box-shadow:0 4px 0 var(--coral-dark);
+    transition:transform .1s;
+  }
+  .btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--coral-dark);}
+  .btn.secondary{background:var(--teal); box-shadow:0 4px 0 var(--teal-dark);}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+
+  .status-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:16px; flex-wrap:wrap; gap:10px;
+  }
+  .score-pill{
+    background:#f0f1ff; color:var(--navy-2); font-weight:700;
+    font-size:0.85rem; padding:8px 14px; border-radius:100px;
+  }
+  .hint{font-size:0.85rem; color:var(--muted); min-height:20px;}
+  .hint.bad{color:var(--bad); font-weight:700;}
+  .hint.good{color:var(--good); font-weight:700;}
+
+  .celebrate{
+    display:none; margin-top:16px;
+    background:linear-gradient(135deg,#fff7e0,#ffeccf);
+    border:2px solid var(--yellow);
+    border-radius:14px; padding:14px 16px;
+    font-weight:700; color:#8a5a00; text-align:center;
+  }
+
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    75%{transform:translateX(5px);}
+  }
+
+  /* ---------- Activity 1: matching ---------- */
+  .match-grid{display:grid; grid-template-columns:1fr 1.15fr; gap:18px;}
+  .match-col-title{font-size:0.78rem; font-weight:700; color:var(--muted); margin-bottom:8px; text-align:center;}
+  .match-item{
+    width:100%; display:block; text-align:left;
+    border:2.5px solid #e2e2f7; background:#fff; border-radius:12px;
+    padding:12px 12px; margin-bottom:10px;
+    font-family:'Nunito', sans-serif; font-size:0.84rem; font-weight:700;
+    color:var(--navy); cursor:pointer; line-height:1.35;
+  }
+  .match-item.term{font-family:'Baloo 2', sans-serif; font-size:0.95rem; text-align:center;}
+  .match-item.selected{border-color:var(--yellow); background:#fffaea;}
+  .match-item.matched{border-color:var(--good); background:var(--good-bg); color:var(--good); cursor:default;}
+  .match-item.wrong{animation:shake .35s; border-color:var(--bad);}
+  .match-item:disabled{cursor:default;}
+
+  /* ---------- Activity 2 & 3: quiz shared ---------- */
+  .q-progress{display:flex; gap:5px; margin-bottom:16px;}
+  .q-dot{flex:1; height:6px; border-radius:4px; background:#eceefc;}
+  .q-dot.done-good{background:var(--good);}
+  .q-dot.done-bad{background:var(--bad);}
+  .q-dot.current{background:var(--yellow);}
+
+  .q-card{background:#f7f8ff; border-radius:16px; padding:20px 18px;}
+  .q-text{font-size:1.0rem; font-weight:700; color:var(--navy); margin:0 0 16px; line-height:1.45;}
+
+  .q-options{display:flex; gap:12px;}
+  .opt-btn{
+    flex:1; padding:14px 8px; border-radius:14px; border:2.5px solid #e2e2f7;
+    background:#fff; font-family:'Baloo 2', sans-serif; font-weight:700;
+    font-size:1rem; cursor:pointer; color:var(--navy);
+  }
+  .opt-btn.true-opt:hover{border-color:var(--good);}
+  .opt-btn.false-opt:hover{border-color:var(--bad);}
+  .opt-btn.chosen-good{background:var(--good-bg); border-color:var(--good); color:var(--good);}
+  .opt-btn.chosen-bad{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .opt-btn:disabled{cursor:default;}
+
+  .q-options-vert{display:flex; flex-direction:column; gap:10px;}
+  .opt-btn-wide{
+    width:100%; text-align:left; padding:12px 16px; border-radius:12px;
+    border:2.5px solid #e2e2f7; background:#fff;
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:0.94rem;
+    cursor:pointer; color:var(--navy);
+  }
+  .opt-btn-wide:hover{border-color:var(--purple);}
+  .opt-btn-wide.chosen-good{background:var(--good-bg); border-color:var(--good); color:var(--good);}
+  .opt-btn-wide.chosen-bad{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .opt-btn-wide:disabled{cursor:default;}
+
+  .feedback{margin-top:14px; padding:12px 14px; border-radius:12px; font-size:0.89rem; line-height:1.5; display:none;}
+  .feedback.good{display:block; background:var(--good-bg); color:#146b4f;}
+  .feedback.bad{display:block; background:var(--bad-bg); color:#a13a2a;}
+  .feedback b{display:block; margin-bottom:2px; font-family:'Baloo 2', sans-serif;}
+
+  .q-nav{display:flex; justify-content:flex-end; margin-top:16px;}
+
+  .quiz-result{display:none; text-align:center; padding:26px 10px;}
+  .quiz-result .big-score{font-family:'Baloo 2', sans-serif; font-size:2.4rem; color:var(--coral); margin:6px 0;}
+
+  footer{text-align:center; color:#8489b8; font-size:0.78rem; margin-top:26px;}
+
+  @media (max-width:480px){
+    .match-grid{grid-template-columns:1fr;}
+    .q-options{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <span class="brand-eyebrow">Πληροφορική Δ' Δημοτικού</span>
+    <h1>Μάθημα 30ό: Κριτήρια αξιολόγησης πηγών στο διαδίκτυο</h1>
+    <p>Τρία παιχνίδια για να μάθουμε να αξιολογούμε ιστοσελίδες</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">1. Ταίριασμα κριτηρίων</button>
+    <button class="tab-btn" data-tab="t2">2. Σωστό ή Λάθος</button>
+    <button class="tab-btn" data-tab="t3">3. Ποιο κριτήριο ελέγχω;</button>
+  </div>
+
+  <!-- ACTIVITY 1: MATCHING -->
+  <section class="panel active" id="t1">
+    <h2>Ταίριασε κάθε κριτήριο με την εξήγησή του</h2>
+    <p class="sub">Πάτησε ένα κριτήριο αριστερά και μετά τη σωστή εξήγηση δεξιά.</p>
+
+    <div class="match-grid">
+      <div>
+        <div class="match-col-title">Κριτήριο αξιολόγησης</div>
+        <div id="matchTerms"></div>
+      </div>
+      <div>
+        <div class="match-col-title">Τι ελέγχω</div>
+        <div id="matchDefs"></div>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <span class="score-pill" id="score1">0 / 5 ζευγάρια</span>
+      <span class="hint" id="hint1"></span>
+    </div>
+
+    <div class="celebrate" id="celebrate1">🎉 Μπράβο! Ταίριαξες σωστά όλα τα κριτήρια!</div>
+
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="reset1">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 2: TRUE/FALSE -->
+  <section class="panel" id="t2">
+    <h2>Σωστό ή Λάθος;</h2>
+    <p class="sub">Διάβασε την πρόταση για την αξιολόγηση ιστοσελίδων και επίλεξε αν είναι σωστή ή λανθασμένη.</p>
+
+    <div class="q-progress" id="qProgress2"></div>
+
+    <div class="q-card" id="quizArea2">
+      <p class="q-text" id="qText2"></p>
+      <div class="q-options">
+        <button class="opt-btn true-opt" id="optTrue2">✅ Σωστό</button>
+        <button class="opt-btn false-opt" id="optFalse2">❌ Λάθος</button>
+      </div>
+      <div class="feedback" id="qFeedback2"></div>
+      <div class="q-nav">
+        <button class="btn" id="nextQ2" disabled>Επόμενη ερώτηση</button>
+      </div>
+    </div>
+
+    <div class="quiz-result" id="quizResult2">
+      <div>Ολοκλήρωσες το κουίζ!</div>
+      <div class="big-score" id="finalScore2"></div>
+      <button class="btn secondary" id="restartQuiz2">Παίξε ξανά</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 3: SCENARIO MULTIPLE CHOICE -->
+  <section class="panel" id="t3">
+    <h2>Ποιο κριτήριο ελέγχω;</h2>
+    <p class="sub">Διάβασε το σενάριο και βρες ποιο από τα 5 κριτήρια αξιολόγησης αφορά.</p>
+
+    <div class="q-progress" id="qProgress3"></div>
+
+    <div class="q-card" id="quizArea3">
+      <p class="q-text" id="qText3"></p>
+      <div class="q-options-vert" id="qOptions3"></div>
+      <div class="feedback" id="qFeedback3"></div>
+      <div class="q-nav">
+        <button class="btn" id="nextQ3" disabled>Επόμενο σενάριο</button>
+      </div>
+    </div>
+
+    <div class="quiz-result" id="quizResult3">
+      <div>Ολοκλήρωσες τη δραστηριότητα!</div>
+      <div class="big-score" id="finalScore3"></div>
+      <button class="btn secondary" id="restartQuiz3">Παίξε ξανά</button>
+    </div>
+  </section>
+
+  <footer>Πληροφορική Δ' Δημοτικού · Μάθημα 30ό</footer>
+</div>
+
+<script>
+/* ---------------- TABS ---------------- */
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ================= ACTIVITY 1: MATCHING ================= */
+const pairs = [
+  {id:'p1', term:'👤 Πατρότητα', def:'Ελέγχω ποιος έγραψε το κείμενο και αν υπάρχουν στοιχεία επικοινωνίας μαζί του.'},
+  {id:'p2', term:'📅 Επικαιρότητα', def:'Ελέγχω πότε δημοσιεύτηκε η πληροφορία και πότε ενημερώθηκε τελευταία φορά η ιστοσελίδα.'},
+  {id:'p3', term:'🎯 Ακρίβεια', def:'Ελέγχω αν η πληροφορία είναι σαφής, κατανοητή και τεκμηριωμένη με πηγές.'},
+  {id:'p4', term:'⚖️ Αντικειμενικότητα', def:'Ελέγχω αν η ιστοσελίδα παρουσιάζει το θέμα δίκαια, χωρίς να ευνοεί μία μόνο πλευρά.'},
+  {id:'p5', term:'🛡️ Αξιοπιστία', def:'Ελέγχω αν δεν υπάρχουν λάθη, αν ενημερώνεται τακτικά και αν φαίνονται οι συγγραφείς.'},
+];
+let selTerm = null;
+let selDef = null;
+let matched1 = 0;
+let shuffledDefs = shuffle(pairs);
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function renderMatch(){
+  const termsEl = document.getElementById('matchTerms');
+  const defsEl = document.getElementById('matchDefs');
+  termsEl.innerHTML = '';
+  defsEl.innerHTML = '';
+
+  pairs.forEach(p=>{
+    const b = document.createElement('button');
+    b.className = 'match-item term';
+    b.textContent = p.term;
+    b.dataset.id = p.id;
+    if(p.matched){ b.classList.add('matched'); b.disabled = true; }
+    if(selTerm === p.id) b.classList.add('selected');
+    b.addEventListener('click', ()=>{
+      if(p.matched) return;
+      selTerm = (selTerm===p.id) ? null : p.id;
+      renderMatch();
+      checkMatch();
+    });
+    termsEl.appendChild(b);
+  });
+
+  shuffledDefs.forEach(p=>{
+    const b = document.createElement('button');
+    b.className = 'match-item';
+    b.textContent = p.def;
+    b.dataset.id = p.id;
+    if(p.matched){ b.classList.add('matched'); b.disabled = true; }
+    if(selDef === p.id) b.classList.add('selected');
+    b.addEventListener('click', ()=>{
+      if(p.matched) return;
+      selDef = (selDef===p.id) ? null : p.id;
+      renderMatch();
+      checkMatch();
+    });
+    defsEl.appendChild(b);
+  });
+}
+
+function checkMatch(){
+  const hint = document.getElementById('hint1');
+  if(selTerm && selDef){
+    if(selTerm === selDef){
+      const p = pairs.find(x=>x.id===selTerm);
+      p.matched = true;
+      matched1++;
+      hint.textContent = 'Ζευγάρι σωστό!';
+      hint.className = 'hint good';
+      selTerm = null; selDef = null;
+      document.getElementById('score1').textContent = matched1 + ' / 5 ζευγάρια';
+      if(matched1 === pairs.length){
+        document.getElementById('celebrate1').style.display = 'block';
+      }
+      renderMatch();
+    } else {
+      hint.textContent = 'Δεν ταιριάζουν, δοκίμασε ξανά.';
+      hint.className = 'hint bad';
+      document.querySelectorAll('.match-item.selected').forEach(el=>el.classList.add('wrong'));
+      selTerm = null; selDef = null;
+      setTimeout(renderMatch, 450);
+    }
+  }
+}
+
+document.getElementById('reset1').addEventListener('click', ()=>{
+  pairs.forEach(p=>delete p.matched);
+  shuffledDefs = shuffle(pairs);
+  selTerm = null; selDef = null;
+  matched1 = 0;
+  document.getElementById('score1').textContent = '0 / 5 ζευγάρια';
+  document.getElementById('hint1').textContent = '';
+  document.getElementById('celebrate1').style.display = 'none';
+  renderMatch();
+});
+renderMatch();
+
+/* ================= ACTIVITY 2: TRUE/FALSE ================= */
+const quiz2 = [
+  {
+    text: 'Μια ιστοσελίδα που φιλοξενείται σε επίσημο κρατικό χώρο (π.χ. κατάληξη gov.gr) θεωρείται συνήθως πιο αξιόπιστη.',
+    answer: true,
+    good: 'Σωστά! Η φιλοξενία σε γνωστό, επίσημο χώρο (όπως gov.gr) είναι ένδειξη καλής πατρότητας πηγής.',
+    bad: 'Στην πραγματικότητα, μια επίσημη κρατική διεύθυνση (π.χ. gov.gr) θεωρείται ένδειξη αξιοπιστίας.'
+  },
+  {
+    text: 'Η επικαιρότητα μιας πηγής δεν έχει καμία σχέση με το πότε δημοσιεύτηκε η πληροφορία.',
+    answer: false,
+    good: 'Σωστά! Η επικαιρότητα αφορά ακριβώς την ημερομηνία δημοσίευσης και την τελευταία ενημέρωση.',
+    bad: 'Η επικαιρότητα αφορά ακριβώς αυτό: πότε δημοσιεύτηκε και πότε ενημερώθηκε τελευταία φορά η πληροφορία.'
+  },
+  {
+    text: 'Μια αξιόπιστη ιστοσελίδα δεν πρέπει να έχει ανώνυμο περιεχόμενο, δηλαδή πρέπει να φαίνονται οι συγγραφείς.',
+    answer: true,
+    good: 'Σωστά! Η ανωνυμία είναι ένδειξη χαμηλής αξιοπιστίας, γι\' αυτό πρέπει να φαίνονται οι συγγραφείς.',
+    bad: 'Ισχύει το αντίθετο: μια αξιόπιστη σελίδα πρέπει να δείχνει ποιος έγραψε το περιεχόμενο.'
+  },
+  {
+    text: 'Δεν χρειάζεται να ελέγχουμε αν μια ιστοσελίδα προσπαθεί να μας πείσει για κάτι ή να μας κάνει διαφήμιση.',
+    answer: false,
+    good: 'Σωστά! Πρέπει να το ελέγχουμε — αυτό αφορά το κριτήριο της αντικειμενικότητας.',
+    bad: 'Στην πραγματικότητα αυτό πρέπει να το ελέγχουμε πάντα, γιατί αφορά το κριτήριο της αντικειμενικότητας.'
+  },
+  {
+    text: 'Η ακρίβεια αφορά το αν η πληροφορία είναι σαφής, κατανοητή και τεκμηριωμένη ανάλογα με το θέμα.',
+    answer: true,
+    good: 'Σωστά! Αυτός είναι ακριβώς ο ορισμός του κριτηρίου της ακρίβειας.',
+    bad: 'Στην πραγματικότητα αυτός είναι ο ορισμός της ακρίβειας ως κριτηρίου αξιολόγησης.'
+  },
+  {
+    text: 'Αρκεί να διαβάσουμε μία μόνο ιστοσελίδα για να είμαστε σίγουροι ότι μια πληροφορία είναι σωστή.',
+    answer: false,
+    good: 'Σωστά! Χρειάζεται να διασταυρώνουμε τις πληροφορίες, δηλαδή να τις ελέγχουμε και σε άλλες πηγές.',
+    bad: 'Είναι σημαντικό να διασταυρώνουμε την πληροφορία, δηλαδή να την ελέγχουμε και σε άλλες πηγές.'
+  }
+];
+let q2Index = 0, q2Score = 0, q2Answered = false;
+
+function renderProgress2(){
+  const el = document.getElementById('qProgress2');
+  el.innerHTML = '';
+  quiz2.forEach((q,i)=>{
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+    if(q.result === true) dot.classList.add('done-good');
+    else if(q.result === false) dot.classList.add('done-bad');
+    else if(i === q2Index) dot.classList.add('current');
+    el.appendChild(dot);
+  });
+}
+
+function loadQuestion2(){
+  q2Answered = false;
+  const q = quiz2[q2Index];
+  document.getElementById('qText2').textContent = q.text;
+  document.getElementById('qFeedback2').className = 'feedback';
+  document.getElementById('qFeedback2').innerHTML = '';
+  document.getElementById('nextQ2').disabled = true;
+  document.getElementById('nextQ2').textContent = (q2Index === quiz2.length-1) ? 'Δες το αποτέλεσμα' : 'Επόμενη ερώτηση';
+  const bt = document.getElementById('optTrue2');
+  const bf = document.getElementById('optFalse2');
+  bt.disabled = false; bf.disabled = false;
+  bt.className = 'opt-btn true-opt';
+  bf.className = 'opt-btn false-opt';
+  renderProgress2();
+}
+
+function answerQuestion2(choice){
+  if(q2Answered) return;
+  q2Answered = true;
+  const q = quiz2[q2Index];
+  const correct = (choice === q.answer);
+  q.result = correct;
+  if(correct) q2Score++;
+  const bt = document.getElementById('optTrue2');
+  const bf = document.getElementById('optFalse2');
+  bt.disabled = true; bf.disabled = true;
+
+  const chosenBtn = choice ? bt : bf;
+  const rightBtn = q.answer ? bt : bf;
+  chosenBtn.classList.add(correct ? 'chosen-good' : 'chosen-bad');
+  if(!correct) rightBtn.classList.add('chosen-good');
+
+  const fb = document.getElementById('qFeedback2');
+  fb.className = 'feedback ' + (correct ? 'good' : 'bad');
+  fb.innerHTML = '<b>' + (correct ? 'Μπράβο!' : 'Όχι ακριβώς.') + '</b>' + (correct ? q.good : q.bad);
+
+  document.getElementById('nextQ2').disabled = false;
+  renderProgress2();
+}
+
+document.getElementById('optTrue2').addEventListener('click', ()=>answerQuestion2(true));
+document.getElementById('optFalse2').addEventListener('click', ()=>answerQuestion2(false));
+
+document.getElementById('nextQ2').addEventListener('click', ()=>{
+  if(q2Index < quiz2.length - 1){
+    q2Index++;
+    loadQuestion2();
+  } else {
+    document.getElementById('quizArea2').style.display = 'none';
+    document.getElementById('quizResult2').style.display = 'block';
+    document.getElementById('finalScore2').textContent = q2Score + ' / ' + quiz2.length;
+  }
+});
+
+document.getElementById('restartQuiz2').addEventListener('click', ()=>{
+  q2Index = 0; q2Score = 0;
+  quiz2.forEach(q=>delete q.result);
+  document.getElementById('quizArea2').style.display = 'block';
+  document.getElementById('quizResult2').style.display = 'none';
+  loadQuestion2();
+});
+
+loadQuestion2();
+
+/* ================= ACTIVITY 3: SCENARIO MULTIPLE CHOICE ================= */
+const criteria = ['Πατρότητα', 'Επικαιρότητα', 'Ακρίβεια', 'Αντικειμενικότητα', 'Αξιοπιστία'];
+
+const quiz3 = [
+  {
+    text: 'Σε ένα άρθρο δεν υπάρχει πουθενά το όνομα του συγγραφέα ούτε κάποιος τρόπος επικοινωνίας μαζί του.',
+    answer: 'Πατρότητα',
+    good: 'Σωστά! Η πατρότητα αφορά ακριβώς το ποιος έγραψε το κείμενο και αν υπάρχουν στοιχεία επικοινωνίας.',
+    bad: 'Αυτό αφορά την πατρότητα της πηγής: πρέπει να φαίνεται ποιος έγραψε το κείμενο.'
+  },
+  {
+    text: 'Η ιστοσελίδα δεν αναφέρει πουθενά πότε γράφτηκε το άρθρο ούτε πότε ενημερώθηκε τελευταία φορά.',
+    answer: 'Επικαιρότητα',
+    good: 'Σωστά! Αυτό αφορά την επικαιρότητα: πότε δημοσιεύτηκε και πότε ενημερώθηκε η πληροφορία.',
+    bad: 'Αυτό αφορά την επικαιρότητα της πληροφορίας, δηλαδή τις ημερομηνίες δημοσίευσης και ενημέρωσης.'
+  },
+  {
+    text: 'Το κείμενο είναι μπερδεμένο και δεν υπάρχει καμία πηγή ή βιβλιογραφία που να το τεκμηριώνει.',
+    answer: 'Ακρίβεια',
+    good: 'Σωστά! Η ακρίβεια αφορά το αν η πληροφορία είναι σαφής, κατανοητή και τεκμηριωμένη.',
+    bad: 'Αυτό αφορά την ακρίβεια: η πληροφορία πρέπει να είναι σαφής και τεκμηριωμένη.'
+  },
+  {
+    text: 'Η ιστοσελίδα ανήκει σε μια εταιρεία που θέλει να σου πουλήσει το προϊόν της και δείχνει μόνο τα θετικά του.',
+    answer: 'Αντικειμενικότητα',
+    good: 'Σωστά! Όταν μια σελίδα δείχνει μόνο τη μία πλευρά για να πουλήσει κάτι, χάνεται η αντικειμενικότητα.',
+    bad: 'Αυτό αφορά την αντικειμενικότητα: η ιστοσελίδα πρέπει να παρουσιάζει το θέμα δίκαια, όχι μόνο για να πουλήσει.'
+  },
+  {
+    text: 'Το κείμενο έχει πολλά ορθογραφικά λάθη και η ιστοσελίδα δεν ενημερώνεται ποτέ.',
+    answer: 'Αξιοπιστία',
+    good: 'Σωστά! Τα λάθη και η έλλειψη τακτικής ενημέρωσης μειώνουν την αξιοπιστία μιας σελίδας.',
+    bad: 'Αυτό αφορά την αξιοπιστία: λάθη και έλλειψη ενημέρωσης είναι κακά σημάδια αξιοπιστίας.'
+  }
+];
+let q3Index = 0, q3Score = 0, q3Answered = false;
+
+function renderProgress3(){
+  const el = document.getElementById('qProgress3');
+  el.innerHTML = '';
+  quiz3.forEach((q,i)=>{
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+    if(q.result === true) dot.classList.add('done-good');
+    else if(q.result === false) dot.classList.add('done-bad');
+    else if(i === q3Index) dot.classList.add('current');
+    el.appendChild(dot);
+  });
+}
+
+function loadQuestion3(){
+  q3Answered = false;
+  const q = quiz3[q3Index];
+  document.getElementById('qText3').textContent = q.text;
+  document.getElementById('qFeedback3').className = 'feedback';
+  document.getElementById('qFeedback3').innerHTML = '';
+  document.getElementById('nextQ3').disabled = true;
+  document.getElementById('nextQ3').textContent = (q3Index === quiz3.length-1) ? 'Δες το αποτέλεσμα' : 'Επόμενο σενάριο';
+
+  const optsEl = document.getElementById('qOptions3');
+  optsEl.innerHTML = '';
+  const shuffledOpts = shuffle(criteria.map(c=>({label:c})));
+  shuffledOpts.forEach(opt=>{
+    const b = document.createElement('button');
+    b.className = 'opt-btn-wide';
+    b.textContent = opt.label;
+    b.addEventListener('click', ()=>answerQuestion3(opt.label, b));
+    optsEl.appendChild(b);
+  });
+  renderProgress3();
+}
+
+function answerQuestion3(choice, btnEl){
+  if(q3Answered) return;
+  q3Answered = true;
+  const q = quiz3[q3Index];
+  const correct = (choice === q.answer);
+  q.result = correct;
+  if(correct) q3Score++;
+
+  const allBtns = document.querySelectorAll('#qOptions3 .opt-btn-wide');
+  allBtns.forEach(b=>{
+    b.disabled = true;
+    if(b.textContent === q.answer) b.classList.add('chosen-good');
+    else if(b === btnEl) b.classList.add('chosen-bad');
+  });
+
+  const fb = document.getElementById('qFeedback3');
+  fb.className = 'feedback ' + (correct ? 'good' : 'bad');
+  fb.innerHTML = '<b>' + (correct ? 'Μπράβο!' : 'Όχι ακριβώς.') + '</b>' + (correct ? q.good : q.bad);
+
+  document.getElementById('nextQ3').disabled = false;
+  renderProgress3();
+}
+
+document.getElementById('nextQ3').addEventListener('click', ()=>{
+  if(q3Index < quiz3.length - 1){
+    q3Index++;
+    loadQuestion3();
+  } else {
+    document.getElementById('quizArea3').style.display = 'none';
+    document.getElementById('quizResult3').style.display = 'block';
+    document.getElementById('finalScore3').textContent = q3Score + ' / ' + quiz3.length;
+  }
+});
+
+document.getElementById('restartQuiz3').addEventListener('click', ()=>{
+  q3Index = 0; q3Score = 0;
+  quiz3.forEach(q=>delete q.result);
+  document.getElementById('quizArea3').style.display = 'block';
+  document.getElementById('quizResult3').style.display = 'none';
+  loadQuestion3();
+});
+
+loadQuestion3();
+</script>
+</body>
+</html>
