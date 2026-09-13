@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Μάθημα 12ο – Ποιον υπολογιστή να διαλέξω;</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#20264a;
+    --navy-2:#2c3468;
+    --cream:#fffaf1;
+    --card:#ffffff;
+    --coral:#ff6b4a;
+    --coral-dark:#e25336;
+    --teal:#20b8a6;
+    --teal-dark:#149686;
+    --yellow:#ffc145;
+    --ink:#20264a;
+    --muted:#6b7196;
+    --good:#1fa876;
+    --bad:#e0533f;
+    --good-bg:#e4f8f0;
+    --bad-bg:#fdeceb;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 10% 0%, #2f3877 0%, transparent 45%),
+      radial-gradient(circle at 90% 100%, #1a2c63 0%, transparent 40%),
+      var(--navy);
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  h1,h2,h3, .tab-btn, .brand-eyebrow{font-family:'Baloo 2', sans-serif;}
+
+  .wrap{max-width:760px; margin:0 auto;}
+
+  .top{
+    text-align:center;
+    color:#fff;
+    margin-bottom:22px;
+  }
+  .brand-eyebrow{
+    display:inline-block;
+    background:var(--yellow);
+    color:var(--navy);
+    font-weight:700;
+    font-size:0.82rem;
+    padding:5px 14px;
+    border-radius:100px;
+    margin-bottom:10px;
+    transform:rotate(-2deg);
+  }
+  .top h1{
+    font-size:1.7rem;
+    margin:0 0 6px;
+    line-height:1.25;
+  }
+  .top p{
+    margin:0;
+    color:#c7ccef;
+    font-size:0.98rem;
+  }
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    background:rgba(255,255,255,0.08);
+    padding:6px;
+    border-radius:100px;
+    margin:22px 0 20px;
+  }
+  .tab-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:#c7ccef;
+    font-size:0.88rem;
+    font-weight:600;
+    padding:10px 6px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:background .2s, color .2s;
+  }
+  .tab-btn.active{
+    background:var(--cream);
+    color:var(--navy);
+  }
+  .tab-btn:focus-visible{outline:3px solid var(--yellow); outline-offset:2px;}
+
+  .panel{
+    display:none;
+    background:var(--card);
+    border-radius:24px;
+    padding:26px 22px 28px;
+    box-shadow:0 20px 45px rgba(10,14,40,0.35);
+  }
+  .panel.active{display:block;}
+
+  .panel h2{
+    margin:0 0 4px;
+    font-size:1.32rem;
+    color:var(--navy);
+  }
+  .panel .sub{
+    margin:0 0 20px;
+    color:var(--muted);
+    font-size:0.94rem;
+  }
+
+  /* ---------- Activity 1: sorting ---------- */
+  .zones{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .zone{
+    border:2.5px dashed #d7dbf5;
+    border-radius:16px;
+    padding:12px 10px 40px;
+    min-height:150px;
+    position:relative;
+    background:#f7f8ff;
+    transition:border-color .2s, background .2s;
+  }
+  .zone.hot{border-color:var(--teal); background:#eafbf8;}
+  .zone-label{
+    font-weight:700;
+    font-size:0.92rem;
+    color:var(--navy-2);
+    display:block;
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .zone-icon{display:block; text-align:center; font-size:1.6rem; margin-bottom:2px;}
+  .zone-items{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;}
+
+  .pool{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    padding:14px 10px;
+    background:#f7f8ff;
+    border-radius:16px;
+    min-height:56px;
+  }
+
+  .chip{
+    border:none;
+    background:linear-gradient(180deg,#fff, #f3f1ff);
+    border:2px solid #e2e2f7;
+    padding:9px 14px;
+    border-radius:100px;
+    font-family:'Nunito',sans-serif;
+    font-weight:700;
+    font-size:0.86rem;
+    color:var(--navy);
+    cursor:pointer;
+    box-shadow:0 3px 0 #dcdcf2;
+    transition:transform .12s;
+  }
+  .chip:hover{transform:translateY(-1px);}
+  .chip.selected{
+    background:var(--yellow);
+    border-color:#e6ab1f;
+    box-shadow:0 3px 0 #e6ab1f;
+  }
+  .chip.placed-good{
+    background:var(--good-bg);
+    border-color:var(--good);
+    color:var(--good);
+    cursor:default;
+    box-shadow:none;
+  }
+  .chip.shake{animation:shake .35s;}
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    75%{transform:translateX(5px);}
+  }
+
+  .status-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:16px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .score-pill{
+    background:#f0f1ff;
+    color:var(--navy-2);
+    font-weight:700;
+    font-size:0.85rem;
+    padding:8px 14px;
+    border-radius:100px;
+  }
+  .hint{
+    font-size:0.85rem;
+    color:var(--muted);
+    min-height:20px;
+  }
+  .hint.bad{color:var(--bad); font-weight:700;}
+  .hint.good{color:var(--good); font-weight:700;}
+
+  .btn{
+    border:none;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    padding:11px 22px;
+    border-radius:100px;
+    cursor:pointer;
+    color:#fff;
+    background:var(--coral);
+    box-shadow:0 4px 0 var(--coral-dark);
+    transition:transform .1s;
+  }
+  .btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--coral-dark);}
+  .btn.secondary{background:var(--teal); box-shadow:0 4px 0 var(--teal-dark);}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+
+  .celebrate{
+    display:none;
+    margin-top:16px;
+    background:linear-gradient(135deg,#fff7e0,#ffeccf);
+    border:2px solid var(--yellow);
+    border-radius:14px;
+    padding:14px 16px;
+    font-weight:700;
+    color:#8a5a00;
+    text-align:center;
+  }
+
+  /* ---------- Activity 2: quiz ---------- */
+  .q-progress{
+    display:flex;
+    gap:5px;
+    margin-bottom:16px;
+  }
+  .q-dot{
+    flex:1;
+    height:6px;
+    border-radius:4px;
+    background:#eceefc;
+  }
+  .q-dot.done-good{background:var(--good);}
+  .q-dot.done-bad{background:var(--bad);}
+  .q-dot.current{background:var(--yellow);}
+
+  .q-card{
+    background:#f7f8ff;
+    border-radius:16px;
+    padding:20px 18px;
+  }
+  .q-text{
+    font-size:1.02rem;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 16px;
+    line-height:1.45;
+  }
+  .q-options{
+    display:flex;
+    gap:12px;
+  }
+  .opt-btn{
+    flex:1;
+    padding:14px 8px;
+    border-radius:14px;
+    border:2.5px solid #e2e2f7;
+    background:#fff;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    cursor:pointer;
+    color:var(--navy);
+  }
+  .opt-btn.true-opt:hover{border-color:var(--good);}
+  .opt-btn.false-opt:hover{border-color:var(--bad);}
+  .opt-btn.chosen-good{background:var(--good-bg); border-color:var(--good); color:var(--good);}
+  .opt-btn.chosen-bad{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:12px;
+    font-size:0.9rem;
+    line-height:1.5;
+    display:none;
+  }
+  .feedback.good{display:block; background:var(--good-bg); color:#146b4f;}
+  .feedback.bad{display:block; background:var(--bad-bg); color:#a13a2a;}
+  .feedback b{display:block; margin-bottom:2px; font-family:'Baloo 2', sans-serif;}
+
+  .q-nav{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:16px;
+  }
+
+  .quiz-result{
+    display:none;
+    text-align:center;
+    padding:26px 10px;
+  }
+  .quiz-result .big-score{
+    font-family:'Baloo 2', sans-serif;
+    font-size:2.4rem;
+    color:var(--coral);
+    margin:6px 0;
+  }
+
+  /* ---------- Activity 3: matching ---------- */
+  .match-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .match-col-title{
+    font-size:0.78rem;
+    text-transform:none;
+    font-weight:700;
+    color:var(--muted);
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .match-item{
+    width:100%;
+    display:block;
+    text-align:left;
+    border:2.5px solid #e2e2f7;
+    background:#fff;
+    border-radius:12px;
+    padding:12px 12px;
+    margin-bottom:10px;
+    font-family:'Nunito', sans-serif;
+    font-size:0.86rem;
+    font-weight:700;
+    color:var(--navy);
+    cursor:pointer;
+    line-height:1.35;
+  }
+  .match-item.term{font-family:'Baloo 2', sans-serif; font-size:0.95rem; text-align:center;}
+  .match-item.selected{border-color:var(--yellow); background:#fffaea;}
+  .match-item.matched{
+    border-color:var(--good);
+    background:var(--good-bg);
+    color:var(--good);
+    cursor:default;
+  }
+  .match-item.wrong{animation:shake .35s; border-color:var(--bad);}
+  .match-item:disabled{cursor:default;}
+
+  footer{
+    text-align:center;
+    color:#8489b8;
+    font-size:0.78rem;
+    margin-top:26px;
+  }
+
+  @media (max-width:480px){
+    .zones{grid-template-columns:1fr;}
+    .q-options{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <span class="brand-eyebrow">Πληροφορική Δ' Δημοτικού</span>
+    <h1>Μάθημα 12ο: Ποιον υπολογιστή να διαλέξω;</h1>
+    <p>Τρία παιχνίδια για τα είδη υπολογιστών και τα μέσα αποθήκευσης</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">1. Ταξινόμηση συσκευών</button>
+    <button class="tab-btn" data-tab="t2">2. Σωστό ή Λάθος</button>
+    <button class="tab-btn" data-tab="t3">3. Ταίριασμα</button>
+  </div>
+
+  <!-- ACTIVITY 1 -->
+  <section class="panel active" id="t1">
+    <h2>Σταθερή ή Κινητή συσκευή;</h2>
+    <p class="sub">Πάτησε μία συσκευή και μετά πάτησε το σωστό κουτί για να την τοποθετήσεις.</p>
+
+    <div class="zones">
+      <div class="zone" data-zone="fixed">
+        <span class="zone-icon">🖥️</span>
+        <span class="zone-label">Μένει σε ένα σταθερό σημείο</span>
+        <div class="zone-items" id="zoneFixedItems"></div>
+      </div>
+      <div class="zone" data-zone="mobile">
+        <span class="zone-icon">🎒</span>
+        <span class="zone-label">Την παίρνω εύκολα μαζί μου</span>
+        <div class="zone-items" id="zoneMobileItems"></div>
+      </div>
+    </div>
+
+    <div class="pool" id="pool1"></div>
+
+    <div class="status-row">
+      <span class="score-pill" id="score1">0 / 6 σωστά</span>
+      <span class="hint" id="hint1">Διάλεξε μια συσκευή για να ξεκινήσεις.</span>
+    </div>
+
+    <div class="celebrate" id="celebrate1">🎉 Μπράβο! Ταξινόμησες όλες τις συσκευές σωστά!</div>
+
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="reset1">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 2 -->
+  <section class="panel" id="t2">
+    <h2>Σωστό ή Λάθος;</h2>
+    <p class="sub">Διάβασε προσεκτικά την πρόταση και επίλεξε αν είναι σωστή ή λανθασμένη.</p>
+
+    <div class="q-progress" id="qProgress"></div>
+
+    <div class="q-card" id="quizArea">
+      <p class="q-text" id="qText"></p>
+      <div class="q-options">
+        <button class="opt-btn true-opt" id="optTrue">✅ Σωστό</button>
+        <button class="opt-btn false-opt" id="optFalse">❌ Λάθος</button>
+      </div>
+      <div class="feedback" id="qFeedback"></div>
+      <div class="q-nav">
+        <button class="btn" id="nextQ" disabled>Επόμενη ερώτηση</button>
+      </div>
+    </div>
+
+    <div class="quiz-result" id="quizResult">
+      <div>Ολοκλήρωσες το κουίζ!</div>
+      <div class="big-score" id="finalScore"></div>
+      <button class="btn secondary" id="restartQuiz">Παίξε ξανά</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 3 -->
+  <section class="panel" id="t3">
+    <h2>Ταίριασε το μέσο αποθήκευσης</h2>
+    <p class="sub">Πάτησε ένα μέσο αποθήκευσης αριστερά και μετά τη σωστή εξήγηση δεξιά.</p>
+
+    <div class="match-grid">
+      <div>
+        <div class="match-col-title">Μέσο αποθήκευσης</div>
+        <div id="matchTerms"></div>
+      </div>
+      <div>
+        <div class="match-col-title">Χαρακτηριστικό</div>
+        <div id="matchDefs"></div>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <span class="score-pill" id="score3">0 / 4 ζευγάρια</span>
+      <span class="hint" id="hint3"></span>
+    </div>
+
+    <div class="celebrate" id="celebrate3">🎉 Τέλεια! Ταίριαξες όλα τα μέσα αποθήκευσης!</div>
+
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="reset3">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <footer>Πληροφορική Δ' Δημοτικού · Μάθημα 12ο</footer>
+</div>
+
+<script>
+/* ---------------- TABS ---------------- */
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ================= ACTIVITY 1: SORTING ================= */
+const devices = [
+  {id:'d1', label:'🖥️ Υπολογιστής γραφείου', zone:'fixed'},
+  {id:'d2', label:'💻 Φορητός υπολογιστής', zone:'mobile'},
+  {id:'d3', label:'📱 Ταμπλέτα', zone:'mobile'},
+  {id:'d4', label:'📲 Έξυπνο κινητό τηλέφωνο', zone:'mobile'},
+  {id:'d5', label:'⌚ Έξυπνο ρολόι', zone:'mobile'},
+  {id:'d6', label:'🖨️ Οθόνη + πύργος γραφείου', zone:'fixed'},
+];
+let selected1 = null;
+let placedCount1 = 0;
+
+function renderPool1(){
+  const pool = document.getElementById('pool1');
+  pool.innerHTML = '';
+  devices.filter(d=>!d.done).forEach(d=>{
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = d.label;
+    b.dataset.id = d.id;
+    if(selected1 === d.id) b.classList.add('selected');
+    b.addEventListener('click', ()=>{
+      selected1 = (selected1===d.id) ? null : d.id;
+      renderPool1();
+      document.getElementById('hint1').textContent = selected1
+        ? 'Τώρα πάτησε το κουτί που ταιριάζει.'
+        : 'Διάλεξε μια συσκευή για να ξεκινήσεις.';
+      document.getElementById('hint1').className = 'hint';
+    });
+    pool.appendChild(b);
+  });
+}
+
+function tryPlace1(zoneName){
+  if(!selected1) return;
+  const device = devices.find(d=>d.id===selected1);
+  const hint = document.getElementById('hint1');
+  if(device.zone === zoneName){
+    device.done = true;
+    placedCount1++;
+    const zoneItemsId = zoneName==='fixed' ? 'zoneFixedItems' : 'zoneMobileItems';
+    const chip = document.createElement('span');
+    chip.className = 'chip placed-good';
+    chip.textContent = device.label;
+    document.getElementById(zoneItemsId).appendChild(chip);
+    hint.textContent = 'Σωστά! ' + device.label.replace(/^\S+\s/,'');
+    hint.className = 'hint good';
+    selected1 = null;
+    renderPool1();
+    document.getElementById('score1').textContent = placedCount1 + ' / 6 σωστά';
+    if(placedCount1 === devices.length){
+      document.getElementById('celebrate1').style.display = 'block';
+    }
+  } else {
+    hint.textContent = 'Δοκίμασε ξανά — δεν ταιριάζει εκεί.';
+    hint.className = 'hint bad';
+    const chipEl = [...document.querySelectorAll('#pool1 .chip')].find(c=>c.dataset.id===selected1);
+    if(chipEl){ chipEl.classList.add('shake'); setTimeout(()=>chipEl.classList.remove('shake'), 350); }
+  }
+}
+
+document.querySelectorAll('#t1 .zone').forEach(z=>{
+  z.addEventListener('click', ()=> tryPlace1(z.dataset.zone));
+  z.addEventListener('mouseenter', ()=> z.classList.add('hot'));
+  z.addEventListener('mouseleave', ()=> z.classList.remove('hot'));
+});
+
+function resetActivity1(){
+  devices.forEach(d=>delete d.done);
+  selected1 = null;
+  placedCount1 = 0;
+  document.getElementById('zoneFixedItems').innerHTML = '';
+  document.getElementById('zoneMobileItems').innerHTML = '';
+  document.getElementById('score1').textContent = '0 / 6 σωστά';
+  document.getElementById('hint1').textContent = 'Διάλεξε μια συσκευή για να ξεκινήσεις.';
+  document.getElementById('hint1').className = 'hint';
+  document.getElementById('celebrate1').style.display = 'none';
+  renderPool1();
+}
+document.getElementById('reset1').addEventListener('click', resetActivity1);
+renderPool1();
+
+/* ================= ACTIVITY 2: TRUE/FALSE QUIZ ================= */
+const quiz = [
+  {
+    text: 'Ο δίσκος αποθήκευσης έχει συνήθως χωρητικότητα πολλών GB ή και περισσότερο.',
+    answer: true,
+    good: 'Σωστά! Οι δίσκοι αποθήκευσης (HDD ή SSD) έχουν συνήθως πολύ μεγάλη χωρητικότητα, πολλά GB.',
+    bad: 'Δεν είναι λάθος αυτό — οι δίσκοι αποθήκευσης έχουν πράγματι χωρητικότητα πολλών GB.'
+  },
+  {
+    text: 'Ο δίσκος αποθήκευσης βρίσκεται πάντα μέσα στον υπολογιστή.',
+    answer: false,
+    good: 'Σωστά! Υπάρχουν και εξωτερικοί δίσκοι αποθήκευσης που συνδέουμε στον υπολογιστή.',
+    bad: 'Στην πραγματικότητα υπάρχουν και εξωτερικοί δίσκοι αποθήκευσης, όχι μόνο εσωτερικοί.'
+  },
+  {
+    text: 'Με τη μνήμη φλας μπορώ να μεταφέρω εύκολα αρχεία σε άλλον υπολογιστή.',
+    answer: true,
+    good: 'Σωστά! Η μνήμη φλας είναι μικρή και βολική ακριβώς για τέτοιες μεταφορές.',
+    bad: 'Η μνήμη φλας φτιάχτηκε ακριβώς για αυτό — να μεταφέρουμε εύκολα αρχεία.'
+  },
+  {
+    text: 'Ο δίσκος SSD λειτουργεί πιο αργά από τον σκληρό δίσκο HDD.',
+    answer: false,
+    good: 'Σωστά! Ακριβώς το αντίθετο ισχύει — ο δίσκος SSD λειτουργεί πιο γρήγορα από τον HDD.',
+    bad: 'Ισχύει το αντίθετο: ο δίσκος SSD είναι ο πιο γρήγορος τύπος δίσκου, όχι ο HDD.'
+  },
+  {
+    text: 'Οι κάρτες μνήμης χρησιμοποιούνται συχνά σε κάμερες και κινητά τηλέφωνα.',
+    answer: true,
+    good: 'Σωστά! Οι κάρτες μνήμης είναι πολύ διαδεδομένες σε κάμερες, φωτογραφικές μηχανές και κινητά.',
+    bad: 'Οι κάρτες μνήμης χρησιμοποιούνται ακριβώς σε αυτές τις συσκευές — κάμερες και κινητά.'
+  },
+  {
+    text: 'Η ταμπλέτα και το έξυπνο κινητό έχουν οθόνη αφής με εικονικό πληκτρολόγιο.',
+    answer: true,
+    good: 'Σωστά! Δεν έχουν φυσικό πληκτρολόγιο, αλλά ένα εικονικό πάνω στην οθόνη αφής.',
+    bad: 'Στην πραγματικότητα και οι δύο συσκευές έχουν οθόνη αφής με εικονικό πληκτρολόγιο.'
+  }
+];
+let qIndex = 0;
+let qScore = 0;
+let answered = false;
+
+function renderProgress(){
+  const el = document.getElementById('qProgress');
+  el.innerHTML = '';
+  quiz.forEach((q,i)=>{
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+    if(q.result === true) dot.classList.add('done-good');
+    else if(q.result === false) dot.classList.add('done-bad');
+    else if(i === qIndex) dot.classList.add('current');
+    el.appendChild(dot);
+  });
+}
+
+function loadQuestion(){
+  answered = false;
+  const q = quiz[qIndex];
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qFeedback').className = 'feedback';
+  document.getElementById('qFeedback').innerHTML = '';
+  document.getElementById('nextQ').disabled = true;
+  document.getElementById('nextQ').textContent = (qIndex === quiz.length-1) ? 'Δες το αποτέλεσμα' : 'Επόμενη ερώτηση';
+  const bt = document.getElementById('optTrue');
+  const bf = document.getElementById('optFalse');
+  bt.disabled = false; bf.disabled = false;
+  bt.className = 'opt-btn true-opt';
+  bf.className = 'opt-btn false-opt';
+  renderProgress();
+}
+
+function answerQuestion(choice){
+  if(answered) return;
+  answered = true;
+  const q = quiz[qIndex];
+  const correct = (choice === q.answer);
+  q.result = correct;
+  if(correct) qScore++;
+  const bt = document.getElementById('optTrue');
+  const bf = document.getElementById('optFalse');
+  bt.disabled = true; bf.disabled = true;
+
+  const chosenBtn = choice ? bt : bf;
+  const rightBtn = q.answer ? bt : bf;
+  chosenBtn.classList.add(correct ? 'chosen-good' : 'chosen-bad');
+  if(!correct) rightBtn.classList.add('chosen-good');
+
+  const fb = document.getElementById('qFeedback');
+  fb.className = 'feedback ' + (correct ? 'good' : 'bad');
+  fb.innerHTML = '<b>' + (correct ? 'Μπράβο!' : 'Όχι ακριβώς.') + '</b>' + (correct ? q.good : q.bad);
+
+  document.getElementById('nextQ').disabled = false;
+  renderProgress();
+}
+
+document.getElementById('optTrue').addEventListener('click', ()=>answerQuestion(true));
+document.getElementById('optFalse').addEventListener('click', ()=>answerQuestion(false));
+
+document.getElementById('nextQ').addEventListener('click', ()=>{
+  if(qIndex < quiz.length - 1){
+    qIndex++;
+    loadQuestion();
+  } else {
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('quizResult').style.display = 'block';
+    document.getElementById('finalScore').textContent = qScore + ' / ' + quiz.length;
+  }
+});
+
+document.getElementById('restartQuiz').addEventListener('click', ()=>{
+  qIndex = 0; qScore = 0;
+  quiz.forEach(q=>delete q.result);
+  document.getElementById('quizArea').style.display = 'block';
+  document.getElementById('quizResult').style.display = 'none';
+  loadQuestion();
+});
+
+loadQuestion();
+
+/* ================= ACTIVITY 3: MATCHING ================= */
+const pairs = [
+  {id:'p1', term:'💽 Σκληρός δίσκος (HDD)', def:'Ο πιο συνηθισμένος εσωτερικός δίσκος αποθήκευσης, φτηνός αλλά πιο αργός.'},
+  {id:'p2', term:'⚡ Δίσκος SSD', def:'Λειτουργεί πιο γρήγορα από τον σκληρό δίσκο και βρίσκεται μέσα στον υπολογιστή.'},
+  {id:'p3', term:'🔑 Μνήμη φλας (USB)', def:'Μικρή, ελαφριά και ιδανική για να μεταφέρουμε εύκολα τα αρχεία μας.'},
+  {id:'p4', term:'🗂️ Κάρτα μνήμης', def:'Τη χρησιμοποιούμε συχνά σε κάμερες, φωτογραφικές μηχανές και κινητά τηλέφωνα.'},
+];
+let selTerm = null;
+let selDef = null;
+let matched3 = 0;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function renderMatch(){
+  const termsEl = document.getElementById('matchTerms');
+  const defsEl = document.getElementById('matchDefs');
+  termsEl.innerHTML = '';
+  defsEl.innerHTML = '';
+
+  pairs.forEach(p=>{
+    const b = document.createElement('button');
+    b.className = 'match-item term';
+    b.textContent = p.term;
+    b.dataset.id = p.id;
+    if(p.matched){ b.classList.add('matched'); b.disabled = true; }
+    if(selTerm === p.id) b.classList.add('selected');
+    b.addEventListener('click', ()=>{
+      if(p.matched) return;
+      selTerm = (selTerm===p.id) ? null : p.id;
+      renderMatch();
+      checkMatch();
+    });
+    termsEl.appendChild(b);
+  });
+
+  shuffledDefs.forEach(p=>{
+    const b = document.createElement('button');
+    b.className = 'match-item';
+    b.textContent = p.def;
+    b.dataset.id = p.id;
+    if(p.matched){ b.classList.add('matched'); b.disabled = true; }
+    if(selDef === p.id) b.classList.add('selected');
+    b.addEventListener('click', ()=>{
+      if(p.matched) return;
+      selDef = (selDef===p.id) ? null : p.id;
+      renderMatch();
+      checkMatch();
+    });
+    defsEl.appendChild(b);
+  });
+}
+
+function checkMatch(){
+  const hint = document.getElementById('hint3');
+  if(selTerm && selDef){
+    if(selTerm === selDef){
+      const p = pairs.find(x=>x.id===selTerm);
+      p.matched = true;
+      matched3++;
+      hint.textContent = 'Ζευγάρι σωστό!';
+      hint.className = 'hint good';
+      selTerm = null; selDef = null;
+      document.getElementById('score3').textContent = matched3 + ' / 4 ζευγάρια';
+      if(matched3 === pairs.length){
+        document.getElementById('celebrate3').style.display = 'block';
+      }
+      renderMatch();
+    } else {
+      hint.textContent = 'Δεν ταιριάζουν, δοκίμασε ξανά.';
+      hint.className = 'hint bad';
+      const t = selTerm, d = selDef;
+      selTerm = null; selDef = null;
+      setTimeout(()=>{
+        renderMatch();
+      }, 450);
+      document.querySelectorAll('.match-item.selected').forEach(el=>el.classList.add('wrong'));
+    }
+  }
+}
+
+let shuffledDefs = shuffle(pairs);
+
+function resetActivity3(){
+  pairs.forEach(p=>delete p.matched);
+  shuffledDefs = shuffle(pairs);
+  selTerm = null; selDef = null;
+  matched3 = 0;
+  document.getElementById('score3').textContent = '0 / 4 ζευγάρια';
+  document.getElementById('hint3').textContent = '';
+  document.getElementById('celebrate3').style.display = 'none';
+  renderMatch();
+}
+document.getElementById('reset3').addEventListener('click', resetActivity3);
+renderMatch();
+</script>
+</body>
+</html>
