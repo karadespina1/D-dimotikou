@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="el"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxNjEzMzY4NzU3ODM4MDE5Nzg5OSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzc0YmViNTg0ZDI3YjM0NGNfaW5kZXguaHRtbC04ODEifSwiZXhwIjoxNzkwMDg0MDQ4LCJpYXQiOjE3OTAwODA0NDgsImFsZyI6IlJTMjU2In0.I1BY22anzRGSCLYULB1w0wAnNrU5qwJGmAikKHQdc5_xE6R95EdPYJubta_xWUEaEWGqyjSQjyZ9IcORJU7CjtK_XCGU6heJTPett8eas9ZVSl2vHLGIyH8UdlztVPEhMIDZhK6d-whmlLQ79VHOJiisQ2GMoKT9vQVRSWpCiYx4XoS08D214F-Kjs5PVYorFszCq6bt1f5bTaqLcU_wwXjkBn8YGWtbtjj2LCFipn-xI5DRofALhWtdpuOR3mKMMmLsmBzjI5LEyed4bjCZFYNgRsnqkA7ajH9qVbnukfuacBPTiFfTZaZgxVZra0ljZ5Kw86ydszgRZJcebxZMAQ","c_74beb584d27b344c_index.html-881")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 17: Μεγέθη &amp; Διαχείριση Αρχείων - Διαδραστικές Δραστηριότητες</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&amp;family=Nunito:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fdf2f8 100%);
+      font-size: 19px;
+      line-height: 1.6;
+    }
+    h1, h2, h3, .heading-font {
+      font-family: 'Comfortaa', cursive;
+    }
+    .pulse-btn {
+      animation: pulseGlow 2.5s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+    }
+    .star-pop {
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.sticky{position:sticky}.inset-0{inset:0px}.top-0{top:0px}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-3{margin-top:0.75rem;margin-bottom:0.75rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.ml-auto{margin-left:auto}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mb-1{margin-bottom:0.25rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-5{height:1.25rem}.max-h-64{max-height:16rem}.min-h-\[280px\]{min-height:280px}.min-h-screen{min-height:100vh}.w-full{width:100%}.w-10{width:2.5rem}.w-5{width:1.25rem}.max-w-2xl{max-width:42rem}.max-w-6xl{max-width:72rem}.max-w-lg{max-width:32rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.break-all{word-break:break-all}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-b-4{border-bottom-width:4px}.border-l-8{border-left-width:8px}.border-amber-100{--tw-border-opacity:1;border-color:rgb(254 243 199 / var(--tw-border-opacity, 1))}.border-amber-200{--tw-border-opacity:1;border-color:rgb(253 230 138 / var(--tw-border-opacity, 1))}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-blue-100{--tw-border-opacity:1;border-color:rgb(219 234 254 / var(--tw-border-opacity, 1))}.border-blue-600{--tw-border-opacity:1;border-color:rgb(37 99 235 / var(--tw-border-opacity, 1))}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255 / var(--tw-border-opacity, 1))}.border-indigo-200{--tw-border-opacity:1;border-color:rgb(199 210 254 / var(--tw-border-opacity, 1))}.border-indigo-600{--tw-border-opacity:1;border-color:rgb(79 70 229 / var(--tw-border-opacity, 1))}.border-purple-100{--tw-border-opacity:1;border-color:rgb(243 232 255 / var(--tw-border-opacity, 1))}.border-rose-100{--tw-border-opacity:1;border-color:rgb(255 228 230 / var(--tw-border-opacity, 1))}.border-rose-200{--tw-border-opacity:1;border-color:rgb(254 205 211 / var(--tw-border-opacity, 1))}.border-rose-300{--tw-border-opacity:1;border-color:rgb(253 164 175 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-teal-100{--tw-border-opacity:1;border-color:rgb(204 251 241 / var(--tw-border-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-amber-50\/70{background-color:rgb(255 251 235 / 0.7)}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-indigo-100{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229 / var(--tw-bg-opacity, 1))}.bg-purple-600{--tw-bg-opacity:1;background-color:rgb(147 51 234 / var(--tw-bg-opacity, 1))}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-rose-600{--tw-bg-opacity:1;background-color:rgb(225 29 72 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-200\/90{background-color:rgb(226 232 240 / 0.9)}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-teal-600{--tw-bg-opacity:1;background-color:rgb(13 148 136 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/95{background-color:rgb(255 255 255 / 0.95)}.bg-amber-200{--tw-bg-opacity:1;background-color:rgb(253 230 138 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-rose-50{--tw-gradient-from:#fff1f2 var(--tw-gradient-from-position);--tw-gradient-to:rgb(255 241 242 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-amber-50{--tw-gradient-to:#fffbeb var(--tw-gradient-to-position)}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-2\.5{padding:0.625rem}.p-3\.5{padding:0.875rem}.p-5{padding:1.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-7{padding-left:1.75rem;padding-right:1.75rem}.px-8{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.pb-12{padding-bottom:3rem}.pb-3{padding-bottom:0.75rem}.pb-4{padding-bottom:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-6xl{font-size:3.75rem;line-height:1}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-amber-900{--tw-text-opacity:1;color:rgb(120 53 15 / var(--tw-text-opacity, 1))}.text-amber-950{--tw-text-opacity:1;color:rgb(69 26 3 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-blue-800{--tw-text-opacity:1;color:rgb(30 64 175 / var(--tw-text-opacity, 1))}.text-blue-950{--tw-text-opacity:1;color:rgb(23 37 84 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-indigo-800{--tw-text-opacity:1;color:rgb(55 48 163 / var(--tw-text-opacity, 1))}.text-indigo-900{--tw-text-opacity:1;color:rgb(49 46 129 / var(--tw-text-opacity, 1))}.text-indigo-950{--tw-text-opacity:1;color:rgb(30 27 75 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-950{--tw-text-opacity:1;color:rgb(59 7 100 / var(--tw-text-opacity, 1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72 / var(--tw-text-opacity, 1))}.text-rose-700{--tw-text-opacity:1;color:rgb(190 18 60 / var(--tw-text-opacity, 1))}.text-rose-950{--tw-text-opacity:1;color:rgb(76 5 25 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-teal-600{--tw-text-opacity:1;color:rgb(13 148 136 / var(--tw-text-opacity, 1))}.text-teal-950{--tw-text-opacity:1;color:rgb(4 47 46 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-emerald-200{--tw-shadow-color:#a7f3d0;--tw-shadow:var(--tw-shadow-colored)}.shadow-indigo-200{--tw-shadow-color:#c7d2fe;--tw-shadow:var(--tw-shadow-colored)}.shadow-purple-200{--tw-shadow-color:#e9d5ff;--tw-shadow:var(--tw-shadow-colored)}.shadow-teal-200{--tw-shadow-color:#99f6e4;--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:border-amber-500:hover{--tw-border-opacity:1;border-color:rgb(245 158 11 / var(--tw-border-opacity, 1))}.hover\:border-indigo-500:hover{--tw-border-opacity:1;border-color:rgb(99 102 241 / var(--tw-border-opacity, 1))}.hover\:bg-amber-600:hover{--tw-bg-opacity:1;background-color:rgb(217 119 6 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-700:hover{--tw-bg-opacity:1;background-color:rgb(4 120 87 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-700:hover{--tw-bg-opacity:1;background-color:rgb(67 56 202 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-700:hover{--tw-bg-opacity:1;background-color:rgb(126 34 206 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-100:hover{--tw-bg-opacity:1;background-color:rgb(255 228 230 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-700:hover{--tw-bg-opacity:1;background-color:rgb(190 18 60 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-300:hover{--tw-bg-opacity:1;background-color:rgb(203 213 225 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.hover\:bg-teal-700:hover{--tw-bg-opacity:1;background-color:rgb(15 118 110 / var(--tw-bg-opacity, 1))}.hover\:bg-amber-50:hover{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-50:hover{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-50:hover{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.hover\:bg-teal-50:hover{--tw-bg-opacity:1;background-color:rgb(240 253 250 / var(--tw-bg-opacity, 1))}.hover\:text-slate-700:hover{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.disabled\:opacity-40:disabled{opacity:0.4}.disabled\:opacity-30:disabled{opacity:0.3}@media (min-width: 640px){.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:p-8{padding:2rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 768px){.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:grid-cols-6{grid-template-columns:repeat(6, minmax(0, 1fr))}}</style></head>
+<body class="min-h-screen text-slate-800 flex flex-col pb-12 select-none">
+
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-4 border-indigo-200 shadow-md px-4 py-3 sm:px-6">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-4xl">📁</span>
+        <div>
+          <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+            Πληροφορική Δ' - ΣΤ' Δημοτικού
+          </span>
+          <h1 class="text-xl sm:text-2xl font-bold text-indigo-950">Μάθημα 17: Διαχείριση Αρχείων &amp; Φακέλων</h1>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Live Stars Score -->
+        <div class="flex items-center gap-2 bg-amber-50 border-2 border-amber-300 px-3.5 py-1.5 rounded-2xl shadow-sm text-amber-900 font-extrabold text-lg">
+          <span class="text-2xl">⭐</span>
+          <span>Αστέρια: <span id="global-stars" class="text-amber-600 text-xl">0</span>/6</span>
+        </div>
+
+        <!-- Direct HTML Download Button -->
+        <button onclick="downloadSelfHtml()" class="pulse-btn flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-extrabold text-base shadow-lg shadow-emerald-200 transition transform active:scale-95">
+          <span>💾</span>
+          <span>Λήψη HTML</span>
+        </button>
+
+        <!-- Sound Toggle -->
+        <button onclick="toggleAudio()" id="sound-btn" class="p-2 bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 rounded-2xl text-xl" title="Ήχοι On/Off">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="max-w-6xl mx-auto px-4 mt-5 w-full">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-sm sm:text-base font-bold">
+      <button onclick="changeTab(1)" id="tab-1" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">1️⃣</span>
+        <span>Βήματα Ενεργειών</span>
+      </button>
+      <button onclick="changeTab(2)" id="tab-2" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">2️⃣</span>
+        <span>Αντιγραφή ή Αποκοπή;</span>
+      </button>
+      <button onclick="changeTab(3)" id="tab-3" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">3️⃣</span>
+        <span>Μετονομασία</span>
+      </button>
+      <button onclick="changeTab(4)" id="tab-4" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">4️⃣</span>
+        <span>Εξερευνητής</span>
+      </button>
+      <button onclick="changeTab(5)" id="tab-5" class="tab-btn py-3 px-2 rounded-2xl bg-indigo-600 text-white border-2 border-indigo-600 shadow-md transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">5️⃣</span>
+        <span>Κάδος Ανακύκλωσης</span>
+      </button>
+      <button onclick="changeTab(6)" id="tab-6" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">6️⃣</span>
+        <span>Κουίζ Γνώσεων</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 mt-6 w-full flex-1">
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 1: ΒΗΜΑΤΑ ΕΝΕΡΓΕΙΩΝ (ΣΕΙΡΟΘΕΤΗΣΗ)
+    ======================================================== -->
+    <section id="act-1" class="activity-pane bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-indigo-100 hidden">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-indigo-600 uppercase tracking-widest">Δραστηριότητα 1</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-950 mt-1 flex items-center gap-2">
+          <span>🧩</span> Τα 4 Βήματα: Βάλε τα στη Σωστή Σειρά!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Σύμφωνα με το βιβλίο, κάθε διαδικασία (<span class="text-indigo-600 font-bold">Αντιγραφή</span> ή <span class="text-indigo-600 font-bold">Μετακίνηση</span>) αποτελείται από <strong>4 διαδοχικά βήματα</strong>. Χρησιμοποίησε τα κουμπιά ⬆️ και ⬇️ για να τα σειροθετήσεις!
+        </p>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="flex gap-3 mb-5">
+        <button onclick="setStepsMode('copy')" id="steps-tab-copy" class="flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-600 bg-indigo-600 text-white shadow-sm transition">
+          📋 Διαδικασία Αντιγραφής
+        </button>
+        <button onclick="setStepsMode('cut')" id="steps-tab-cut" class="flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-200 bg-slate-50 text-indigo-900 hover:bg-slate-100 transition">
+          ✂️ Διαδικασία Μετακίνησης (Αποκοπής)
+        </button>
+      </div>
+
+      <!-- Order list -->
+      <div id="steps-slot-list" class="space-y-3 mb-6"><div class="flex items-center gap-3 p-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-base sm:text-lg font-bold text-slate-800">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-xl shrink-0">
+            1
+          </div>
+          <div class="flex-1">3. Ανοίγεις ή κάνεις δεξί κλικ στον φάκελο όπου θέλεις να τοποθετηθεί το αντίγραφο.</div>
+          <div class="flex gap-1">
+            <button onclick="moveStepItem(0, -1)" disabled="" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬆️</button>
+            <button onclick="moveStepItem(0, 1)" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬇️</button>
+          </div>
+        </div><div class="flex items-center gap-3 p-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-base sm:text-lg font-bold text-slate-800">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-xl shrink-0">
+            2
+          </div>
+          <div class="flex-1">2. Επιλέγεις από το αναδυόμενο μενού (δεξί κλικ) την εντολή «Αντιγραφή».</div>
+          <div class="flex gap-1">
+            <button onclick="moveStepItem(1, -1)" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬆️</button>
+            <button onclick="moveStepItem(1, 1)" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬇️</button>
+          </div>
+        </div><div class="flex items-center gap-3 p-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-base sm:text-lg font-bold text-slate-800">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-xl shrink-0">
+            3
+          </div>
+          <div class="flex-1">1. Επιλέγεις το αρχείο ή φάκελο που θέλεις να αντιγράψεις.</div>
+          <div class="flex gap-1">
+            <button onclick="moveStepItem(2, -1)" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬆️</button>
+            <button onclick="moveStepItem(2, 1)" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬇️</button>
+          </div>
+        </div><div class="flex items-center gap-3 p-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-base sm:text-lg font-bold text-slate-800">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-xl shrink-0">
+            4
+          </div>
+          <div class="flex-1">4. Επιλέγεις «Επικόλληση» και το αντίγραφο δημιουργείται, διατηρώντας το αρχικό!</div>
+          <div class="flex gap-1">
+            <button onclick="moveStepItem(3, -1)" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬆️</button>
+            <button onclick="moveStepItem(3, 1)" disabled="" class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬇️</button>
+          </div>
+        </div></div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <button onclick="resetStepsOrder()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-extrabold text-lg transition">
+          🔄 Ανακάτεμα
+        </button>
+        <button onclick="checkStepsOrder()" class="px-7 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-indigo-200 transition transform active:scale-95 flex items-center gap-2">
+          <span>🔍</span> Έλεγχος Σειράς!
+        </button>
+      </div>
+      <div id="feedback-1" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 2: ΑΝΤΙΓΡΑΦΗ Η ΑΠΟΚΟΠΗ;
+    ======================================================== -->
+    <section id="act-2" class="activity-pane bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-amber-100 hidden">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-amber-600 uppercase tracking-widest">Δραστηριότητα 2</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-amber-950 mt-1 flex items-center gap-2">
+          <span>⚖️</span> Αποκοπή ή Αντιγραφή; Βρες τη Διαφορά!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Διάβασε την επιθυμία του μαθητή και επίλεξε ποια λειτουργία ταιριάζει ακριβώς στην ανάγκη του:
+        </p>
+      </div>
+
+      <div id="scenario-card-area" class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-6 sm:p-8 mb-6">
+        <span class="inline-block px-3 py-1 bg-amber-200 text-amber-900 rounded-full font-black text-sm mb-2">
+          Σενάριο 1: Αντίγραφο Ασφαλείας σε USB Flash (1/3)
+        </span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-800 my-3 leading-relaxed">
+          Η Ελένη τελείωσε την εργασία της και θέλει να την περάσει στο στικάκι USB, <strong>αλλά θέλει να παραμείνει το αρχείο και στον υπολογιστή της</strong>.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+          <button onclick="handleScenarioAnswer('copy')" class="p-5 bg-white hover:bg-indigo-50 border-3 border-indigo-200 hover:border-indigo-500 rounded-2xl text-xl font-black text-indigo-900 transition flex flex-col items-center gap-1 shadow-sm">
+            <span>📋 Αντιγραφή (Copy)</span>
+            <span class="text-sm font-bold text-slate-500">Κρατάμε το αρχικό + φτιάχνουμε αντίγραφο</span>
+          </button>
+          <button onclick="handleScenarioAnswer('cut')" class="p-5 bg-white hover:bg-amber-50 border-3 border-amber-200 hover:border-amber-500 rounded-2xl text-xl font-black text-amber-950 transition flex flex-col items-center gap-1 shadow-sm">
+            <span>✂️ Αποκοπή / Μετακίνηση (Cut)</span>
+            <span class="text-sm font-bold text-slate-500">Το αρχείο φεύγει εντελώς και αλλάζει θέση</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="feedback-2" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 3: ΜΕΤΟΝΟΜΑΣΙΑ ΑΡΧΕΙΩΝ & ΦΑΚΕΛΩΝ
+    ======================================================== -->
+    <section id="act-3" class="activity-pane bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-teal-100 hidden">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-teal-600 uppercase tracking-widest">Δραστηριότητα 3</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-teal-950 mt-1 flex items-center gap-2">
+          <span>🏷️</span> Μετονομασία: Βάλε Τάξη στα Αρχεία σου!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Στον υπολογιστή βρέθηκαν αρχεία με ασαφή ονόματα. Διάλεξε το καταλληλότερο, περιγραφικό όνομα για καθένα:
+        </p>
+      </div>
+
+      <div class="space-y-4" id="rename-cards-area"><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">📝</span>
+            <div>
+              <span class="text-xs font-bold uppercase text-slate-400">Τρέχον όνομα:</span>
+              <div class="text-lg font-black text-slate-800 font-mono">Atitlo_2.odt</div>
+            </div>
+          </div>
+          <p class="text-base font-bold text-slate-600 mb-3">💡 <strong>Περιεχόμενο:</strong> Το παραμύθι «Ο λαγός και η χελώνα» του Αισώπου σε έγγραφο κειμένου.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            
+              <button onclick="pickRenameChoice(1, 'lagos_kai_xelona_aisopos.odt')" id="ren-opt-1-lagos_kai_xelona_aisopos_odt" class="ren-btn-1 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ lagos_kai_xelona_aisopos.odt
+              </button>
+            
+              <button onclick="pickRenameChoice(1, 'arxeio_123.odt')" id="ren-opt-1-arxeio_123_odt" class="ren-btn-1 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ arxeio_123.odt
+              </button>
+            
+              <button onclick="pickRenameChoice(1, 'keimeno_kai_eikona.png')" id="ren-opt-1-keimeno_kai_eikona_png" class="ren-btn-1 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ keimeno_kai_eikona.png
+              </button>
+            
+          </div>
+        </div><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">📷</span>
+            <div>
+              <span class="text-xs font-bold uppercase text-slate-400">Τρέχον όνομα:</span>
+              <div class="text-lg font-black text-slate-800 font-mono">IMG_0049.jpg</div>
+            </div>
+          </div>
+          <p class="text-base font-bold text-slate-600 mb-3">💡 <strong>Περιεχόμενο:</strong> Φωτογραφία μιας αλεπούς στο δάσος για τη σχολική εργασία.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            
+              <button onclick="pickRenameChoice(2, 'alepou_sto_dasos.jpg')" id="ren-opt-2-alepou_sto_dasos_jpg" class="ren-btn-2 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ alepou_sto_dasos.jpg
+              </button>
+            
+              <button onclick="pickRenameChoice(2, 'alepou.mp3')" id="ren-opt-2-alepou_mp3" class="ren-btn-2 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ alepou.mp3
+              </button>
+            
+              <button onclick="pickRenameChoice(2, 'neos_fakelos.zip')" id="ren-opt-2-neos_fakelos_zip" class="ren-btn-2 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ neos_fakelos.zip
+              </button>
+            
+          </div>
+        </div><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">📁</span>
+            <div>
+              <span class="text-xs font-bold uppercase text-slate-400">Τρέχον όνομα:</span>
+              <div class="text-lg font-black text-slate-800 font-mono">Neos_Fakelos_2</div>
+            </div>
+          </div>
+          <p class="text-base font-bold text-slate-600 mb-3">💡 <strong>Περιεχόμενο:</strong> Ο φάκελος όπου θα αποθηκεύσουμε τις φωτογραφίες των φρούτων (σελ. 69).</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            
+              <button onclick="pickRenameChoice(3, 'Frouto-eikones')" id="ren-opt-3-Frouto_eikones" class="ren-btn-3 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ Frouto-eikones
+              </button>
+            
+              <button onclick="pickRenameChoice(3, 'paromia_ixografisi.wav')" id="ren-opt-3-paromia_ixografisi_wav" class="ren-btn-3 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ paromia_ixografisi.wav
+              </button>
+            
+              <button onclick="pickRenameChoice(3, 'tragoudi.mp4')" id="ren-opt-3-tragoudi_mp4" class="ren-btn-3 p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ tragoudi.mp4
+              </button>
+            
+          </div>
+        </div></div>
+
+      <div class="flex justify-end mt-6">
+        <button onclick="checkAllRenames()" class="px-7 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-teal-200 transition transform active:scale-95">
+          <span>✔️</span> Έλεγχος Μετονομασιών
+        </button>
+      </div>
+      <div id="feedback-3" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 4: ΠΡΟΣΟΜΟΙΩΤΗΣ «ΕΞΕΡΕΥΝΗΤΗΣ ΑΡΧΕΙΩΝ»
+    ======================================================== -->
+    <section id="act-4" class="activity-pane bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-blue-100 hidden">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-blue-600 uppercase tracking-widest">Δραστηριότητα 4</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-blue-950 mt-1 flex items-center gap-2">
+          <span>💻</span> Εξερευνητής Αρχείων: Η Άσκηση του Βιβλίου (σελ. 69)
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Εκτέλεσε στον προσομοιωτή τα 4 διαδοχικά βήματα της σχολικής δραστηριότητας!
+        </p>
+      </div>
+
+      <!-- Current Step Banner -->
+      <div class="bg-blue-50 border-l-8 border-blue-600 p-4 rounded-2xl mb-5 flex items-center gap-3">
+        <span class="text-3xl">🎯</span>
+        <div>
+          <span class="text-xs uppercase font-extrabold tracking-wider text-blue-800">Αποστολή σε εξέλιξη:</span>
+          <p id="explorer-mission-desc" class="text-lg font-extrabold text-blue-950">
+            Βήμα 1: Πάτησε το κουμπί <strong>«➕ Νέος Φάκελος»</strong> για να φτιάξεις τον φάκελο <em>«Φρούτο-εργασία»</em>!
+          </p>
+        </div>
+      </div>
+
+      <!-- Explorer Mock UI -->
+      <div class="border-2 border-slate-300 rounded-3xl overflow-hidden shadow-lg bg-slate-100">
+        <!-- Toolbar -->
+        <div class="bg-slate-200/90 p-3 flex flex-wrap gap-2 items-center border-b border-slate-300 text-base font-extrabold">
+          <button onclick="explorerCreateFolder()" id="exp-btn-folder" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition">
+            ➕ Νέος Φάκελος
+          </button>
+          <button onclick="explorerCopy()" id="exp-btn-copy" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl shadow-sm transition disabled:opacity-40" disabled="">
+            📋 Αντιγραφή
+          </button>
+          <button onclick="explorerPaste()" id="exp-btn-paste" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl shadow-sm transition disabled:opacity-40" disabled="">
+            📥 Επικόλληση
+          </button>
+          <button onclick="explorerDelete()" id="exp-btn-del" class="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl shadow-sm transition disabled:opacity-40" disabled="">
+            🗑️ Διαγραφή
+          </button>
+          <button onclick="explorerOpenBin()" id="exp-btn-bin" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-sm transition ml-auto flex items-center gap-1.5">
+            <span>♻️ Κάδος</span> (<span id="bin-indicator">0</span>)
+          </button>
+        </div>
+
+        <!-- Explorer Container Body -->
+        <div class="p-6 bg-white min-h-[280px]">
+          <div class="text-sm font-extrabold text-slate-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+            <span>📂 Επιφάνεια Εργασίας</span>
+            <span id="clipboard-badge" class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full hidden">Έτοιμο για επικόλληση</span>
+          </div>
+          <div id="explorer-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"><div class="p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center text-center cursor-pointer transition bg-slate-50 hover:bg-slate-100 border-slate-200">
+          <div class="text-4xl mb-1">📷</div>
+          <div class="font-extrabold text-base text-slate-800 break-all">μηλο.jpg</div>
+          <div class="text-xs font-bold text-slate-400 font-mono">187 KB</div>
+        </div><div class="p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center text-center cursor-pointer transition bg-slate-50 hover:bg-slate-100 border-slate-200">
+          <div class="text-4xl mb-1">📝</div>
+          <div class="font-extrabold text-base text-slate-800 break-all">παροιμια.odt</div>
+          <div class="text-xs font-bold text-slate-400 font-mono">24 KB</div>
+        </div><div class="p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center text-center cursor-pointer transition bg-slate-50 hover:bg-slate-100 border-slate-200">
+          <div class="text-4xl mb-1">🎤</div>
+          <div class="font-extrabold text-base text-slate-800 break-all">φωνη.wav</div>
+          <div class="text-xs font-bold text-slate-400 font-mono">4.5 MB</div>
+        </div></div>
+        </div>
+      </div>
+
+      <div id="feedback-4" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 5: ΚΑΔΟΣ ΑΝΑΚΥΚΛΩΣΗΣ & ΕΠΑΝΑΦΟΡΑ
+    ======================================================== -->
+    <section id="act-5" class="activity-pane bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-rose-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-rose-600 uppercase tracking-widest">Δραστηριότητα 5</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-rose-950 mt-1 flex items-center gap-2">
+          <span>♻️</span> Κάδος Ανακύκλωσης: Σώσε ή Διάγραψε Οριστικά!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Όταν ένα αρχείο βρίσκεται στον Κάδο, μπορούμε να κάνουμε <strong>Επαναφορά</strong> στην αρχική του θέση ή <strong>Άδειασμα Κάδου</strong> (οριστική διαγραφή). Διάλεξε τη σωστή ενέργεια για κάθε περίπτωση:
+        </p>
+      </div>
+
+      <div class="bg-gradient-to-br from-rose-50 to-amber-50 border-2 border-rose-200 rounded-3xl p-6 sm:p-8 text-center max-w-2xl mx-auto shadow-sm">
+        <div class="text-slate-500 font-extrabold text-base mb-2">
+          Περίπτωση <span id="bin-step-num" class="text-rose-600 font-black">1</span> από 4
+        </div>
+        <div id="bin-item-icon" class="text-6xl mb-3">📄</div>
+        <h3 id="bin-item-name" class="text-2xl font-black text-slate-800 mb-2">Εργασία_Ιστορίας_Τελικό.odt</h3>
+        <p id="bin-item-desc" class="text-lg text-slate-600 font-bold mb-6">«Κατά λάθος πάτησα Delete στην εργασία της Ιστορίας που έγραφα όλο το απόγευμα!»</p>
+
+        <div class="flex flex-wrap gap-4 justify-center">
+          <button onclick="handleBinDecision('restore')" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-extrabold text-lg shadow-md transition transform active:scale-95">
+            ↩️ Επαναφορά στην Αρχική Θέση
+          </button>
+          <button onclick="handleBinDecision('delete')" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-extrabold text-lg shadow-md transition transform active:scale-95">
+            ❌ Οριστική Διαγραφή (Άδειασμα)
+          </button>
+        </div>
+      </div>
+
+      <div id="feedback-5" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 6: ΚΟΥΙΖ ΓΝΩΣΕΩΝ
+    ======================================================== -->
+    <section id="act-6" class="activity-pane hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-purple-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-purple-600 uppercase tracking-widest">Δραστηριότητα 6</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-950 mt-1 flex items-center gap-2">
+          <span>⚡</span> Κουίζ Ελέγχου Γνώσεων
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Απάντησε στις 4 ερωτήσεις για να σφραγίσεις τις γνώσεις σου στο Μάθημα 17!
+        </p>
+      </div>
+
+      <div id="quiz-list" class="space-y-4"><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <h4 class="font-extrabold text-lg sm:text-xl text-slate-900 mb-3">1. Ποια είναι η διαφορά ανάμεσα στην «Αντιγραφή» και την «Αποκοπή»;</h4>
+          <div class="space-y-2">
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q1" value="0" onchange="selectQuizOption('q1', 0)" class="w-5 h-5 text-purple-600">
+                <span>Στην Αντιγραφή το αρχείο παραμένει και στην αρχική θέση, ενώ στην Αποκοπή μετακινείται.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q1" value="1" onchange="selectQuizOption('q1', 1)" class="w-5 h-5 text-purple-600">
+                <span>Δεν έχουν καμία διαφορά, είναι απλώς δύο διαφορετικές λέξεις.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q1" value="2" onchange="selectQuizOption('q1', 2)" class="w-5 h-5 text-purple-600">
+                <span>Η Αποκοπή διαγράφει το αρχείο για πάντα από τον δίσκο.</span>
+              </label>
+            
+          </div>
+        </div><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <h4 class="font-extrabold text-lg sm:text-xl text-slate-900 mb-3">2. Όταν πατάμε «Διαγραφή» σε ένα αρχείο στον υπολογιστή:</h4>
+          <div class="space-y-2">
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q2" value="0" onchange="selectQuizOption('q2', 0)" class="w-5 h-5 text-purple-600">
+                <span>Σβήνεται αυτόματα και οριστικά χωρίς δυνατότητα ανάκτησης.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q2" value="1" onchange="selectQuizOption('q2', 1)" class="w-5 h-5 text-purple-600">
+                <span>Μεταφέρεται στον Κάδο Ανακύκλωσης και μπορούμε να το επαναφέρουμε.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q2" value="2" onchange="selectQuizOption('q2', 2)" class="w-5 h-5 text-purple-600">
+                <span>Ανεβαίνει μόνο του στο διαδίκτυο.</span>
+              </label>
+            
+          </div>
+        </div><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <h4 class="font-extrabold text-lg sm:text-xl text-slate-900 mb-3">3. Τι συμβαίνει όταν κάνουμε «Άδειασμα του Κάδου Ανακύκλωσης»;</h4>
+          <div class="space-y-2">
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q3" value="0" onchange="selectQuizOption('q3', 0)" class="w-5 h-5 text-purple-600">
+                <span>Όλα τα αρχεία του κάδου διαγράφονται οριστικά από τον υπολογιστή.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q3" value="1" onchange="selectQuizOption('q3', 1)" class="w-5 h-5 text-purple-600">
+                <span>Τα αρχεία επιστρέφουν όλα αυτόματα στην Επιφάνεια Εργασίας.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q3" value="2" onchange="selectQuizOption('q3', 2)" class="w-5 h-5 text-purple-600">
+                <span>Τα αρχεία αποθηκεύονται στη μνήμη RAM.</span>
+              </label>
+            
+          </div>
+        </div><div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+          <h4 class="font-extrabold text-lg sm:text-xl text-slate-900 mb-3">4. Γιατί είναι σημαντικό να μετονομάζουμε τα αρχεία με σαφή ονόματα (π.χ. lagos_kai_xelona.odt);</h4>
+          <div class="space-y-2">
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q4" value="0" onchange="selectQuizOption('q4', 0)" class="w-5 h-5 text-purple-600">
+                <span>Για να ξέρουμε αμέσως τι περιέχουν χωρίς να τα ανοίγουμε ένα-ένα.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q4" value="1" onchange="selectQuizOption('q4', 1)" class="w-5 h-5 text-purple-600">
+                <span>Γιατί αλλιώς ο υπολογιστής δεν μπορεί να τα αποθηκεύσει.</span>
+              </label>
+            
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="q4" value="2" onchange="selectQuizOption('q4', 2)" class="w-5 h-5 text-purple-600">
+                <span>Για να γίνουν τα αρχεία μικρότερα σε μέγεθος.</span>
+              </label>
+            
+          </div>
+        </div></div>
+
+      <div class="flex justify-end mt-6">
+        <button onclick="submitQuiz()" class="px-8 py-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-purple-200 transition transform active:scale-95">
+          🎯 Έλεγχος Όλων των Απαντήσεων!
+        </button>
+      </div>
+
+      <div id="feedback-6" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+  </main>
+
+  <div id="recycle-bin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-4 border-amber-300">
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100 mb-4">
+        <h3 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+          <span>♻️</span> Κάδος Ανακύκλωσης
+        </h3>
+        <button onclick="explorerCloseBin()" class="text-2xl font-bold text-slate-400 hover:text-slate-700">✕</button>
+      </div>
+      <p class="text-base text-slate-600 mb-4 font-bold">
+        Εδώ βρίσκονται τα διεγραμμένα αρχεία. Κάνε κλικ στο κουμπί <strong>«Επαναφορά»</strong> για να γυρίσει πίσω στην Επιφάνεια Εργασίας!
+      </p>
+
+      <div id="bin-modal-items" class="space-y-2 max-h-64 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200 mb-5">
+        <!-- Injected -->
+      </div>
+
+      <div class="flex justify-end">
+        <button onclick="explorerCloseBin()" class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold rounded-xl transition text-base">
+          Κλείσιμο
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let audioContext = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      const now = audioContext.currentTime;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      if (type === 'correct') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);       // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.3);// C6
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+        osc.start(now);
+        osc.stop(now + 0.55);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.setValueAtTime(140, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(650, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      }
+    }
+
+    const completedTabs = new Set();
+
+    function rewardStar(tabIndex) {
+      if (!completedTabs.has(tabIndex)) {
+        completedTabs.add(tabIndex);
+        const starsEl = document.getElementById('global-stars');
+        starsEl.innerText = completedTabs.size;
+        starsEl.parentElement.classList.add('star-pop');
+        setTimeout(() => starsEl.parentElement.classList.remove('star-pop'), 400);
+      }
+    }
+
+    function changeTab(tabNumber) {
+      playSound('click');
+      for (let i = 1; i <= 6; i++) {
+        const pane = document.getElementById(`act-${i}`);
+        const btn = document.getElementById(`tab-${i}`);
+        if (i === tabNumber) {
+          pane.classList.remove('hidden');
+          btn.className = "tab-btn py-3 px-2 rounded-2xl bg-indigo-600 text-white border-2 border-indigo-600 shadow-md transition flex flex-col items-center justify-center gap-1";
+        } else {
+          pane.classList.add('hidden');
+          btn.className = "tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1";
+        }
+      }
+    }
+
+    const stepsData = {
+      copy: [
+        { id: 1, text: "1. Επιλέγεις το αρχείο ή φάκελο που θέλεις να αντιγράψεις." },
+        { id: 2, text: "2. Επιλέγεις από το αναδυόμενο μενού (δεξί κλικ) την εντολή «Αντιγραφή»." },
+        { id: 3, text: "3. Ανοίγεις ή κάνεις δεξί κλικ στον φάκελο όπου θέλεις να τοποθετηθεί το αντίγραφο." },
+        { id: 4, text: "4. Επιλέγεις «Επικόλληση» και το αντίγραφο δημιουργείται, διατηρώντας το αρχικό!" }
+      ],
+      cut: [
+        { id: 1, text: "1. Επιλέγεις το αρχείο ή φάκελο που επιθυμείς να μετακινήσεις." },
+        { id: 2, text: "2. Επιλέγεις από το αναδυόμενο μενού (δεξί κλικ) την εντολή «Αποκοπή»." },
+        { id: 3, text: "3. Ανοίγεις ή κάνεις δεξί κλικ στον νέο φάκελο-προορισμό." },
+        { id: 4, text: "4. Επιλέγεις «Επικόλληση» και το αρχείο μεταφέρεται (φεύγει από την παλιά θέση)!" }
+      ]
+    };
+
+    let currentStepsMode = 'copy';
+    let currentShuffledSteps = [];
+
+    function setStepsMode(mode) {
+      playSound('click');
+      currentStepsMode = mode;
+      document.getElementById('steps-tab-copy').className = mode === 'copy' 
+        ? "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-600 bg-indigo-600 text-white shadow-sm transition"
+        : "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-200 bg-slate-50 text-indigo-900 hover:bg-slate-100 transition";
+      document.getElementById('steps-tab-cut').className = mode === 'cut'
+        ? "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-600 bg-indigo-600 text-white shadow-sm transition"
+        : "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-200 bg-slate-50 text-indigo-900 hover:bg-slate-100 transition";
+      resetStepsOrder();
+    }
+
+    function resetStepsOrder() {
+      currentShuffledSteps = [...stepsData[currentStepsMode]].sort(() => Math.random() - 0.5);
+      renderStepsList();
+      document.getElementById('feedback-1').classList.add('hidden');
+    }
+
+    function renderStepsList() {
+      const container = document.getElementById('steps-slot-list');
+      container.innerHTML = '';
+      currentShuffledSteps.forEach((step, idx) => {
+        const item = document.createElement('div');
+        item.className = "flex items-center gap-3 p-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-base sm:text-lg font-bold text-slate-800";
+        item.innerHTML = `
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-xl shrink-0">
+            ${idx + 1}
+          </div>
+          <div class="flex-1">${step.text}</div>
+          <div class="flex gap-1">
+            <button onclick="moveStepItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬆️</button>
+            <button onclick="moveStepItem(${idx}, 1)" ${idx === currentShuffledSteps.length - 1 ? 'disabled' : ''} class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬇️</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function moveStepItem(idx, dir) {
+      playSound('click');
+      const target = idx + dir;
+      if (target >= 0 && target < currentShuffledSteps.length) {
+        const temp = currentShuffledSteps[idx];
+        currentShuffledSteps[idx] = currentShuffledSteps[target];
+        currentShuffledSteps[target] = temp;
+        renderStepsList();
+        document.getElementById('feedback-1').classList.add('hidden');
+      }
+    }
+
+    function checkStepsOrder() {
+      const isRight = currentShuffledSteps.every((s, i) => s.id === i + 1);
+      const fb = document.getElementById('feedback-1');
+      fb.classList.remove('hidden');
+
+      if (isRight) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = `🎉 <strong>Μπράβο!</strong> Έβαλες ακριβώς στη σωστή σειρά τα 4 βήματα για τη <strong>${currentStepsMode === 'copy' ? 'Αντιγραφή' : 'Μετακίνηση (Αποκοπή)'}</strong> όπως περιγράφονται στο βιβλίο!`;
+        rewardStar(1);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `❌ <strong>Κάποια βήματα δεν είναι στη σειρά!</strong> Θυμήσου: 1ο Επιλογή -> 2ο ${currentStepsMode === 'copy' ? 'Αντιγραφή' : 'Αποκοπή'} -> 3ο Επιλογή νέου φακέλου -> 4ο Επικόλληση.`;
+      }
+    }
+
+    const scenarios = [
+      {
+        title: "Σενάριο 1: Αντίγραφο Ασφαλείας σε USB Flash",
+        desc: "Η Ελένη τελείωσε την εργασία της και θέλει να την περάσει στο στικάκι USB, <strong>αλλά θέλει να παραμείνει το αρχείο και στον υπολογιστή της</strong>.",
+        correct: "copy",
+        explanation: "Σωστά! Επιλέγουμε <strong>Αντιγραφή</strong>, ώστε το αρχείο να παραμείνει και στην αρχική του θέση και να δημιουργηθεί πιστό αντίγραφο στο USB."
+      },
+      {
+        title: "Σενάριο 2: Τακτοποίηση Φακέλου στην Επιφάνεια Εργασίας",
+        desc: "Ο Νίκος θέλει να <strong>μεταφέρει</strong> όλες τις εικόνες από την Επιφάνεια Εργασίας μέσα στον φάκελο «Φρούτο-εικόνες» <strong>χωρίς να πιάνουν διπλό χώρο</strong>.",
+        correct: "cut",
+        explanation: "Ακριβώς! Επιλέγουμε <strong>Αποκοπή (Μετακίνηση)</strong> γιατί θέλουμε τα αρχεία να φύγουν από την παλιά θέση και να μπουν στη νέα."
+      },
+      {
+        title: "Σενάριο 3: Δανεισμός Τραγουδιού στον Διπλανό",
+        desc: "Ο Μάριος θέλει να δώσει ένα αρχείο ήχου mp3 στον συμμαθητή του, χωρίς όμως να το χάσει ο ίδιος από τη δική του συλλογή.",
+        correct: "copy",
+        explanation: "Μπράβο! Με την <strong>Αντιγραφή</strong> το πρωτότυπο τραγούδι παραμένει ασφαλές στη θέση του!"
+      }
+    ];
+
+    let currentScenarioIndex = 0;
+
+    function renderScenario() {
+      const area = document.getElementById('scenario-card-area');
+      const sc = scenarios[currentScenarioIndex];
+      area.innerHTML = `
+        <span class="inline-block px-3 py-1 bg-amber-200 text-amber-900 rounded-full font-black text-sm mb-2">
+          ${sc.title} (${currentScenarioIndex + 1}/3)
+        </span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-800 my-3 leading-relaxed">
+          ${sc.desc}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+          <button onclick="handleScenarioAnswer('copy')" class="p-5 bg-white hover:bg-indigo-50 border-3 border-indigo-200 hover:border-indigo-500 rounded-2xl text-xl font-black text-indigo-900 transition flex flex-col items-center gap-1 shadow-sm">
+            <span>📋 Αντιγραφή (Copy)</span>
+            <span class="text-sm font-bold text-slate-500">Κρατάμε το αρχικό + φτιάχνουμε αντίγραφο</span>
+          </button>
+          <button onclick="handleScenarioAnswer('cut')" class="p-5 bg-white hover:bg-amber-50 border-3 border-amber-200 hover:border-amber-500 rounded-2xl text-xl font-black text-amber-950 transition flex flex-col items-center gap-1 shadow-sm">
+            <span>✂️ Αποκοπή / Μετακίνηση (Cut)</span>
+            <span class="text-sm font-bold text-slate-500">Το αρχείο φεύγει εντελώς και αλλάζει θέση</span>
+          </button>
+        </div>
+      `;
+      document.getElementById('feedback-2').classList.add('hidden');
+    }
+
+    function handleScenarioAnswer(ans) {
+      const sc = scenarios[currentScenarioIndex];
+      const fb = document.getElementById('feedback-2');
+      fb.classList.remove('hidden');
+
+      if (ans === sc.correct) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = `🎉 ${sc.explanation}`;
+
+        setTimeout(() => {
+          if (currentScenarioIndex < scenarios.length - 1) {
+            currentScenarioIndex++;
+            renderScenario();
+          } else {
+            fb.innerHTML = `🏆 <strong>Άριστα!</strong> Ολοκλήρωσες και τα 3 σενάρια! Γνωρίζεις πότε κάνουμε Αντιγραφή και πότε Αποκοπή (Μετακίνηση).`;
+            rewardStar(2);
+          }
+        }, 1600);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `❌ <strong>Σκέψου ξανά:</strong> Θέλουμε το αρχείο να μείνει και στην αρχική του θέση (Αντιγραφή) ή να αλλάξει θέση εξολοκλήρου (Αποκοπή);`;
+      }
+    }
+
+    const renameChallenges = [
+      {
+        id: 1,
+        current: "Atitlo_2.odt",
+        content: "Το παραμύθι «Ο λαγός και η χελώνα» του Αισώπου σε έγγραφο κειμένου.",
+        options: ["lagos_kai_xelona_aisopos.odt", "arxeio_123.odt", "keimeno_kai_eikona.png"],
+        correct: "lagos_kai_xelona_aisopos.odt"
+      },
+      {
+        id: 2,
+        current: "IMG_0049.jpg",
+        content: "Φωτογραφία μιας αλεπούς στο δάσος για τη σχολική εργασία.",
+        options: ["alepou_sto_dasos.jpg", "alepou.mp3", "neos_fakelos.zip"],
+        correct: "alepou_sto_dasos.jpg"
+      },
+      {
+        id: 3,
+        current: "Neos_Fakelos_2",
+        content: "Ο φάκελος όπου θα αποθηκεύσουμε τις φωτογραφίες των φρούτων (σελ. 69).",
+        options: ["Frouto-eikones", "paromia_ixografisi.wav", "tragoudi.mp4"],
+        correct: "Frouto-eikones"
+      }
+    ];
+
+    let userRenames = {};
+
+    function renderRenameChallenges() {
+      const area = document.getElementById('rename-cards-area');
+      area.innerHTML = '';
+      renameChallenges.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl";
+        card.innerHTML = `
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">${item.current.includes('odt') ? '📝' : item.current.includes('jpg') ? '📷' : '📁'}</span>
+            <div>
+              <span class="text-xs font-bold uppercase text-slate-400">Τρέχον όνομα:</span>
+              <div class="text-lg font-black text-slate-800 font-mono">${item.current}</div>
+            </div>
+          </div>
+          <p class="text-base font-bold text-slate-600 mb-3">💡 <strong>Περιεχόμενο:</strong> ${item.content}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            ${item.options.map(opt => `
+              <button onclick="pickRenameChoice(${item.id}, '${opt}')" id="ren-opt-${item.id}-${opt.replace(/[^a-zA-Z0-9]/g, '_')}" class="ren-btn-${item.id} p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ ${opt}
+              </button>
+            `).join('')}
+          </div>
+        `;
+        area.appendChild(card);
+      });
+    }
+
+    function pickRenameChoice(challengeId, choice) {
+      playSound('click');
+      userRenames[challengeId] = choice;
+      document.querySelectorAll(`.ren-btn-${challengeId}`).forEach(b => {
+        b.className = `ren-btn-${challengeId} p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left`;
+      });
+      const selectedBtn = document.getElementById(`ren-opt-${challengeId}-${choice.replace(/[^a-zA-Z0-9]/g, '_')}`);
+      if (selectedBtn) {
+        selectedBtn.className = `ren-btn-${challengeId} p-2.5 bg-teal-100 border-2 border-teal-600 rounded-xl text-base font-black text-teal-900 transition text-left shadow-sm`;
+      }
+    }
+
+    function checkAllRenames() {
+      const fb = document.getElementById('feedback-3');
+      fb.classList.remove('hidden');
+
+      if (Object.keys(userRenames).length < renameChallenges.length) {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-amber-100 text-amber-900 border-2 border-amber-300";
+        fb.innerHTML = "⚠️ Επίλεξε ένα νέο όνομα και για τα 3 αρχεία προτού κάνεις έλεγχο!";
+        return;
+      }
+
+      let allCorrect = renameChallenges.every(item => userRenames[item.id] === item.correct);
+
+      if (allCorrect) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = `🎉 <strong>Μπράβο!</strong> Επέλεξες κατατοπιστικά και περιγραφικά ονόματα, διατηρώντας μάλιστα και τη σωστή επέκταση (.odt, .jpg) ώστε να ανοίγουν σωστά!`;
+        rewardStar(3);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `❌ Κάποιες επιλογές δεν είναι οι κατάλληλες. Πρόσεξε να περιγράφουν το περιεχόμενο και να έχουν τη σωστή μορφή.`;
+      }
+    }
+
+    let explorerStep = 1;
+    let explorerSelectedId = null;
+    let explorerClipboard = null;
+
+    let explorerItems = [
+      { id: 'f-milo', name: 'μηλο.jpg', icon: '📷', type: 'file', size: '187 KB' },
+      { id: 'f-parom', name: 'παροιμια.odt', icon: '📝', type: 'file', size: '24 KB' },
+      { id: 'f-audio', name: 'φωνη.wav', icon: '🎤', type: 'file', size: '4.5 MB' }
+    ];
+    let explorerRecycleBin = [];
+
+    function renderExplorerUI() {
+      const grid = document.getElementById('explorer-grid');
+      grid.innerHTML = '';
+
+      explorerItems.forEach(item => {
+        const isSel = explorerSelectedId === item.id;
+        const el = document.createElement('div');
+        el.className = `p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center text-center cursor-pointer transition ${isSel ? 'bg-indigo-100 border-indigo-600 ring-2 ring-indigo-300' : 'bg-slate-50 hover:bg-slate-100 border-slate-200'}`;
+        el.onclick = () => {
+          playSound('click');
+          explorerSelectedId = item.id;
+          renderExplorerUI();
+        };
+
+        el.innerHTML = `
+          <div class="text-4xl mb-1">${item.icon}</div>
+          <div class="font-extrabold text-base text-slate-800 break-all">${item.name}</div>
+          <div class="text-xs font-bold text-slate-400 font-mono">${item.size}</div>
+        `;
+        grid.appendChild(el);
+      });
+
+      // Update Toolbar buttons state
+      const hasSel = explorerSelectedId !== null;
+      document.getElementById('exp-btn-copy').disabled = !hasSel;
+      document.getElementById('exp-btn-del').disabled = !hasSel;
+      document.getElementById('exp-btn-paste').disabled = explorerClipboard === null;
+      document.getElementById('bin-indicator').innerText = explorerRecycleBin.length;
+    }
+
+    function explorerCreateFolder() {
+      playSound('click');
+      if (explorerStep === 1) {
+        explorerItems.unshift({
+          id: 'dir-fruit',
+          name: 'Φρούτο-εργασία',
+          icon: '📁',
+          type: 'folder',
+          size: 'Φάκελος'
+        });
+        explorerStep = 2;
+        playSound('correct');
+        document.getElementById('explorer-mission-desc').innerHTML = `
+          Βήμα 2: Επίλεξε ένα αρχείο (π.χ. «μηλο.jpg»), πάτησε <strong>«📋 Αντιγραφή»</strong> και μετά <strong>«📥 Επικόλληση»</strong> για να δημιουργήσεις αντίγραφο!
+        `;
+        renderExplorerUI();
+      } else {
+        explorerItems.push({
+          id: 'dir-' + Date.now(),
+          name: 'Νέος Φάκελος',
+          icon: '📁',
+          type: 'folder',
+          size: 'Φάκελος'
+        });
+        renderExplorerUI();
+      }
+    }
+
+    function explorerCopy() {
+      if (!explorerSelectedId) return;
+      playSound('click');
+      const item = explorerItems.find(i => i.id === explorerSelectedId);
+      if (item) {
+        explorerClipboard = { ...item };
+        document.getElementById('clipboard-badge').classList.remove('hidden');
+        renderExplorerUI();
+      }
+    }
+
+    function explorerPaste() {
+      if (!explorerClipboard) return;
+      playSound('correct');
+      explorerItems.push({
+        ...explorerClipboard,
+        id: 'copy-' + Date.now(),
+        name: 'Αντίγραφο_' + explorerClipboard.name
+      });
+      explorerClipboard = null;
+      document.getElementById('clipboard-badge').classList.add('hidden');
+
+      if (explorerStep === 2) {
+        explorerStep = 3;
+        document.getElementById('explorer-mission-desc').innerHTML = `
+          Βήμα 3: Τώρα επίλεξε οποιοδήποτε αρχείο και πάτησε <strong>«🗑️ Διαγραφή»</strong> για να σταλεί στον Κάδο!
+        `;
+      }
+      renderExplorerUI();
+    }
+
+    function explorerDelete() {
+      if (!explorerSelectedId) return;
+      playSound('click');
+      const idx = explorerItems.findIndex(i => i.id === explorerSelectedId);
+      if (idx !== -1) {
+        const deleted = explorerItems.splice(idx, 1)[0];
+        explorerRecycleBin.push(deleted);
+        explorerSelectedId = null;
+
+        if (explorerStep === 3) {
+          explorerStep = 4;
+          document.getElementById('explorer-mission-desc').innerHTML = `
+            Βήμα 4: Πάτησε το κουμπί <strong>«♻️ Κάδος»</strong>, βρες το διαγραμμένο αρχείο και κάνε <strong>Επαναφορά</strong>!
+          `;
+        }
+        renderExplorerUI();
+      }
+    }
+
+    function explorerOpenBin() {
+      playSound('click');
+      const modal = document.getElementById('recycle-bin-modal');
+      const list = document.getElementById('bin-modal-items');
+      list.innerHTML = '';
+
+      if (explorerRecycleBin.length === 0) {
+        list.innerHTML = '<div class="text-sm font-bold text-slate-400 text-center py-4">Ο Κάδος Ανακύκλωσης είναι άδειος!</div>';
+      } else {
+        explorerRecycleBin.forEach(item => {
+          const row = document.createElement('div');
+          row.className = "flex items-center justify-between p-2.5 bg-white rounded-xl border border-slate-200";
+          row.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${item.icon}</span>
+              <span class="font-extrabold text-base text-slate-800">${item.name}</span>
+            </div>
+            <button onclick="explorerRestoreItem('${item.id}')" class="px-3 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-extrabold rounded-lg text-sm transition">
+              ↩️ Επαναφορά
+            </button>
+          `;
+          list.appendChild(row);
+        });
+      }
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function explorerCloseBin() {
+      const modal = document.getElementById('recycle-bin-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function explorerRestoreItem(id) {
+      playSound('correct');
+      const idx = explorerRecycleBin.findIndex(i => i.id === id);
+      if (idx !== -1) {
+        const item = explorerRecycleBin.splice(idx, 1)[0];
+        explorerItems.push(item);
+        explorerOpenBin();
+        renderExplorerUI();
+
+        if (explorerStep === 4) {
+          const fb = document.getElementById('feedback-4');
+          fb.classList.remove('hidden');
+          fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+          fb.innerHTML = "🎉 <strong>Συγχαρητήρια!</strong> Ολοκλήρωσες όλα τα βήματα της άσκησης του βιβλίου στον Εξερευνητή!";
+          rewardStar(4);
+        }
+      }
+    }
+
+    const binItems = [
+      {
+        name: "Εργασία_Ιστορίας_Τελικό.odt",
+        desc: "«Κατά λάθος πάτησα Delete στην εργασία της Ιστορίας που έγραφα όλο το απόγευμα!»",
+        icon: "📄",
+        correct: "restore",
+        fbCorrect: "🎉 Σωτήρια Επαναφορά! Το αρχείο γύρισε ακριβώς στον φάκελο απ' όπου διαγράφηκε!",
+        fbWrong: "⚠️ ΠΡΟΣΟΧΗ! Αν αδειάσεις τον κάδο, η εργασία σου θα χαθεί οριστικά!"
+      },
+      {
+        name: "Ios_Malware_Virus.exe",
+        desc: "«Ένα ύποπτο και επικίνδυνο αρχείο που κατέβηκε κατά λάθος από το ίντερνετ.»",
+        icon: "⚠️",
+        correct: "delete",
+        fbCorrect: "🎉 Πολύ σωστά! Τα κακόβουλα αρχεία πρέπει να διαγράφονται οριστικά με άδειασμα του κάδου!",
+        fbWrong: "⚠️ Όχι! Μην επαναφέρεις επικίνδυνα αρχεία πίσω στον υπολογιστή!"
+      },
+      {
+        name: "Fotografia_Apolyseon.jpg",
+        desc: "«Μία μοναδική αναμνηστική φωτογραφία από τη σχολική γιορτή.»",
+        icon: "🖼️",
+        correct: "restore",
+        fbCorrect: "🎉 Μπράβο! Οι φωτογραφίες αναμνήσεων είναι αναντικατάστατες και πρέπει να επαναφέρονται!",
+        fbWrong: "⚠️ Όχι! Αν την διαγράψεις οριστικά, θα χαθεί η ανάμνηση!"
+      },
+      {
+        name: "Keno_Arxeio_Lathos.txt",
+        desc: "«Ένα άδειο αρχείο που δημιούργησες κατά λάθος και δεν περιέχει τίποτα.»",
+        icon: "🗑️",
+        correct: "delete",
+        fbCorrect: "🎉 Σωστά! Τα άδεια και περιττά αρχεία καλό είναι να διαγράφονται οριστικά για να εξοικονομούμε χώρο.",
+        fbWrong: "⚠️ Δεν χρειάζεται να κρατάς άδεια αρχεία χωρίς περιεχόμενο."
+      }
+    ];
+
+    let currentBinIdx = 0;
+
+    function renderBinStep() {
+      const it = binItems[currentBinIdx];
+      document.getElementById('bin-step-num').innerText = currentBinIdx + 1;
+      document.getElementById('bin-item-icon').innerText = it.icon;
+      document.getElementById('bin-item-name').innerText = it.name;
+      document.getElementById('bin-item-desc').innerText = it.desc;
+      document.getElementById('feedback-5').classList.add('hidden');
+    }
+
+    function handleBinDecision(choice) {
+      const it = binItems[currentBinIdx];
+      const fb = document.getElementById('feedback-5');
+      fb.classList.remove('hidden');
+
+      if (choice === it.correct) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = it.fbCorrect;
+
+        setTimeout(() => {
+          if (currentBinIdx < binItems.length - 1) {
+            currentBinIdx++;
+            renderBinStep();
+          } else {
+            fb.innerHTML = "🏆 <strong>Εξαιρετικά!</strong> Έμαθες πότε χρησιμοποιούμε την Επαναφορά και πότε το Άδειασμα του Κάδου!";
+            rewardStar(5);
+          }
+        }, 1500);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = it.fbWrong;
+      }
+    }
+
+    const quizItems = [
+      {
+        id: 'q1',
+        title: "1. Ποια είναι η διαφορά ανάμεσα στην «Αντιγραφή» και την «Αποκοπή»;",
+        options: [
+          { text: "Στην Αντιγραφή το αρχείο παραμένει και στην αρχική θέση, ενώ στην Αποκοπή μετακινείται.", correct: true },
+          { text: "Δεν έχουν καμία διαφορά, είναι απλώς δύο διαφορετικές λέξεις.", correct: false },
+          { text: "Η Αποκοπή διαγράφει το αρχείο για πάντα από τον δίσκο.", correct: false }
+        ]
+      },
+      {
+        id: 'q2',
+        title: "2. Όταν πατάμε «Διαγραφή» σε ένα αρχείο στον υπολογιστή:",
+        options: [
+          { text: "Σβήνεται αυτόματα και οριστικά χωρίς δυνατότητα ανάκτησης.", correct: false },
+          { text: "Μεταφέρεται στον Κάδο Ανακύκλωσης και μπορούμε να το επαναφέρουμε.", correct: true },
+          { text: "Ανεβαίνει μόνο του στο διαδίκτυο.", correct: false }
+        ]
+      },
+      {
+        id: 'q3',
+        title: "3. Τι συμβαίνει όταν κάνουμε «Άδειασμα του Κάδου Ανακύκλωσης»;",
+        options: [
+          { text: "Όλα τα αρχεία του κάδου διαγράφονται οριστικά από τον υπολογιστή.", correct: true },
+          { text: "Τα αρχεία επιστρέφουν όλα αυτόματα στην Επιφάνεια Εργασίας.", correct: false },
+          { text: "Τα αρχεία αποθηκεύονται στη μνήμη RAM.", correct: false }
+        ]
+      },
+      {
+        id: 'q4',
+        title: "4. Γιατί είναι σημαντικό να μετονομάζουμε τα αρχεία με σαφή ονόματα (π.χ. lagos_kai_xelona.odt);",
+        options: [
+          { text: "Για να ξέρουμε αμέσως τι περιέχουν χωρίς να τα ανοίγουμε ένα-ένα.", correct: true },
+          { text: "Γιατί αλλιώς ο υπολογιστής δεν μπορεί να τα αποθηκεύσει.", correct: false },
+          { text: "Για να γίνουν τα αρχεία μικρότερα σε μέγεθος.", correct: false }
+        ]
+      }
+    ];
+
+    let userQuizChoices = {};
+
+    function renderQuiz() {
+      const list = document.getElementById('quiz-list');
+      list.innerHTML = '';
+      quizItems.forEach(q => {
+        const card = document.createElement('div');
+        card.className = "p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl";
+        card.innerHTML = `
+          <h4 class="font-extrabold text-lg sm:text-xl text-slate-900 mb-3">${q.title}</h4>
+          <div class="space-y-2">
+            ${q.options.map((opt, oIdx) => `
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="${q.id}" value="${oIdx}" onchange="selectQuizOption('${q.id}', ${oIdx})" class="w-5 h-5 text-purple-600">
+                <span>${opt.text}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function selectQuizOption(qId, oIdx) {
+      playSound('click');
+      userQuizChoices[qId] = oIdx;
+      document.getElementById('feedback-6').classList.add('hidden');
+    }
+
+    function submitQuiz() {
+      const fb = document.getElementById('feedback-6');
+      fb.classList.remove('hidden');
+
+      if (Object.keys(userQuizChoices).length < quizItems.length) {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-amber-100 text-amber-900 border-2 border-amber-300";
+        fb.innerHTML = "⚠️ Παρακαλώ απάντησε και στις 4 ερωτήσεις!";
+        return;
+      }
+
+      let correctCount = 0;
+      quizItems.forEach(q => {
+        const choice = userQuizChoices[q.id];
+        if (q.options[choice].correct) correctCount++;
+      });
+
+      if (correctCount === quizItems.length) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = "🎉 <strong>Άριστα 4 στα 4!</strong> Είσαι πραγματικός ειδικός στη διαχείριση αρχείων και φακέλων!";
+        rewardStar(6);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `⚠️ Έχεις ${correctCount} στις 4 σωστές. Ξαναδιάβασε τις ερωτήσεις και δοκίμασε ξανά!`;
+      }
+    }
+
+    function downloadSelfHtml() {
+      playSound('click');
+      const htmlMarkup = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlMarkup], { type: 'text/html;charset=utf-8' });
+      const dlUrl = URL.createObjectURL(blob);
+      const tempLink = document.createElement('a');
+      tempLink.href = dlUrl;
+      tempLink.download = 'Mathima17_Diaxeirisi_Arxeion.html';
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(dlUrl);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      resetStepsOrder();
+      renderScenario();
+      renderRenameChallenges();
+      renderExplorerUI();
+      renderBinStep();
+      renderQuiz();
+    });
+  </script>
+
+</body></html>
