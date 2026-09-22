@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Μάθημα 17ο – Μεγέθη και διαχείριση αρχείων</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1e2547;
+    --navy-2:#2a3466;
+    --cream:#fffaf1;
+    --card:#ffffff;
+    --coral:#ff6b4a;
+    --coral-dark:#e25336;
+    --teal:#20b8a6;
+    --teal-dark:#149686;
+    --purple:#8c6bff;
+    --yellow:#ffc145;
+    --ink:#1e2547;
+    --muted:#6a70a0;
+    --good:#1fa876;
+    --bad:#e0533f;
+    --good-bg:#e4f8f0;
+    --bad-bg:#fdeceb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 10% 0%, #2f3877 0%, transparent 45%),
+      radial-gradient(circle at 90% 100%, #17245a 0%, transparent 40%),
+      var(--navy);
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  h1,h2,h3, .tab-btn, .brand-eyebrow{font-family:'Baloo 2', sans-serif;}
+  .wrap{max-width:780px; margin:0 auto;}
+
+  .top{text-align:center; color:#fff; margin-bottom:22px;}
+  .brand-eyebrow{
+    display:inline-block; background:var(--yellow); color:var(--navy);
+    font-weight:700; font-size:0.82rem; padding:5px 14px; border-radius:100px;
+    margin-bottom:10px; transform:rotate(-2deg);
+  }
+  .top h1{font-size:1.55rem; margin:0 0 6px; line-height:1.28;}
+  .top p{margin:0; color:#c7ceef; font-size:0.98rem;}
+
+  .tabs{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+    background:rgba(255,255,255,0.08);
+    padding:10px;
+    border-radius:20px;
+    margin:22px 0 20px;
+  }
+  .tab-btn{
+    border:none; background:transparent; color:#c7ceef;
+    font-size:1.05rem; font-weight:700; padding:14px 8px;
+    border-radius:14px; cursor:pointer; transition:background .2s, color .2s;
+    line-height:1.3;
+  }
+  .tab-btn.active{background:var(--cream); color:var(--navy);}
+  .tab-btn:focus-visible{outline:3px solid var(--yellow); outline-offset:2px;}
+
+  .panel{
+    display:none; background:var(--card); border-radius:24px;
+    padding:26px 22px 28px; box-shadow:0 20px 45px rgba(8,12,38,0.35);
+  }
+  .panel.active{display:block;}
+  .panel h2{margin:0 0 4px; font-size:1.45rem; color:var(--navy);}
+  .panel .sub{margin:0 0 20px; color:var(--muted); font-size:0.92rem; line-height:1.45;}
+
+  .btn{
+    border:none; font-family:'Baloo 2', sans-serif; font-weight:700; font-size:0.9rem;
+    padding:11px 22px; border-radius:100px; cursor:pointer; color:#fff;
+    background:var(--coral); box-shadow:0 4px 0 var(--coral-dark); transition:transform .1s;
+  }
+  .btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--coral-dark);}
+  .btn.secondary{background:var(--teal); box-shadow:0 4px 0 var(--teal-dark);}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+
+  .status-row{display:flex; align-items:center; justify-content:space-between; margin-top:16px; flex-wrap:wrap; gap:10px;}
+  .score-pill{background:#f0f1ff; color:var(--navy-2); font-weight:700; font-size:0.85rem; padding:8px 14px; border-radius:100px;}
+  .hint{font-size:0.85rem; color:var(--muted); min-height:20px;}
+  .hint.bad{color:var(--bad); font-weight:700;}
+  .hint.good{color:var(--good); font-weight:700;}
+
+  .celebrate{
+    display:none; margin-top:16px; background:linear-gradient(135deg,#fff7e0,#ffeccf);
+    border:2px solid var(--yellow); border-radius:14px; padding:14px 16px;
+    font-weight:700; color:#8a5a00; text-align:center;
+  }
+
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    75%{transform:translateX(5px);}
+  }
+
+  /* ---- sorting zones (act 1 & 5) ---- */
+  .zones{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+  .zone{
+    border:2.5px dashed #d7dbf5; border-radius:16px; padding:12px 10px 40px;
+    min-height:150px; position:relative; background:#f7f8ff; transition:border-color .2s;
+  }
+  .zone-icon{display:block; text-align:center; font-size:1.5rem; margin-bottom:2px;}
+  .zone-label{font-weight:700; font-size:0.86rem; color:var(--navy-2); display:block; margin-bottom:8px; text-align:center;}
+  .zone-items{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;}
+  .pool{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:14px 10px; background:#f7f8ff; border-radius:16px; min-height:56px;}
+  .chip{
+    border:2px solid #e2e2f7; background:linear-gradient(180deg,#fff, #f3f1ff);
+    padding:9px 14px; border-radius:100px; font-family:'Nunito',sans-serif; font-weight:700;
+    font-size:0.82rem; color:var(--navy); cursor:pointer; box-shadow:0 3px 0 #dcdcf2; transition:transform .12s;
+    text-align:center;
+  }
+  .chip:hover{transform:translateY(-1px);}
+  .chip.selected{background:var(--yellow); border-color:#e6ab1f; box-shadow:0 3px 0 #e6ab1f;}
+  .chip.placed-good{background:var(--good-bg); border-color:var(--good); color:var(--good); cursor:default; box-shadow:none;}
+  .chip.shake{animation:shake .35s;}
+
+  /* ---- matching (act 2) ---- */
+  .match-grid{display:grid; grid-template-columns:1fr 1.2fr; gap:16px;}
+  .match-col-title{font-size:0.76rem; font-weight:700; color:var(--muted); margin-bottom:8px; text-align:center;}
+  .match-item{
+    width:100%; display:block; text-align:left; border:2.5px solid #e2e2f7; background:#fff;
+    border-radius:12px; padding:11px 12px; margin-bottom:9px; font-family:'Nunito', sans-serif;
+    font-size:0.82rem; font-weight:700; color:var(--navy); cursor:pointer; line-height:1.32;
+  }
+  .match-item.term{font-family:'Baloo 2', sans-serif; font-size:0.92rem; text-align:center;}
+  .match-item.selected{border-color:var(--yellow); background:#fffaea;}
+  .match-item.matched{border-color:var(--good); background:var(--good-bg); color:var(--good); cursor:default;}
+  .match-item.wrong{animation:shake .35s; border-color:var(--bad);}
+  .match-item:disabled{cursor:default;}
+
+  /* ---- quiz true/false (act 3) ---- */
+  .q-progress{display:flex; gap:5px; margin-bottom:16px;}
+  .q-dot{flex:1; height:6px; border-radius:4px; background:#eceefc;}
+  .q-dot.done-good{background:var(--good);}
+  .q-dot.done-bad{background:var(--bad);}
+  .q-dot.current{background:var(--yellow);}
+  .q-card{background:#f7f8ff; border-radius:16px; padding:20px 18px;}
+  .q-text{font-size:1.0rem; font-weight:700; color:var(--navy); margin:0 0 16px; line-height:1.45;}
+  .q-options{display:flex; gap:12px;}
+  .opt-btn{
+    flex:1; padding:14px 8px; border-radius:14px; border:2.5px solid #e2e2f7; background:#fff;
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:1rem; cursor:pointer; color:var(--navy);
+  }
+  .opt-btn.true-opt:hover{border-color:var(--good);}
+  .opt-btn.false-opt:hover{border-color:var(--bad);}
+  .opt-btn.chosen-good{background:var(--good-bg); border-color:var(--good); color:var(--good);}
+  .opt-btn.chosen-bad{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px; padding:12px 14px; border-radius:12px; font-size:0.88rem; line-height:1.5; display:none;}
+  .feedback.good{display:block; background:var(--good-bg); color:#146b4f;}
+  .feedback.bad{display:block; background:var(--bad-bg); color:#a13a2a;}
+  .feedback b{display:block; margin-bottom:2px; font-family:'Baloo 2', sans-serif;}
+  .q-nav{display:flex; justify-content:flex-end; margin-top:16px;}
+  .quiz-result{display:none; text-align:center; padding:26px 10px;}
+  .quiz-result .big-score{font-family:'Baloo 2', sans-serif; font-size:2.4rem; color:var(--coral); margin:6px 0;}
+
+  /* ---- ordering (act 4 & 6) ---- */
+  .order-slots{display:flex; flex-direction:column; gap:8px; margin-bottom:16px; min-height:60px;}
+  .order-slot{
+    display:flex; align-items:center; gap:10px; border:2px dashed #d7dbf5; border-radius:12px;
+    padding:10px 12px; min-height:44px; background:#f7f8ff; font-size:0.85rem; font-weight:700; color:var(--navy-2);
+  }
+  .order-slot.filled{border-style:solid; border-color:var(--good); background:var(--good-bg); color:var(--good);}
+  .order-badge{
+    flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--purple); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:800;
+  }
+  .order-slot.filled .order-badge{background:var(--good);}
+  .order-pool{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:14px 10px; background:#f7f8ff; border-radius:16px;}
+  .order-chip{
+    border:2px solid #e2e2f7; background:#fff; padding:10px 14px; border-radius:12px;
+    font-family:'Nunito',sans-serif; font-weight:700; font-size:0.82rem; color:var(--navy); cursor:pointer;
+    box-shadow:0 3px 0 #dcdcf2; max-width:100%; text-align:left;
+  }
+  .order-chip.shake{animation:shake .35s;}
+
+  footer{text-align:center; color:#8489b8; font-size:0.78rem; margin-top:26px;}
+
+  @media (max-width:480px){
+    .zones{grid-template-columns:1fr;}
+    .match-grid{grid-template-columns:1fr;}
+    .q-options{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <span class="brand-eyebrow">Πληροφορική Δ' Δημοτικού</span>
+    <h1>Μάθημα 17ο: Μεγέθη και διαχείριση αρχείων</h1>
+    <p>Έξι παιχνίδια για τα είδη αρχείων και τη διαχείρισή τους</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">1. KB ή MB;</button>
+    <button class="tab-btn" data-tab="t2">2. Ταίριασμα τύπων</button>
+    <button class="tab-btn" data-tab="t3">3. Σωστό/Λάθος</button>
+    <button class="tab-btn" data-tab="t4">4. Βήματα αντιγραφής</button>
+    <button class="tab-btn" data-tab="t5">5. Αντιγραφή/Μετακίνηση</button>
+    <button class="tab-btn" data-tab="t6">6. Σειρά μεγέθους</button>
+  </div>
+
+  <!-- ACTIVITY 1: SORTING KB/MB -->
+  <section class="panel active" id="t1">
+    <h2>Μικρό (KB) ή Μεγάλο (MB) μέγεθος;</h2>
+    <p class="sub">Πάτησε έναν τύπο αρχείου και μετά το κουτί που ταιριάζει στο μέγεθός του.</p>
+    <div class="zones">
+      <div class="zone" data-zone="kb">
+        <span class="zone-icon">🐜</span>
+        <span class="zone-label">Μικρό μέγεθος (KB)</span>
+        <div class="zone-items" id="a1_kbItems"></div>
+      </div>
+      <div class="zone" data-zone="mb">
+        <span class="zone-icon">🐘</span>
+        <span class="zone-label">Μεγάλο μέγεθος (MB)</span>
+        <div class="zone-items" id="a1_mbItems"></div>
+      </div>
+    </div>
+    <div class="pool" id="a1_pool"></div>
+    <div class="status-row">
+      <span class="score-pill" id="a1_score">0 / 7 σωστά</span>
+      <span class="hint" id="a1_hint">Διάλεξε έναν τύπο αρχείου.</span>
+    </div>
+    <div class="celebrate" id="a1_celebrate">🎉 Μπράβο! Ταξινόμησες όλους τους τύπους αρχείων!</div>
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="a1_reset">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 2: MATCHING -->
+  <section class="panel" id="t2">
+    <h2>Ταίριασε τον τύπο αρχείου με τη χρήση του</h2>
+    <p class="sub">Πάτησε έναν τύπο αρχείου αριστερά και μετά τη σωστή περιγραφή δεξιά.</p>
+    <div class="match-grid">
+      <div>
+        <div class="match-col-title">Τύπος αρχείου</div>
+        <div id="a2_terms"></div>
+      </div>
+      <div>
+        <div class="match-col-title">Χρήση / περιγραφή</div>
+        <div id="a2_defs"></div>
+      </div>
+    </div>
+    <div class="status-row">
+      <span class="score-pill" id="a2_score">0 / 6 ζευγάρια</span>
+      <span class="hint" id="a2_hint"></span>
+    </div>
+    <div class="celebrate" id="a2_celebrate">🎉 Τέλεια! Ταίριαξες όλους τους τύπους αρχείων!</div>
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="a2_reset">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 3: TRUE/FALSE -->
+  <section class="panel" id="t3">
+    <h2>Σωστό ή Λάθος;</h2>
+    <p class="sub">Διάβασε την πρόταση για αρχεία και τον κάδο ανακύκλωσης και επίλεξε.</p>
+    <div class="q-progress" id="a3_progress"></div>
+    <div class="q-card" id="a3_quizArea">
+      <p class="q-text" id="a3_text"></p>
+      <div class="q-options">
+        <button class="opt-btn true-opt" id="a3_true">✅ Σωστό</button>
+        <button class="opt-btn false-opt" id="a3_false">❌ Λάθος</button>
+      </div>
+      <div class="feedback" id="a3_feedback"></div>
+      <div class="q-nav"><button class="btn" id="a3_next" disabled>Επόμενη ερώτηση</button></div>
+    </div>
+    <div class="quiz-result" id="a3_result">
+      <div>Ολοκλήρωσες το κουίζ!</div>
+      <div class="big-score" id="a3_finalScore"></div>
+      <button class="btn secondary" id="a3_restart">Παίξε ξανά</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 4: ORDERING STEPS -->
+  <section class="panel" id="t4">
+    <h2>Βάλε σε σωστή σειρά: Αντιγραφή αρχείου</h2>
+    <p class="sub">Πάτησε τα βήματα με τη σειρά που πρέπει να γίνουν για να αντιγράψουμε ένα αρχείο.</p>
+    <div class="order-slots" id="a4_slots"></div>
+    <div class="order-pool" id="a4_pool"></div>
+    <div class="status-row">
+      <span class="score-pill" id="a4_score">0 / 4 βήματα</span>
+      <span class="hint" id="a4_hint">Ξεκίνα με το πρώτο βήμα.</span>
+    </div>
+    <div class="celebrate" id="a4_celebrate">🎉 Μπράβο! Έβαλες όλα τα βήματα στη σωστή σειρά!</div>
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="a4_reset">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 5: SORTING COPY/MOVE -->
+  <section class="panel" id="t5">
+    <h2>Αντιγραφή ή Μετακίνηση;</h2>
+    <p class="sub">Πάτησε μια πρόταση και μετά το κουτί που ταιριάζει: Αντιγραφή ή Μετακίνηση.</p>
+    <div class="zones">
+      <div class="zone" data-zone="copy">
+        <span class="zone-icon">📋</span>
+        <span class="zone-label">Αντιγραφή</span>
+        <div class="zone-items" id="a5_copyItems"></div>
+      </div>
+      <div class="zone" data-zone="move">
+        <span class="zone-icon">✂️</span>
+        <span class="zone-label">Μετακίνηση</span>
+        <div class="zone-items" id="a5_moveItems"></div>
+      </div>
+    </div>
+    <div class="pool" id="a5_pool"></div>
+    <div class="status-row">
+      <span class="score-pill" id="a5_score">0 / 6 σωστά</span>
+      <span class="hint" id="a5_hint">Διάλεξε μια πρόταση.</span>
+    </div>
+    <div class="celebrate" id="a5_celebrate">🎉 Μπράβο! Τα ταξινόμησες όλα σωστά!</div>
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="a5_reset">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 6: ORDERING BY SIZE -->
+  <section class="panel" id="t6">
+    <h2>Από το μικρότερο στο μεγαλύτερο μέγεθος</h2>
+    <p class="sub">Πάτησε τους τύπους αρχείων με τη σειρά, από τον μικρότερο προς τον μεγαλύτερο σε μέγεθος.</p>
+    <div class="order-slots" id="a6_slots"></div>
+    <div class="order-pool" id="a6_pool"></div>
+    <div class="status-row">
+      <span class="score-pill" id="a6_score">0 / 7 στη σειρά</span>
+      <span class="hint" id="a6_hint">Ξεκίνα με τον πιο μικρό τύπο αρχείου.</span>
+    </div>
+    <div class="celebrate" id="a6_celebrate">🎉 Τέλεια! Τα έβαλες όλα στη σωστή σειρά μεγέθους!</div>
+    <div style="margin-top:16px; text-align:center;">
+      <button class="btn secondary" id="a6_reset">Ξανά από την αρχή</button>
+    </div>
+  </section>
+
+  <footer>Πληροφορική Δ' Δημοτικού · Μάθημα 17ο</footer>
+</div>
+
+<script>
+/* ---------------- TABS ---------------- */
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* ================= ACTIVITY 1: SORTING KB/MB ================= */
+(function(){
+  const items = [
+    {id:'i1', label:'📄 ODT (κείμενο) – 40 KB', zone:'kb'},
+    {id:'i2', label:'🎞️ GIF (κινούμενη εικόνα) – 200 KB', zone:'kb'},
+    {id:'i3', label:'🎵 MP3 (ήχος) – 2 MB', zone:'mb'},
+    {id:'i4', label:'📷 JPEG (φωτογραφία) – 5 MB', zone:'mb'},
+    {id:'i5', label:'🔊 WAV (ήχος) – 10 MB', zone:'mb'},
+    {id:'i6', label:'🖼️ PNG (εικόνα) – 20 MB', zone:'mb'},
+    {id:'i7', label:'🎬 MP4 (βίντεο) – 30 MB', zone:'mb'},
+  ];
+  let selected = null, placed = 0;
+
+  function renderPool(){
+    const pool = document.getElementById('a1_pool');
+    pool.innerHTML = '';
+    items.filter(d=>!d.done).forEach(d=>{
+      const b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = d.label;
+      b.dataset.id = d.id;
+      if(selected === d.id) b.classList.add('selected');
+      b.addEventListener('click', ()=>{
+        selected = (selected===d.id) ? null : d.id;
+        renderPool();
+        const h = document.getElementById('a1_hint');
+        h.textContent = selected ? 'Τώρα πάτησε το κουτί που ταιριάζει.' : 'Διάλεξε έναν τύπο αρχείου.';
+        h.className = 'hint';
+      });
+      pool.appendChild(b);
+    });
+  }
+  function tryPlace(zoneName){
+    if(!selected) return;
+    const d = items.find(x=>x.id===selected);
+    const hint = document.getElementById('a1_hint');
+    if(d.zone === zoneName){
+      d.done = true; placed++;
+      const targetId = zoneName==='kb' ? 'a1_kbItems' : 'a1_mbItems';
+      const chip = document.createElement('span');
+      chip.className = 'chip placed-good';
+      chip.textContent = d.label;
+      document.getElementById(targetId).appendChild(chip);
+      hint.textContent = 'Σωστά!';
+      hint.className = 'hint good';
+      selected = null;
+      renderPool();
+      document.getElementById('a1_score').textContent = placed + ' / 7 σωστά';
+      if(placed === items.length) document.getElementById('a1_celebrate').style.display = 'block';
+    } else {
+      hint.textContent = 'Δοκίμασε ξανά — δεν ταιριάζει εκεί.';
+      hint.className = 'hint bad';
+      const chipEl = [...document.querySelectorAll('#a1_pool .chip')].find(c=>c.dataset.id===selected);
+      if(chipEl){ chipEl.classList.add('shake'); setTimeout(()=>chipEl.classList.remove('shake'), 350); }
+    }
+  }
+  document.querySelectorAll('#t1 .zone').forEach(z=>{
+    z.addEventListener('click', ()=> tryPlace(z.dataset.zone));
+  });
+  document.getElementById('a1_reset').addEventListener('click', ()=>{
+    items.forEach(d=>delete d.done);
+    selected = null; placed = 0;
+    document.getElementById('a1_kbItems').innerHTML = '';
+    document.getElementById('a1_mbItems').innerHTML = '';
+    document.getElementById('a1_score').textContent = '0 / 7 σωστά';
+    document.getElementById('a1_hint').textContent = 'Διάλεξε έναν τύπο αρχείου.';
+    document.getElementById('a1_hint').className = 'hint';
+    document.getElementById('a1_celebrate').style.display = 'none';
+    renderPool();
+  });
+  renderPool();
+})();
+
+/* ================= ACTIVITY 2: MATCHING ================= */
+(function(){
+  const pairs = [
+    {id:'p1', term:'📷 JPEG', def:'Η πιο συνηθισμένη μορφή για φωτογραφίες, με σχετικά μικρό μέγεθος.'},
+    {id:'p2', term:'🖼️ PNG', def:'Ταιριάζει σε καλλιτεχνικές εικόνες που θέλουμε να μεγεθύνουμε, έχει μεγαλύτερο μέγεθος.'},
+    {id:'p3', term:'🎞️ GIF', def:'Δείχνει διαδοχικά σκίτσα σαν κινούμενη εικόνα, με το μικρότερο μέγεθος από τις εικόνες.'},
+    {id:'p4', term:'🎬 MP4', def:'Η πιο συνηθισμένη μορφή αρχείου βίντεο, με το μεγαλύτερο μέγεθος από όλα.'},
+    {id:'p5', term:'🎵 MP3', def:'Συνηθισμένη μορφή αρχείου ήχου, με μικρότερο μέγεθος από το WAV.'},
+    {id:'p6', term:'📄 ODT', def:'Μορφή αρχείου κειμένου, με πολύ μικρό μέγεθος εκτός αν έχει εικόνες.'},
+  ];
+  let selTerm = null, selDef = null, matched = 0;
+  let shuffledDefs = shuffle(pairs);
+
+  function render(){
+    const termsEl = document.getElementById('a2_terms');
+    const defsEl = document.getElementById('a2_defs');
+    termsEl.innerHTML = ''; defsEl.innerHTML = '';
+    pairs.forEach(p=>{
+      const b = document.createElement('button');
+      b.className = 'match-item term';
+      b.textContent = p.term;
+      b.dataset.id = p.id;
+      if(p.matched){ b.classList.add('matched'); b.disabled = true; }
+      if(selTerm === p.id) b.classList.add('selected');
+      b.addEventListener('click', ()=>{
+        if(p.matched) return;
+        selTerm = (selTerm===p.id) ? null : p.id;
+        render(); check();
+      });
+      termsEl.appendChild(b);
+    });
+    shuffledDefs.forEach(p=>{
+      const b = document.createElement('button');
+      b.className = 'match-item';
+      b.textContent = p.def;
+      b.dataset.id = p.id;
+      if(p.matched){ b.classList.add('matched'); b.disabled = true; }
+      if(selDef === p.id) b.classList.add('selected');
+      b.addEventListener('click', ()=>{
+        if(p.matched) return;
+        selDef = (selDef===p.id) ? null : p.id;
+        render(); check();
+      });
+      defsEl.appendChild(b);
+    });
+  }
+  function check(){
+    const hint = document.getElementById('a2_hint');
+    if(selTerm && selDef){
+      if(selTerm === selDef){
+        const p = pairs.find(x=>x.id===selTerm);
+        p.matched = true; matched++;
+        hint.textContent = 'Ζευγάρι σωστό!'; hint.className = 'hint good';
+        selTerm = null; selDef = null;
+        document.getElementById('a2_score').textContent = matched + ' / 6 ζευγάρια';
+        if(matched === pairs.length) document.getElementById('a2_celebrate').style.display = 'block';
+        render();
+      } else {
+        hint.textContent = 'Δεν ταιριάζουν, δοκίμασε ξανά.'; hint.className = 'hint bad';
+        document.querySelectorAll('.match-item.selected').forEach(el=>el.classList.add('wrong'));
+        selTerm = null; selDef = null;
+        setTimeout(render, 450);
+      }
+    }
+  }
+  document.getElementById('a2_reset').addEventListener('click', ()=>{
+    pairs.forEach(p=>delete p.matched);
+    shuffledDefs = shuffle(pairs);
+    selTerm = null; selDef = null; matched = 0;
+    document.getElementById('a2_score').textContent = '0 / 6 ζευγάρια';
+    document.getElementById('a2_hint').textContent = '';
+    document.getElementById('a2_celebrate').style.display = 'none';
+    render();
+  });
+  render();
+})();
+
+/* ================= ACTIVITY 3: TRUE/FALSE ================= */
+(function(){
+  const quiz = [
+    {text:'Ένα αρχείο PNG έχει συνήθως μεγαλύτερο μέγεθος από ένα αρχείο JPEG.', answer:true,
+     good:'Σωστά! Το PNG ταιριάζει σε καλλιτεχνικές εικόνες και έχει μεγαλύτερο μέγεθος από το JPEG.',
+     bad:'Στην πραγματικότητα το PNG έχει μεγαλύτερο μέγεθος από το JPEG.'},
+    {text:'Το αρχείο GIF έχει την καλύτερη ποιότητα εικόνας από όλες τις μορφές εικόνας.', answer:false,
+     good:'Σωστά! Το GIF έχει το μικρότερο μέγεθος αλλά όχι την καλύτερη ποιότητα.',
+     bad:'Στην πραγματικότητα το GIF δεν έχει καλή ποιότητα, γι\' αυτό και έχει το μικρότερο μέγεθος.'},
+    {text:'Όταν αντιγράφουμε ένα αρχείο, το αρχικό αρχείο διαγράφεται από τον αρχικό φάκελο.', answer:false,
+     good:'Σωστά! Στην αντιγραφή το αρχικό αρχείο παραμένει εκεί που ήταν.',
+     bad:'Στην αντιγραφή το αρχικό αρχείο παραμένει εκεί που ήταν — αυτό γίνεται μόνο στη μετακίνηση.'},
+    {text:'Όταν διαγράφουμε ένα αρχείο, αυτό πηγαίνει στον Κάδο ανακύκλωσης και δεν χάνεται αμέσως.', answer:true,
+     good:'Σωστά! Το αρχείο μετακινείται στον Κάδο ανακύκλωσης, από όπου μπορούμε να το επαναφέρουμε.',
+     bad:'Στην πραγματικότητα το αρχείο πηγαίνει πρώτα στον Κάδο ανακύκλωσης.'},
+    {text:'Αν αδειάσουμε τον Κάδο ανακύκλωσης, τα αρχεία διαγράφονται οριστικά.', answer:true,
+     good:'Σωστά! Το άδειασμα του κάδου διαγράφει οριστικά ό,τι υπάρχει μέσα.',
+     bad:'Στην πραγματικότητα το άδειασμα του κάδου διαγράφει οριστικά τα αρχεία.'},
+    {text:'Με τον Εξερευνητή αρχείων δεν μπορούμε να δούμε το μέγεθος των αρχείων.', answer:false,
+     good:'Σωστά! Μπορούμε να δούμε τα μεγέθη με την επιλογή «Προβολή λίστας».',
+     bad:'Στην πραγματικότητα μπορούμε να δούμε τα μεγέθη με την επιλογή «Προβολή λίστας».'}
+  ];
+  let idx = 0, score = 0, answered = false;
+
+  function renderProgress(){
+    const el = document.getElementById('a3_progress');
+    el.innerHTML = '';
+    quiz.forEach((q,i)=>{
+      const dot = document.createElement('div');
+      dot.className = 'q-dot';
+      if(q.result === true) dot.classList.add('done-good');
+      else if(q.result === false) dot.classList.add('done-bad');
+      else if(i === idx) dot.classList.add('current');
+      el.appendChild(dot);
+    });
+  }
+  function load(){
+    answered = false;
+    const q = quiz[idx];
+    document.getElementById('a3_text').textContent = q.text;
+    document.getElementById('a3_feedback').className = 'feedback';
+    document.getElementById('a3_feedback').innerHTML = '';
+    document.getElementById('a3_next').disabled = true;
+    document.getElementById('a3_next').textContent = (idx === quiz.length-1) ? 'Δες το αποτέλεσμα' : 'Επόμενη ερώτηση';
+    const bt = document.getElementById('a3_true'), bf = document.getElementById('a3_false');
+    bt.disabled = false; bf.disabled = false;
+    bt.className = 'opt-btn true-opt'; bf.className = 'opt-btn false-opt';
+    renderProgress();
+  }
+  function answer(choice){
+    if(answered) return;
+    answered = true;
+    const q = quiz[idx];
+    const correct = (choice === q.answer);
+    q.result = correct;
+    if(correct) score++;
+    const bt = document.getElementById('a3_true'), bf = document.getElementById('a3_false');
+    bt.disabled = true; bf.disabled = true;
+    const chosenBtn = choice ? bt : bf;
+    const rightBtn = q.answer ? bt : bf;
+    chosenBtn.classList.add(correct ? 'chosen-good' : 'chosen-bad');
+    if(!correct) rightBtn.classList.add('chosen-good');
+    const fb = document.getElementById('a3_feedback');
+    fb.className = 'feedback ' + (correct ? 'good' : 'bad');
+    fb.innerHTML = '<b>' + (correct ? 'Μπράβο!' : 'Όχι ακριβώς.') + '</b>' + (correct ? q.good : q.bad);
+    document.getElementById('a3_next').disabled = false;
+    renderProgress();
+  }
+  document.getElementById('a3_true').addEventListener('click', ()=>answer(true));
+  document.getElementById('a3_false').addEventListener('click', ()=>answer(false));
+  document.getElementById('a3_next').addEventListener('click', ()=>{
+    if(idx < quiz.length-1){ idx++; load(); }
+    else{
+      document.getElementById('a3_quizArea').style.display = 'none';
+      document.getElementById('a3_result').style.display = 'block';
+      document.getElementById('a3_finalScore').textContent = score + ' / ' + quiz.length;
+    }
+  });
+  document.getElementById('a3_restart').addEventListener('click', ()=>{
+    idx = 0; score = 0;
+    quiz.forEach(q=>delete q.result);
+    document.getElementById('a3_quizArea').style.display = 'block';
+    document.getElementById('a3_result').style.display = 'none';
+    load();
+  });
+  load();
+})();
+
+/* ---- reusable ordering activity engine ---- */
+function runOrderingActivity(cfg){
+  const correctOrder = cfg.items;
+  let pool = shuffle(correctOrder.map((label,i)=>({label, correctIndex:i})));
+  let nextPos = 0;
+
+  function renderSlots(){
+    const slotsEl = document.getElementById(cfg.slotsId);
+    slotsEl.innerHTML = '';
+    correctOrder.forEach((label,i)=>{
+      const slot = document.createElement('div');
+      slot.className = 'order-slot';
+      const badge = document.createElement('span');
+      badge.className = 'order-badge';
+      badge.textContent = (i+1);
+      slot.appendChild(badge);
+      if(i < nextPos){
+        slot.classList.add('filled');
+        const txt = document.createElement('span');
+        txt.textContent = correctOrder[i];
+        slot.appendChild(txt);
+      }
+      slotsEl.appendChild(slot);
+    });
+  }
+  function renderPool(){
+    const poolEl = document.getElementById(cfg.poolId);
+    poolEl.innerHTML = '';
+    pool.forEach(item=>{
+      const b = document.createElement('button');
+      b.className = 'order-chip';
+      b.textContent = item.label;
+      b.addEventListener('click', ()=>attempt(item, b));
+      poolEl.appendChild(b);
+    });
+  }
+  function attempt(item, btnEl){
+    const hint = document.getElementById(cfg.hintId);
+    if(item.correctIndex === nextPos){
+      nextPos++;
+      pool = pool.filter(p=>p!==item);
+      hint.textContent = 'Σωστά!'; hint.className = 'hint good';
+      document.getElementById(cfg.scoreId).textContent = nextPos + cfg.scoreSuffix;
+      renderSlots(); renderPool();
+      if(nextPos === correctOrder.length){
+        document.getElementById(cfg.celebrateId).style.display = 'block';
+      }
+    } else {
+      hint.textContent = 'Δεν είναι αυτό το επόμενο — δοκίμασε ξανά.'; hint.className = 'hint bad';
+      btnEl.classList.add('shake');
+      setTimeout(()=>btnEl.classList.remove('shake'), 350);
+    }
+  }
+  document.getElementById(cfg.resetId).addEventListener('click', ()=>{
+    pool = shuffle(correctOrder.map((label,i)=>({label, correctIndex:i})));
+    nextPos = 0;
+    document.getElementById(cfg.scoreId).textContent = '0' + cfg.scoreSuffix;
+    document.getElementById(cfg.hintId).textContent = cfg.startHint;
+    document.getElementById(cfg.hintId).className = 'hint';
+    document.getElementById(cfg.celebrateId).style.display = 'none';
+    renderSlots(); renderPool();
+  });
+  renderSlots(); renderPool();
+}
+
+/* ================= ACTIVITY 4: ORDERING STEPS ================= */
+runOrderingActivity({
+  prefix:'a4',
+  items: [
+    'Επιλέγω το αρχείο ή τον φάκελο που θέλω να αντιγράψω.',
+    'Κάνω δεξί κλικ και επιλέγω «Αντιγραφή».',
+    'Πηγαίνω στον φάκελο όπου θέλω να τοποθετήσω το αντίγραφο.',
+    'Κάνω δεξί κλικ και επιλέγω «Επικόλληση».'
+  ],
+  slotsId:'a4_slots', poolId:'a4_pool', scoreId:'a4_score', hintId:'a4_hint',
+  celebrateId:'a4_celebrate', resetId:'a4_reset',
+  scoreSuffix:' / 4 βήματα', startHint:'Ξεκίνα με το πρώτο βήμα.',
+  celebrateMsg:'🎉 Μπράβο! Έβαλες όλα τα βήματα στη σωστή σειρά!'
+});
+
+/* ================= ACTIVITY 5: SORTING COPY/MOVE ================= */
+(function(){
+  const items = [
+    {id:'m1', label:'Το αρχείο παραμένει και στον αρχικό φάκελο.', zone:'copy'},
+    {id:'m2', label:'Στο δεύτερο βήμα επιλέγω «Αντιγραφή».', zone:'copy'},
+    {id:'m3', label:'Στο τέλος υπάρχουν δύο ίδια αρχεία σε δύο φακέλους.', zone:'copy'},
+    {id:'m4', label:'Το αρχείο φεύγει εντελώς από τον αρχικό φάκελο.', zone:'move'},
+    {id:'m5', label:'Στο δεύτερο βήμα επιλέγω «Αποκοπή».', zone:'move'},
+    {id:'m6', label:'Στο τέλος το αρχείο υπάρχει μόνο στον νέο φάκελο.', zone:'move'},
+  ];
+  let selected = null, placed = 0;
+  function renderPool(){
+    const pool = document.getElementById('a5_pool');
+    pool.innerHTML = '';
+    items.filter(d=>!d.done).forEach(d=>{
+      const b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = d.label;
+      b.dataset.id = d.id;
+      if(selected === d.id) b.classList.add('selected');
+      b.addEventListener('click', ()=>{
+        selected = (selected===d.id) ? null : d.id;
+        renderPool();
+        const h = document.getElementById('a5_hint');
+        h.textContent = selected ? 'Τώρα πάτησε το κουτί που ταιριάζει.' : 'Διάλεξε μια πρόταση.';
+        h.className = 'hint';
+      });
+      pool.appendChild(b);
+    });
+  }
+  function tryPlace(zoneName){
+    if(!selected) return;
+    const d = items.find(x=>x.id===selected);
+    const hint = document.getElementById('a5_hint');
+    if(d.zone === zoneName){
+      d.done = true; placed++;
+      const targetId = zoneName==='copy' ? 'a5_copyItems' : 'a5_moveItems';
+      const chip = document.createElement('span');
+      chip.className = 'chip placed-good';
+      chip.textContent = d.label;
+      document.getElementById(targetId).appendChild(chip);
+      hint.textContent = 'Σωστά!'; hint.className = 'hint good';
+      selected = null; renderPool();
+      document.getElementById('a5_score').textContent = placed + ' / 6 σωστά';
+      if(placed === items.length) document.getElementById('a5_celebrate').style.display = 'block';
+    } else {
+      hint.textContent = 'Δοκίμασε ξανά — δεν ταιριάζει εκεί.'; hint.className = 'hint bad';
+      const chipEl = [...document.querySelectorAll('#a5_pool .chip')].find(c=>c.dataset.id===selected);
+      if(chipEl){ chipEl.classList.add('shake'); setTimeout(()=>chipEl.classList.remove('shake'), 350); }
+    }
+  }
+  document.querySelectorAll('#t5 .zone').forEach(z=>{
+    z.addEventListener('click', ()=> tryPlace(z.dataset.zone));
+  });
+  document.getElementById('a5_reset').addEventListener('click', ()=>{
+    items.forEach(d=>delete d.done);
+    selected = null; placed = 0;
+    document.getElementById('a5_copyItems').innerHTML = '';
+    document.getElementById('a5_moveItems').innerHTML = '';
+    document.getElementById('a5_score').textContent = '0 / 6 σωστά';
+    document.getElementById('a5_hint').textContent = 'Διάλεξε μια πρόταση.';
+    document.getElementById('a5_hint').className = 'hint';
+    document.getElementById('a5_celebrate').style.display = 'none';
+    renderPool();
+  });
+  renderPool();
+})();
+
+/* ================= ACTIVITY 6: ORDERING BY SIZE ================= */
+runOrderingActivity({
+  prefix:'a6',
+  items: [
+    'ODT (κείμενο) – 40 KB',
+    'GIF (κινούμενη εικόνα) – 200 KB',
+    'MP3 (ήχος) – 2 MB',
+    'JPEG (φωτογραφία) – 5 MB',
+    'WAV (ήχος) – 10 MB',
+    'PNG (εικόνα) – 20 MB',
+    'MP4 (βίντεο) – 30 MB'
+  ],
+  slotsId:'a6_slots', poolId:'a6_pool', scoreId:'a6_score', hintId:'a6_hint',
+  celebrateId:'a6_celebrate', resetId:'a6_reset',
+  scoreSuffix:' / 7 στη σειρά', startHint:'Ξεκίνα με τον πιο μικρό τύπο αρχείου.',
+  celebrateMsg:'🎉 Τέλεια! Τα έβαλες όλα στη σωστή σειρά μεγέθους!'
+});
+</script>
+</body>
+</html>
