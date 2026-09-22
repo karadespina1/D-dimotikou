@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 17: Μεγέθη & Διαχείριση Αρχείων - Διαδραστικές Δραστηριότητες</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fdf2f8 100%);
+      font-size: 19px;
+      line-height: 1.6;
+    }
+    h1, h2, h3, .heading-font {
+      font-family: 'Comfortaa', cursive;
+    }
+    .pulse-btn {
+      animation: pulseGlow 2.5s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+    }
+    .star-pop {
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col pb-12 select-none">
+
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-4 border-indigo-200 shadow-md px-4 py-3 sm:px-6">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-4xl">📁</span>
+        <div>
+          <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+            Πληροφορική Δ' - ΣΤ' Δημοτικού
+          </span>
+          <h1 class="text-xl sm:text-2xl font-bold text-indigo-950">Μάθημα 17: Διαχείριση Αρχείων & Φακέλων</h1>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Live Stars Score -->
+        <div class="flex items-center gap-2 bg-amber-50 border-2 border-amber-300 px-3.5 py-1.5 rounded-2xl shadow-sm text-amber-900 font-extrabold text-lg">
+          <span class="text-2xl">⭐</span>
+          <span>Αστέρια: <span id="global-stars" class="text-amber-600 text-xl">0</span>/6</span>
+        </div>
+
+        <!-- Direct HTML Download Button -->
+        <button onclick="downloadSelfHtml()" class="pulse-btn flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-extrabold text-base shadow-lg shadow-emerald-200 transition transform active:scale-95">
+          <span>💾</span>
+          <span>Λήψη HTML</span>
+        </button>
+
+        <!-- Sound Toggle -->
+        <button onclick="toggleAudio()" id="sound-btn" class="p-2 bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 rounded-2xl text-xl" title="Ήχοι On/Off">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="max-w-6xl mx-auto px-4 mt-5 w-full">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-sm sm:text-base font-bold">
+      <button onclick="changeTab(1)" id="tab-1" class="tab-btn py-3 px-2 rounded-2xl bg-indigo-600 text-white border-2 border-indigo-600 shadow-md transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">1️⃣</span>
+        <span>Βήματα Ενεργειών</span>
+      </button>
+      <button onclick="changeTab(2)" id="tab-2" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">2️⃣</span>
+        <span>Αντιγραφή ή Αποκοπή;</span>
+      </button>
+      <button onclick="changeTab(3)" id="tab-3" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">3️⃣</span>
+        <span>Μετονομασία</span>
+      </button>
+      <button onclick="changeTab(4)" id="tab-4" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">4️⃣</span>
+        <span>Εξερευνητής</span>
+      </button>
+      <button onclick="changeTab(5)" id="tab-5" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">5️⃣</span>
+        <span>Κάδος Ανακύκλωσης</span>
+      </button>
+      <button onclick="changeTab(6)" id="tab-6" class="tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1">
+        <span class="text-2xl">6️⃣</span>
+        <span>Κουίζ Γνώσεων</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 mt-6 w-full flex-1">
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 1: ΒΗΜΑΤΑ ΕΝΕΡΓΕΙΩΝ (ΣΕΙΡΟΘΕΤΗΣΗ)
+    ======================================================== -->
+    <section id="act-1" class="activity-pane bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-indigo-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-indigo-600 uppercase tracking-widest">Δραστηριότητα 1</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-950 mt-1 flex items-center gap-2">
+          <span>🧩</span> Τα 4 Βήματα: Βάλε τα στη Σωστή Σειρά!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Σύμφωνα με το βιβλίο, κάθε διαδικασία (<span class="text-indigo-600 font-bold">Αντιγραφή</span> ή <span class="text-indigo-600 font-bold">Μετακίνηση</span>) αποτελείται από <strong>4 διαδοχικά βήματα</strong>. Χρησιμοποίησε τα κουμπιά ⬆️ και ⬇️ για να τα σειροθετήσεις!
+        </p>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="flex gap-3 mb-5">
+        <button onclick="setStepsMode('copy')" id="steps-tab-copy" class="flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-600 bg-indigo-600 text-white shadow-sm transition">
+          📋 Διαδικασία Αντιγραφής
+        </button>
+        <button onclick="setStepsMode('cut')" id="steps-tab-cut" class="flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-200 bg-slate-50 text-indigo-900 hover:bg-slate-100 transition">
+          ✂️ Διαδικασία Μετακίνησης (Αποκοπής)
+        </button>
+      </div>
+
+      <!-- Order list -->
+      <div id="steps-slot-list" class="space-y-3 mb-6"></div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <button onclick="resetStepsOrder()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-extrabold text-lg transition">
+          🔄 Ανακάτεμα
+        </button>
+        <button onclick="checkStepsOrder()" class="px-7 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-indigo-200 transition transform active:scale-95 flex items-center gap-2">
+          <span>🔍</span> Έλεγχος Σειράς!
+        </button>
+      </div>
+      <div id="feedback-1" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 2: ΑΝΤΙΓΡΑΦΗ Η ΑΠΟΚΟΠΗ;
+    ======================================================== -->
+    <section id="act-2" class="activity-pane hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-amber-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-amber-600 uppercase tracking-widest">Δραστηριότητα 2</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-amber-950 mt-1 flex items-center gap-2">
+          <span>⚖️</span> Αποκοπή ή Αντιγραφή; Βρες τη Διαφορά!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Διάβασε την επιθυμία του μαθητή και επίλεξε ποια λειτουργία ταιριάζει ακριβώς στην ανάγκη του:
+        </p>
+      </div>
+
+      <div id="scenario-card-area" class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-6 sm:p-8 mb-6">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div id="feedback-2" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 3: ΜΕΤΟΝΟΜΑΣΙΑ ΑΡΧΕΙΩΝ & ΦΑΚΕΛΩΝ
+    ======================================================== -->
+    <section id="act-3" class="activity-pane hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-teal-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-teal-600 uppercase tracking-widest">Δραστηριότητα 3</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-teal-950 mt-1 flex items-center gap-2">
+          <span>🏷️</span> Μετονομασία: Βάλε Τάξη στα Αρχεία σου!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Στον υπολογιστή βρέθηκαν αρχεία με ασαφή ονόματα. Διάλεξε το καταλληλότερο, περιγραφικό όνομα για καθένα:
+        </p>
+      </div>
+
+      <div class="space-y-4" id="rename-cards-area">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="flex justify-end mt-6">
+        <button onclick="checkAllRenames()" class="px-7 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-teal-200 transition transform active:scale-95">
+          <span>✔️</span> Έλεγχος Μετονομασιών
+        </button>
+      </div>
+      <div id="feedback-3" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 4: ΠΡΟΣΟΜΟΙΩΤΗΣ «ΕΞΕΡΕΥΝΗΤΗΣ ΑΡΧΕΙΩΝ»
+    ======================================================== -->
+    <section id="act-4" class="activity-pane hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-blue-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-blue-600 uppercase tracking-widest">Δραστηριότητα 4</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-blue-950 mt-1 flex items-center gap-2">
+          <span>💻</span> Εξερευνητής Αρχείων: Η Άσκηση του Βιβλίου (σελ. 69)
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Εκτέλεσε στον προσομοιωτή τα 4 διαδοχικά βήματα της σχολικής δραστηριότητας!
+        </p>
+      </div>
+
+      <!-- Current Step Banner -->
+      <div class="bg-blue-50 border-l-8 border-blue-600 p-4 rounded-2xl mb-5 flex items-center gap-3">
+        <span class="text-3xl">🎯</span>
+        <div>
+          <span class="text-xs uppercase font-extrabold tracking-wider text-blue-800">Αποστολή σε εξέλιξη:</span>
+          <p id="explorer-mission-desc" class="text-lg font-extrabold text-blue-950">
+            Βήμα 1: Πάτησε το κουμπί <strong>«➕ Νέος Φάκελος»</strong> για να φτιάξεις τον φάκελο <em>«Φρούτο-εργασία»</em>!
+          </p>
+        </div>
+      </div>
+
+      <!-- Explorer Mock UI -->
+      <div class="border-2 border-slate-300 rounded-3xl overflow-hidden shadow-lg bg-slate-100">
+        <!-- Toolbar -->
+        <div class="bg-slate-200/90 p-3 flex flex-wrap gap-2 items-center border-b border-slate-300 text-base font-extrabold">
+          <button onclick="explorerCreateFolder()" id="exp-btn-folder" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition">
+            ➕ Νέος Φάκελος
+          </button>
+          <button onclick="explorerCopy()" id="exp-btn-copy" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl shadow-sm transition disabled:opacity-40" disabled>
+            📋 Αντιγραφή
+          </button>
+          <button onclick="explorerPaste()" id="exp-btn-paste" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl shadow-sm transition disabled:opacity-40" disabled>
+            📥 Επικόλληση
+          </button>
+          <button onclick="explorerDelete()" id="exp-btn-del" class="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl shadow-sm transition disabled:opacity-40" disabled>
+            🗑️ Διαγραφή
+          </button>
+          <button onclick="explorerOpenBin()" id="exp-btn-bin" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-sm transition ml-auto flex items-center gap-1.5">
+            <span>♻️ Κάδος</span> (<span id="bin-indicator">0</span>)
+          </button>
+        </div>
+
+        <!-- Explorer Container Body -->
+        <div class="p-6 bg-white min-h-[280px]">
+          <div class="text-sm font-extrabold text-slate-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+            <span>📂 Επιφάνεια Εργασίας</span>
+            <span id="clipboard-badge" class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full hidden">Έτοιμο για επικόλληση</span>
+          </div>
+          <div id="explorer-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <!-- Files injected by JS -->
+          </div>
+        </div>
+      </div>
+
+      <div id="feedback-4" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 5: ΚΑΔΟΣ ΑΝΑΚΥΚΛΩΣΗΣ & ΕΠΑΝΑΦΟΡΑ
+    ======================================================== -->
+    <section id="act-5" class="activity-pane hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-rose-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-rose-600 uppercase tracking-widest">Δραστηριότητα 5</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-rose-950 mt-1 flex items-center gap-2">
+          <span>♻️</span> Κάδος Ανακύκλωσης: Σώσε ή Διάγραψε Οριστικά!
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Όταν ένα αρχείο βρίσκεται στον Κάδο, μπορούμε να κάνουμε <strong>Επαναφορά</strong> στην αρχική του θέση ή <strong>Άδειασμα Κάδου</strong> (οριστική διαγραφή). Διάλεξε τη σωστή ενέργεια για κάθε περίπτωση:
+        </p>
+      </div>
+
+      <div class="bg-gradient-to-br from-rose-50 to-amber-50 border-2 border-rose-200 rounded-3xl p-6 sm:p-8 text-center max-w-2xl mx-auto shadow-sm">
+        <div class="text-slate-500 font-extrabold text-base mb-2">
+          Περίπτωση <span id="bin-step-num" class="text-rose-600 font-black">1</span> από 4
+        </div>
+        <div id="bin-item-icon" class="text-6xl mb-3">📄</div>
+        <h3 id="bin-item-name" class="text-2xl font-black text-slate-800 mb-2">Εργασία_Ιστορίας_Τελικό.odt</h3>
+        <p id="bin-item-desc" class="text-lg text-slate-600 font-bold mb-6">
+          «Κατά λάθος πάτησα Delete στην εργασία της Ιστορίας που έγραφα όλο το απόγευμα!»
+        </p>
+
+        <div class="flex flex-wrap gap-4 justify-center">
+          <button onclick="handleBinDecision('restore')" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-extrabold text-lg shadow-md transition transform active:scale-95">
+            ↩️ Επαναφορά στην Αρχική Θέση
+          </button>
+          <button onclick="handleBinDecision('delete')" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-extrabold text-lg shadow-md transition transform active:scale-95">
+            ❌ Οριστική Διαγραφή (Άδειασμα)
+          </button>
+        </div>
+      </div>
+
+      <div id="feedback-5" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+    <!-- ========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 6: ΚΟΥΙΖ ΓΝΩΣΕΩΝ
+    ======================================================== -->
+    <section id="act-6" class="activity-pane hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-purple-100">
+      <div class="mb-6 pb-4 border-b-2 border-slate-100">
+        <span class="text-sm font-extrabold text-purple-600 uppercase tracking-widest">Δραστηριότητα 6</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-950 mt-1 flex items-center gap-2">
+          <span>⚡</span> Κουίζ Ελέγχου Γνώσεων
+        </h2>
+        <p class="text-slate-600 text-lg mt-2 font-medium">
+          Απάντησε στις 4 ερωτήσεις για να σφραγίσεις τις γνώσεις σου στο Μάθημα 17!
+        </p>
+      </div>
+
+      <div id="quiz-list" class="space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="flex justify-end mt-6">
+        <button onclick="submitQuiz()" class="px-8 py-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-purple-200 transition transform active:scale-95">
+          🎯 Έλεγχος Όλων των Απαντήσεων!
+        </button>
+      </div>
+
+      <div id="feedback-6" class="hidden p-4 rounded-2xl text-lg font-bold mt-4"></div>
+    </section>
+
+  </main>
+
+  <div id="recycle-bin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-4 border-amber-300">
+      <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100 mb-4">
+        <h3 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+          <span>♻️</span> Κάδος Ανακύκλωσης
+        </h3>
+        <button onclick="explorerCloseBin()" class="text-2xl font-bold text-slate-400 hover:text-slate-700">✕</button>
+      </div>
+      <p class="text-base text-slate-600 mb-4 font-bold">
+        Εδώ βρίσκονται τα διεγραμμένα αρχεία. Κάνε κλικ στο κουμπί <strong>«Επαναφορά»</strong> για να γυρίσει πίσω στην Επιφάνεια Εργασίας!
+      </p>
+
+      <div id="bin-modal-items" class="space-y-2 max-h-64 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200 mb-5">
+        <!-- Injected -->
+      </div>
+
+      <div class="flex justify-end">
+        <button onclick="explorerCloseBin()" class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold rounded-xl transition text-base">
+          Κλείσιμο
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let audioContext = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      const now = audioContext.currentTime;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      if (type === 'correct') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);       // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.3);// C6
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+        osc.start(now);
+        osc.stop(now + 0.55);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.setValueAtTime(140, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(650, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      }
+    }
+
+    const completedTabs = new Set();
+
+    function rewardStar(tabIndex) {
+      if (!completedTabs.has(tabIndex)) {
+        completedTabs.add(tabIndex);
+        const starsEl = document.getElementById('global-stars');
+        starsEl.innerText = completedTabs.size;
+        starsEl.parentElement.classList.add('star-pop');
+        setTimeout(() => starsEl.parentElement.classList.remove('star-pop'), 400);
+      }
+    }
+
+    function changeTab(tabNumber) {
+      playSound('click');
+      for (let i = 1; i <= 6; i++) {
+        const pane = document.getElementById(`act-${i}`);
+        const btn = document.getElementById(`tab-${i}`);
+        if (i === tabNumber) {
+          pane.classList.remove('hidden');
+          btn.className = "tab-btn py-3 px-2 rounded-2xl bg-indigo-600 text-white border-2 border-indigo-600 shadow-md transition flex flex-col items-center justify-center gap-1";
+        } else {
+          pane.classList.add('hidden');
+          btn.className = "tab-btn py-3 px-2 rounded-2xl bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200 shadow-sm transition flex flex-col items-center justify-center gap-1";
+        }
+      }
+    }
+
+    const stepsData = {
+      copy: [
+        { id: 1, text: "1. Επιλέγεις το αρχείο ή φάκελο που θέλεις να αντιγράψεις." },
+        { id: 2, text: "2. Επιλέγεις από το αναδυόμενο μενού (δεξί κλικ) την εντολή «Αντιγραφή»." },
+        { id: 3, text: "3. Ανοίγεις ή κάνεις δεξί κλικ στον φάκελο όπου θέλεις να τοποθετηθεί το αντίγραφο." },
+        { id: 4, text: "4. Επιλέγεις «Επικόλληση» και το αντίγραφο δημιουργείται, διατηρώντας το αρχικό!" }
+      ],
+      cut: [
+        { id: 1, text: "1. Επιλέγεις το αρχείο ή φάκελο που επιθυμείς να μετακινήσεις." },
+        { id: 2, text: "2. Επιλέγεις από το αναδυόμενο μενού (δεξί κλικ) την εντολή «Αποκοπή»." },
+        { id: 3, text: "3. Ανοίγεις ή κάνεις δεξί κλικ στον νέο φάκελο-προορισμό." },
+        { id: 4, text: "4. Επιλέγεις «Επικόλληση» και το αρχείο μεταφέρεται (φεύγει από την παλιά θέση)!" }
+      ]
+    };
+
+    let currentStepsMode = 'copy';
+    let currentShuffledSteps = [];
+
+    function setStepsMode(mode) {
+      playSound('click');
+      currentStepsMode = mode;
+      document.getElementById('steps-tab-copy').className = mode === 'copy' 
+        ? "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-600 bg-indigo-600 text-white shadow-sm transition"
+        : "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-200 bg-slate-50 text-indigo-900 hover:bg-slate-100 transition";
+      document.getElementById('steps-tab-cut').className = mode === 'cut'
+        ? "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-600 bg-indigo-600 text-white shadow-sm transition"
+        : "flex-1 py-2.5 px-4 rounded-2xl font-extrabold text-lg border-2 border-indigo-200 bg-slate-50 text-indigo-900 hover:bg-slate-100 transition";
+      resetStepsOrder();
+    }
+
+    function resetStepsOrder() {
+      currentShuffledSteps = [...stepsData[currentStepsMode]].sort(() => Math.random() - 0.5);
+      renderStepsList();
+      document.getElementById('feedback-1').classList.add('hidden');
+    }
+
+    function renderStepsList() {
+      const container = document.getElementById('steps-slot-list');
+      container.innerHTML = '';
+      currentShuffledSteps.forEach((step, idx) => {
+        const item = document.createElement('div');
+        item.className = "flex items-center gap-3 p-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-base sm:text-lg font-bold text-slate-800";
+        item.innerHTML = `
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-xl shrink-0">
+            ${idx + 1}
+          </div>
+          <div class="flex-1">${step.text}</div>
+          <div class="flex gap-1">
+            <button onclick="moveStepItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬆️</button>
+            <button onclick="moveStepItem(${idx}, 1)" ${idx === currentShuffledSteps.length - 1 ? 'disabled' : ''} class="p-2 bg-white hover:bg-slate-100 disabled:opacity-30 border rounded-xl font-black">⬇️</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function moveStepItem(idx, dir) {
+      playSound('click');
+      const target = idx + dir;
+      if (target >= 0 && target < currentShuffledSteps.length) {
+        const temp = currentShuffledSteps[idx];
+        currentShuffledSteps[idx] = currentShuffledSteps[target];
+        currentShuffledSteps[target] = temp;
+        renderStepsList();
+        document.getElementById('feedback-1').classList.add('hidden');
+      }
+    }
+
+    function checkStepsOrder() {
+      const isRight = currentShuffledSteps.every((s, i) => s.id === i + 1);
+      const fb = document.getElementById('feedback-1');
+      fb.classList.remove('hidden');
+
+      if (isRight) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = `🎉 <strong>Μπράβο!</strong> Έβαλες ακριβώς στη σωστή σειρά τα 4 βήματα για τη <strong>${currentStepsMode === 'copy' ? 'Αντιγραφή' : 'Μετακίνηση (Αποκοπή)'}</strong> όπως περιγράφονται στο βιβλίο!`;
+        rewardStar(1);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `❌ <strong>Κάποια βήματα δεν είναι στη σειρά!</strong> Θυμήσου: 1ο Επιλογή -> 2ο ${currentStepsMode === 'copy' ? 'Αντιγραφή' : 'Αποκοπή'} -> 3ο Επιλογή νέου φακέλου -> 4ο Επικόλληση.`;
+      }
+    }
+
+    const scenarios = [
+      {
+        title: "Σενάριο 1: Αντίγραφο Ασφαλείας σε USB Flash",
+        desc: "Η Ελένη τελείωσε την εργασία της και θέλει να την περάσει στο στικάκι USB, <strong>αλλά θέλει να παραμείνει το αρχείο και στον υπολογιστή της</strong>.",
+        correct: "copy",
+        explanation: "Σωστά! Επιλέγουμε <strong>Αντιγραφή</strong>, ώστε το αρχείο να παραμείνει και στην αρχική του θέση και να δημιουργηθεί πιστό αντίγραφο στο USB."
+      },
+      {
+        title: "Σενάριο 2: Τακτοποίηση Φακέλου στην Επιφάνεια Εργασίας",
+        desc: "Ο Νίκος θέλει να <strong>μεταφέρει</strong> όλες τις εικόνες από την Επιφάνεια Εργασίας μέσα στον φάκελο «Φρούτο-εικόνες» <strong>χωρίς να πιάνουν διπλό χώρο</strong>.",
+        correct: "cut",
+        explanation: "Ακριβώς! Επιλέγουμε <strong>Αποκοπή (Μετακίνηση)</strong> γιατί θέλουμε τα αρχεία να φύγουν από την παλιά θέση και να μπουν στη νέα."
+      },
+      {
+        title: "Σενάριο 3: Δανεισμός Τραγουδιού στον Διπλανό",
+        desc: "Ο Μάριος θέλει να δώσει ένα αρχείο ήχου mp3 στον συμμαθητή του, χωρίς όμως να το χάσει ο ίδιος από τη δική του συλλογή.",
+        correct: "copy",
+        explanation: "Μπράβο! Με την <strong>Αντιγραφή</strong> το πρωτότυπο τραγούδι παραμένει ασφαλές στη θέση του!"
+      }
+    ];
+
+    let currentScenarioIndex = 0;
+
+    function renderScenario() {
+      const area = document.getElementById('scenario-card-area');
+      const sc = scenarios[currentScenarioIndex];
+      area.innerHTML = `
+        <span class="inline-block px-3 py-1 bg-amber-200 text-amber-900 rounded-full font-black text-sm mb-2">
+          ${sc.title} (${currentScenarioIndex + 1}/3)
+        </span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-800 my-3 leading-relaxed">
+          ${sc.desc}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+          <button onclick="handleScenarioAnswer('copy')" class="p-5 bg-white hover:bg-indigo-50 border-3 border-indigo-200 hover:border-indigo-500 rounded-2xl text-xl font-black text-indigo-900 transition flex flex-col items-center gap-1 shadow-sm">
+            <span>📋 Αντιγραφή (Copy)</span>
+            <span class="text-sm font-bold text-slate-500">Κρατάμε το αρχικό + φτιάχνουμε αντίγραφο</span>
+          </button>
+          <button onclick="handleScenarioAnswer('cut')" class="p-5 bg-white hover:bg-amber-50 border-3 border-amber-200 hover:border-amber-500 rounded-2xl text-xl font-black text-amber-950 transition flex flex-col items-center gap-1 shadow-sm">
+            <span>✂️ Αποκοπή / Μετακίνηση (Cut)</span>
+            <span class="text-sm font-bold text-slate-500">Το αρχείο φεύγει εντελώς και αλλάζει θέση</span>
+          </button>
+        </div>
+      `;
+      document.getElementById('feedback-2').classList.add('hidden');
+    }
+
+    function handleScenarioAnswer(ans) {
+      const sc = scenarios[currentScenarioIndex];
+      const fb = document.getElementById('feedback-2');
+      fb.classList.remove('hidden');
+
+      if (ans === sc.correct) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = `🎉 ${sc.explanation}`;
+
+        setTimeout(() => {
+          if (currentScenarioIndex < scenarios.length - 1) {
+            currentScenarioIndex++;
+            renderScenario();
+          } else {
+            fb.innerHTML = `🏆 <strong>Άριστα!</strong> Ολοκλήρωσες και τα 3 σενάρια! Γνωρίζεις πότε κάνουμε Αντιγραφή και πότε Αποκοπή (Μετακίνηση).`;
+            rewardStar(2);
+          }
+        }, 1600);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `❌ <strong>Σκέψου ξανά:</strong> Θέλουμε το αρχείο να μείνει και στην αρχική του θέση (Αντιγραφή) ή να αλλάξει θέση εξολοκλήρου (Αποκοπή);`;
+      }
+    }
+
+    const renameChallenges = [
+      {
+        id: 1,
+        current: "Atitlo_2.odt",
+        content: "Το παραμύθι «Ο λαγός και η χελώνα» του Αισώπου σε έγγραφο κειμένου.",
+        options: ["lagos_kai_xelona_aisopos.odt", "arxeio_123.odt", "keimeno_kai_eikona.png"],
+        correct: "lagos_kai_xelona_aisopos.odt"
+      },
+      {
+        id: 2,
+        current: "IMG_0049.jpg",
+        content: "Φωτογραφία μιας αλεπούς στο δάσος για τη σχολική εργασία.",
+        options: ["alepou_sto_dasos.jpg", "alepou.mp3", "neos_fakelos.zip"],
+        correct: "alepou_sto_dasos.jpg"
+      },
+      {
+        id: 3,
+        current: "Neos_Fakelos_2",
+        content: "Ο φάκελος όπου θα αποθηκεύσουμε τις φωτογραφίες των φρούτων (σελ. 69).",
+        options: ["Frouto-eikones", "paromia_ixografisi.wav", "tragoudi.mp4"],
+        correct: "Frouto-eikones"
+      }
+    ];
+
+    let userRenames = {};
+
+    function renderRenameChallenges() {
+      const area = document.getElementById('rename-cards-area');
+      area.innerHTML = '';
+      renameChallenges.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl";
+        card.innerHTML = `
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">${item.current.includes('odt') ? '📝' : item.current.includes('jpg') ? '📷' : '📁'}</span>
+            <div>
+              <span class="text-xs font-bold uppercase text-slate-400">Τρέχον όνομα:</span>
+              <div class="text-lg font-black text-slate-800 font-mono">${item.current}</div>
+            </div>
+          </div>
+          <p class="text-base font-bold text-slate-600 mb-3">💡 <strong>Περιεχόμενο:</strong> ${item.content}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            ${item.options.map(opt => `
+              <button onclick="pickRenameChoice(${item.id}, '${opt}')" id="ren-opt-${item.id}-${opt.replace(/[^a-zA-Z0-9]/g, '_')}" class="ren-btn-${item.id} p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left">
+                ✏️ ${opt}
+              </button>
+            `).join('')}
+          </div>
+        `;
+        area.appendChild(card);
+      });
+    }
+
+    function pickRenameChoice(challengeId, choice) {
+      playSound('click');
+      userRenames[challengeId] = choice;
+      document.querySelectorAll(`.ren-btn-${challengeId}`).forEach(b => {
+        b.className = `ren-btn-${challengeId} p-2.5 bg-white hover:bg-teal-50 border-2 border-slate-200 rounded-xl text-base font-bold text-slate-700 transition text-left`;
+      });
+      const selectedBtn = document.getElementById(`ren-opt-${challengeId}-${choice.replace(/[^a-zA-Z0-9]/g, '_')}`);
+      if (selectedBtn) {
+        selectedBtn.className = `ren-btn-${challengeId} p-2.5 bg-teal-100 border-2 border-teal-600 rounded-xl text-base font-black text-teal-900 transition text-left shadow-sm`;
+      }
+    }
+
+    function checkAllRenames() {
+      const fb = document.getElementById('feedback-3');
+      fb.classList.remove('hidden');
+
+      if (Object.keys(userRenames).length < renameChallenges.length) {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-amber-100 text-amber-900 border-2 border-amber-300";
+        fb.innerHTML = "⚠️ Επίλεξε ένα νέο όνομα και για τα 3 αρχεία προτού κάνεις έλεγχο!";
+        return;
+      }
+
+      let allCorrect = renameChallenges.every(item => userRenames[item.id] === item.correct);
+
+      if (allCorrect) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = `🎉 <strong>Μπράβο!</strong> Επέλεξες κατατοπιστικά και περιγραφικά ονόματα, διατηρώντας μάλιστα και τη σωστή επέκταση (.odt, .jpg) ώστε να ανοίγουν σωστά!`;
+        rewardStar(3);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `❌ Κάποιες επιλογές δεν είναι οι κατάλληλες. Πρόσεξε να περιγράφουν το περιεχόμενο και να έχουν τη σωστή μορφή.`;
+      }
+    }
+
+    let explorerStep = 1;
+    let explorerSelectedId = null;
+    let explorerClipboard = null;
+
+    let explorerItems = [
+      { id: 'f-milo', name: 'μηλο.jpg', icon: '📷', type: 'file', size: '187 KB' },
+      { id: 'f-parom', name: 'παροιμια.odt', icon: '📝', type: 'file', size: '24 KB' },
+      { id: 'f-audio', name: 'φωνη.wav', icon: '🎤', type: 'file', size: '4.5 MB' }
+    ];
+    let explorerRecycleBin = [];
+
+    function renderExplorerUI() {
+      const grid = document.getElementById('explorer-grid');
+      grid.innerHTML = '';
+
+      explorerItems.forEach(item => {
+        const isSel = explorerSelectedId === item.id;
+        const el = document.createElement('div');
+        el.className = `p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center text-center cursor-pointer transition ${isSel ? 'bg-indigo-100 border-indigo-600 ring-2 ring-indigo-300' : 'bg-slate-50 hover:bg-slate-100 border-slate-200'}`;
+        el.onclick = () => {
+          playSound('click');
+          explorerSelectedId = item.id;
+          renderExplorerUI();
+        };
+
+        el.innerHTML = `
+          <div class="text-4xl mb-1">${item.icon}</div>
+          <div class="font-extrabold text-base text-slate-800 break-all">${item.name}</div>
+          <div class="text-xs font-bold text-slate-400 font-mono">${item.size}</div>
+        `;
+        grid.appendChild(el);
+      });
+
+      // Update Toolbar buttons state
+      const hasSel = explorerSelectedId !== null;
+      document.getElementById('exp-btn-copy').disabled = !hasSel;
+      document.getElementById('exp-btn-del').disabled = !hasSel;
+      document.getElementById('exp-btn-paste').disabled = explorerClipboard === null;
+      document.getElementById('bin-indicator').innerText = explorerRecycleBin.length;
+    }
+
+    function explorerCreateFolder() {
+      playSound('click');
+      if (explorerStep === 1) {
+        explorerItems.unshift({
+          id: 'dir-fruit',
+          name: 'Φρούτο-εργασία',
+          icon: '📁',
+          type: 'folder',
+          size: 'Φάκελος'
+        });
+        explorerStep = 2;
+        playSound('correct');
+        document.getElementById('explorer-mission-desc').innerHTML = `
+          Βήμα 2: Επίλεξε ένα αρχείο (π.χ. «μηλο.jpg»), πάτησε <strong>«📋 Αντιγραφή»</strong> και μετά <strong>«📥 Επικόλληση»</strong> για να δημιουργήσεις αντίγραφο!
+        `;
+        renderExplorerUI();
+      } else {
+        explorerItems.push({
+          id: 'dir-' + Date.now(),
+          name: 'Νέος Φάκελος',
+          icon: '📁',
+          type: 'folder',
+          size: 'Φάκελος'
+        });
+        renderExplorerUI();
+      }
+    }
+
+    function explorerCopy() {
+      if (!explorerSelectedId) return;
+      playSound('click');
+      const item = explorerItems.find(i => i.id === explorerSelectedId);
+      if (item) {
+        explorerClipboard = { ...item };
+        document.getElementById('clipboard-badge').classList.remove('hidden');
+        renderExplorerUI();
+      }
+    }
+
+    function explorerPaste() {
+      if (!explorerClipboard) return;
+      playSound('correct');
+      explorerItems.push({
+        ...explorerClipboard,
+        id: 'copy-' + Date.now(),
+        name: 'Αντίγραφο_' + explorerClipboard.name
+      });
+      explorerClipboard = null;
+      document.getElementById('clipboard-badge').classList.add('hidden');
+
+      if (explorerStep === 2) {
+        explorerStep = 3;
+        document.getElementById('explorer-mission-desc').innerHTML = `
+          Βήμα 3: Τώρα επίλεξε οποιοδήποτε αρχείο και πάτησε <strong>«🗑️ Διαγραφή»</strong> για να σταλεί στον Κάδο!
+        `;
+      }
+      renderExplorerUI();
+    }
+
+    function explorerDelete() {
+      if (!explorerSelectedId) return;
+      playSound('click');
+      const idx = explorerItems.findIndex(i => i.id === explorerSelectedId);
+      if (idx !== -1) {
+        const deleted = explorerItems.splice(idx, 1)[0];
+        explorerRecycleBin.push(deleted);
+        explorerSelectedId = null;
+
+        if (explorerStep === 3) {
+          explorerStep = 4;
+          document.getElementById('explorer-mission-desc').innerHTML = `
+            Βήμα 4: Πάτησε το κουμπί <strong>«♻️ Κάδος»</strong>, βρες το διαγραμμένο αρχείο και κάνε <strong>Επαναφορά</strong>!
+          `;
+        }
+        renderExplorerUI();
+      }
+    }
+
+    function explorerOpenBin() {
+      playSound('click');
+      const modal = document.getElementById('recycle-bin-modal');
+      const list = document.getElementById('bin-modal-items');
+      list.innerHTML = '';
+
+      if (explorerRecycleBin.length === 0) {
+        list.innerHTML = '<div class="text-sm font-bold text-slate-400 text-center py-4">Ο Κάδος Ανακύκλωσης είναι άδειος!</div>';
+      } else {
+        explorerRecycleBin.forEach(item => {
+          const row = document.createElement('div');
+          row.className = "flex items-center justify-between p-2.5 bg-white rounded-xl border border-slate-200";
+          row.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${item.icon}</span>
+              <span class="font-extrabold text-base text-slate-800">${item.name}</span>
+            </div>
+            <button onclick="explorerRestoreItem('${item.id}')" class="px-3 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-extrabold rounded-lg text-sm transition">
+              ↩️ Επαναφορά
+            </button>
+          `;
+          list.appendChild(row);
+        });
+      }
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function explorerCloseBin() {
+      const modal = document.getElementById('recycle-bin-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function explorerRestoreItem(id) {
+      playSound('correct');
+      const idx = explorerRecycleBin.findIndex(i => i.id === id);
+      if (idx !== -1) {
+        const item = explorerRecycleBin.splice(idx, 1)[0];
+        explorerItems.push(item);
+        explorerOpenBin();
+        renderExplorerUI();
+
+        if (explorerStep === 4) {
+          const fb = document.getElementById('feedback-4');
+          fb.classList.remove('hidden');
+          fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+          fb.innerHTML = "🎉 <strong>Συγχαρητήρια!</strong> Ολοκλήρωσες όλα τα βήματα της άσκησης του βιβλίου στον Εξερευνητή!";
+          rewardStar(4);
+        }
+      }
+    }
+
+    const binItems = [
+      {
+        name: "Εργασία_Ιστορίας_Τελικό.odt",
+        desc: "«Κατά λάθος πάτησα Delete στην εργασία της Ιστορίας που έγραφα όλο το απόγευμα!»",
+        icon: "📄",
+        correct: "restore",
+        fbCorrect: "🎉 Σωτήρια Επαναφορά! Το αρχείο γύρισε ακριβώς στον φάκελο απ' όπου διαγράφηκε!",
+        fbWrong: "⚠️ ΠΡΟΣΟΧΗ! Αν αδειάσεις τον κάδο, η εργασία σου θα χαθεί οριστικά!"
+      },
+      {
+        name: "Ios_Malware_Virus.exe",
+        desc: "«Ένα ύποπτο και επικίνδυνο αρχείο που κατέβηκε κατά λάθος από το ίντερνετ.»",
+        icon: "⚠️",
+        correct: "delete",
+        fbCorrect: "🎉 Πολύ σωστά! Τα κακόβουλα αρχεία πρέπει να διαγράφονται οριστικά με άδειασμα του κάδου!",
+        fbWrong: "⚠️ Όχι! Μην επαναφέρεις επικίνδυνα αρχεία πίσω στον υπολογιστή!"
+      },
+      {
+        name: "Fotografia_Apolyseon.jpg",
+        desc: "«Μία μοναδική αναμνηστική φωτογραφία από τη σχολική γιορτή.»",
+        icon: "🖼️",
+        correct: "restore",
+        fbCorrect: "🎉 Μπράβο! Οι φωτογραφίες αναμνήσεων είναι αναντικατάστατες και πρέπει να επαναφέρονται!",
+        fbWrong: "⚠️ Όχι! Αν την διαγράψεις οριστικά, θα χαθεί η ανάμνηση!"
+      },
+      {
+        name: "Keno_Arxeio_Lathos.txt",
+        desc: "«Ένα άδειο αρχείο που δημιούργησες κατά λάθος και δεν περιέχει τίποτα.»",
+        icon: "🗑️",
+        correct: "delete",
+        fbCorrect: "🎉 Σωστά! Τα άδεια και περιττά αρχεία καλό είναι να διαγράφονται οριστικά για να εξοικονομούμε χώρο.",
+        fbWrong: "⚠️ Δεν χρειάζεται να κρατάς άδεια αρχεία χωρίς περιεχόμενο."
+      }
+    ];
+
+    let currentBinIdx = 0;
+
+    function renderBinStep() {
+      const it = binItems[currentBinIdx];
+      document.getElementById('bin-step-num').innerText = currentBinIdx + 1;
+      document.getElementById('bin-item-icon').innerText = it.icon;
+      document.getElementById('bin-item-name').innerText = it.name;
+      document.getElementById('bin-item-desc').innerText = it.desc;
+      document.getElementById('feedback-5').classList.add('hidden');
+    }
+
+    function handleBinDecision(choice) {
+      const it = binItems[currentBinIdx];
+      const fb = document.getElementById('feedback-5');
+      fb.classList.remove('hidden');
+
+      if (choice === it.correct) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = it.fbCorrect;
+
+        setTimeout(() => {
+          if (currentBinIdx < binItems.length - 1) {
+            currentBinIdx++;
+            renderBinStep();
+          } else {
+            fb.innerHTML = "🏆 <strong>Εξαιρετικά!</strong> Έμαθες πότε χρησιμοποιούμε την Επαναφορά και πότε το Άδειασμα του Κάδου!";
+            rewardStar(5);
+          }
+        }, 1500);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = it.fbWrong;
+      }
+    }
+
+    const quizItems = [
+      {
+        id: 'q1',
+        title: "1. Ποια είναι η διαφορά ανάμεσα στην «Αντιγραφή» και την «Αποκοπή»;",
+        options: [
+          { text: "Στην Αντιγραφή το αρχείο παραμένει και στην αρχική θέση, ενώ στην Αποκοπή μετακινείται.", correct: true },
+          { text: "Δεν έχουν καμία διαφορά, είναι απλώς δύο διαφορετικές λέξεις.", correct: false },
+          { text: "Η Αποκοπή διαγράφει το αρχείο για πάντα από τον δίσκο.", correct: false }
+        ]
+      },
+      {
+        id: 'q2',
+        title: "2. Όταν πατάμε «Διαγραφή» σε ένα αρχείο στον υπολογιστή:",
+        options: [
+          { text: "Σβήνεται αυτόματα και οριστικά χωρίς δυνατότητα ανάκτησης.", correct: false },
+          { text: "Μεταφέρεται στον Κάδο Ανακύκλωσης και μπορούμε να το επαναφέρουμε.", correct: true },
+          { text: "Ανεβαίνει μόνο του στο διαδίκτυο.", correct: false }
+        ]
+      },
+      {
+        id: 'q3',
+        title: "3. Τι συμβαίνει όταν κάνουμε «Άδειασμα του Κάδου Ανακύκλωσης»;",
+        options: [
+          { text: "Όλα τα αρχεία του κάδου διαγράφονται οριστικά από τον υπολογιστή.", correct: true },
+          { text: "Τα αρχεία επιστρέφουν όλα αυτόματα στην Επιφάνεια Εργασίας.", correct: false },
+          { text: "Τα αρχεία αποθηκεύονται στη μνήμη RAM.", correct: false }
+        ]
+      },
+      {
+        id: 'q4',
+        title: "4. Γιατί είναι σημαντικό να μετονομάζουμε τα αρχεία με σαφή ονόματα (π.χ. lagos_kai_xelona.odt);",
+        options: [
+          { text: "Για να ξέρουμε αμέσως τι περιέχουν χωρίς να τα ανοίγουμε ένα-ένα.", correct: true },
+          { text: "Γιατί αλλιώς ο υπολογιστής δεν μπορεί να τα αποθηκεύσει.", correct: false },
+          { text: "Για να γίνουν τα αρχεία μικρότερα σε μέγεθος.", correct: false }
+        ]
+      }
+    ];
+
+    let userQuizChoices = {};
+
+    function renderQuiz() {
+      const list = document.getElementById('quiz-list');
+      list.innerHTML = '';
+      quizItems.forEach(q => {
+        const card = document.createElement('div');
+        card.className = "p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl";
+        card.innerHTML = `
+          <h4 class="font-extrabold text-lg sm:text-xl text-slate-900 mb-3">${q.title}</h4>
+          <div class="space-y-2">
+            ${q.options.map((opt, oIdx) => `
+              <label class="flex items-center gap-3 p-3 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl cursor-pointer text-base sm:text-lg font-bold text-slate-700 transition">
+                <input type="radio" name="${q.id}" value="${oIdx}" onchange="selectQuizOption('${q.id}', ${oIdx})" class="w-5 h-5 text-purple-600">
+                <span>${opt.text}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function selectQuizOption(qId, oIdx) {
+      playSound('click');
+      userQuizChoices[qId] = oIdx;
+      document.getElementById('feedback-6').classList.add('hidden');
+    }
+
+    function submitQuiz() {
+      const fb = document.getElementById('feedback-6');
+      fb.classList.remove('hidden');
+
+      if (Object.keys(userQuizChoices).length < quizItems.length) {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-amber-100 text-amber-900 border-2 border-amber-300";
+        fb.innerHTML = "⚠️ Παρακαλώ απάντησε και στις 4 ερωτήσεις!";
+        return;
+      }
+
+      let correctCount = 0;
+      quizItems.forEach(q => {
+        const choice = userQuizChoices[q.id];
+        if (q.options[choice].correct) correctCount++;
+      });
+
+      if (correctCount === quizItems.length) {
+        playSound('correct');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
+        fb.innerHTML = "🎉 <strong>Άριστα 4 στα 4!</strong> Είσαι πραγματικός ειδικός στη διαχείριση αρχείων και φακέλων!";
+        rewardStar(6);
+      } else {
+        playSound('wrong');
+        fb.className = "p-4 rounded-2xl text-lg font-bold mt-4 bg-rose-100 text-rose-950 border-2 border-rose-300";
+        fb.innerHTML = `⚠️ Έχεις ${correctCount} στις 4 σωστές. Ξαναδιάβασε τις ερωτήσεις και δοκίμασε ξανά!`;
+      }
+    }
+
+    function downloadSelfHtml() {
+      playSound('click');
+      const htmlMarkup = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlMarkup], { type: 'text/html;charset=utf-8' });
+      const dlUrl = URL.createObjectURL(blob);
+      const tempLink = document.createElement('a');
+      tempLink.href = dlUrl;
+      tempLink.download = 'Mathima17_Diaxeirisi_Arxeion.html';
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(dlUrl);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      resetStepsOrder();
+      renderScenario();
+      renderRenameChallenges();
+      renderExplorerUI();
+      renderBinStep();
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>
