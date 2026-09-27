@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 12: Μέσα Αποθήκευσης - Πληροφορική Δ΄ Δημοτικού</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #7c3aed;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 50%, #fef3c7 100%);
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 26px;
+      --border-radius-btn: 18px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 30px -10px rgba(37, 99, 235, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid rgba(37, 99, 235, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1.1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.95rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.7rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.25rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.3s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.95rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border-radius: var(--border-radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    .btn-success { background: var(--accent-green); color: white; }
+    .btn-success:hover { background: #047857; transform: translateY(-2px); }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-secondary:hover { background: #cbd5e1; }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.8rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+    .feedback-box.info { background: #e0f2fe; color: #0369a1; border: 3px solid #38bdf8; display: flex; }
+
+    /* =========================================================
+       ACT 1: PRESENTATION SLIDES (Μέσα Αποθήκευσης)
+    ========================================================== */
+    .presentation-card {
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 2rem;
+    }
+    .slide-viewport {
+      min-height: 440px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #faf5ff 100%);
+      padding: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(148, 163, 184, 0.3);
+      padding-bottom: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .slide-title-text {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.7rem;
+      color: var(--secondary);
+    }
+    .slide-badge-num {
+      background: var(--primary);
+      color: white;
+      padding: 0.4rem 1.1rem;
+      border-radius: 30px;
+      font-weight: 900;
+      font-size: 1.15rem;
+    }
+    .slide-body-content {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      align-items: center;
+      gap: 2rem;
+      flex: 1;
+    }
+    .character-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .character-svg-box {
+      width: 140px;
+      height: 160px;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+    }
+    .character-tag {
+      margin-top: 0.5rem;
+      background: white;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      border: 2px solid #cbd5e1;
+    }
+    .slide-middle-box {
+      background: white;
+      border-radius: 20px;
+      padding: 1.8rem;
+      border: 3px solid #e2e8f0;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .dialogue-speech {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+    .slide-visual-aid {
+      background: #f8fafc;
+      border: 2px dashed #94a3b8;
+      border-radius: 16px;
+      padding: 1rem 1.4rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .slide-controls-bar {
+      background: #f1f5f9;
+      border-top: 3px solid #cbd5e1;
+      padding: 1rem 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .slide-dots-container { display: flex; gap: 0.6rem; align-items: center; }
+    .slide-dot {
+      width: 15px; height: 15px; border-radius: 50%; background: #cbd5e1; cursor: pointer; transition: all 0.2s;
+    }
+    .slide-dot.active { background: var(--primary); transform: scale(1.3); }
+
+    /* =========================================================
+       ACT 2: CAPACITY SORTING (Σειροθέτηση Χωρητικότητας)
+    ========================================================== */
+    .capacity-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+    }
+    .cap-item {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 1.2rem 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+      transition: all 0.2s;
+    }
+    .cap-info {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .cap-icon { font-size: 2.5rem; }
+    .cap-actions { display: flex; gap: 0.6rem; }
+    .cap-btn-move {
+      background: white; border: 2px solid #cbd5e1; width: 48px; height: 48px;
+      border-radius: 12px; cursor: pointer; font-size: 1.4rem; display: flex;
+      align-items: center; justify-content: center; transition: 0.2s;
+    }
+    .cap-btn-move:hover { border-color: var(--primary); background: #eff6ff; }
+
+    /* =========================================================
+       ACT 3: MATCHING (Ταίριαξε τη Συσκευή)
+    ========================================================== */
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.8rem;
+    }
+    .match-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .match-device {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .match-desc {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .match-select {
+      font-size: 1.25rem;
+      font-family: inherit;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 3px solid #cbd5e1;
+      font-weight: 800;
+      background: white;
+      cursor: pointer;
+    }
+    .match-select:focus { outline: none; border-color: var(--primary); }
+
+    /* =========================================================
+       ACT 4: HDD vs SSD SPEED RACE
+    ========================================================== */
+    .race-box {
+      background: #0f172a;
+      border-radius: 24px;
+      padding: 2.2rem;
+      color: white;
+      margin-bottom: 1.8rem;
+    }
+    .race-track {
+      background: #1e293b;
+      border: 2px dashed #475569;
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .race-lane {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .lane-label {
+      width: 140px;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+    .lane-bar-track {
+      flex: 1;
+      height: 28px;
+      background: #334155;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+    .lane-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 14px;
+      transition: width 0.3s ease;
+    }
+
+    /* =========================================================
+       ACT 5: TRUE OR FALSE (Άσκηση Σελ. 49)
+    ========================================================== */
+    .tf-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      margin-bottom: 1.8rem;
+    }
+    .tf-row {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 1.4rem 1.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .tf-statement {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      flex: 1;
+      min-width: 280px;
+    }
+    .tf-actions {
+      display: flex;
+      gap: 0.8rem;
+    }
+    .tf-btn {
+      padding: 0.7rem 1.4rem;
+      border-radius: 14px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      border: 3px solid #cbd5e1;
+      background: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .tf-btn.selected-true { background: #d1fae5; border-color: #10b981; color: #065f46; }
+    .tf-btn.selected-false { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+
+    /* =========================================================
+       ACT 6: BACKUP CHALLENGE
+    ========================================================== */
+    .backup-card {
+      background: #fffbeb;
+      border: 3px solid #fde68a;
+      border-radius: 22px;
+      padding: 2.2rem;
+      margin-bottom: 1.8rem;
+    }
+    .backup-question {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #92400e;
+      margin-bottom: 1.2rem;
+    }
+    .backup-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .backup-opt-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.2rem 1.6rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .backup-opt-btn:hover { border-color: var(--primary); background: #eff6ff; }
+    .backup-opt-btn.correct-choice { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .backup-opt-btn.wrong-choice { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    /* =========================================================
+       ACT 7: RIDDLES (Αινίγματα)
+    ========================================================== */
+    .riddle-card {
+      background: #fdf4ff;
+      border: 3px solid #f5d0fe;
+      border-radius: 22px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .riddle-text {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #86198f;
+      margin-bottom: 1.2rem;
+      font-style: italic;
+    }
+    .riddle-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .riddle-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      padding: 0.8rem 1.4rem;
+      border-radius: 14px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .riddle-btn:hover { border-color: var(--primary); background: #eff6ff; }
+    .riddle-btn.correct-pick { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .riddle-btn.wrong-pick { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    /* =========================================================
+       ACT 8: QUIZ
+    ========================================================== */
+    .quiz-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.8rem;
+    }
+    .quiz-question {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 1.2rem;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .quiz-opt-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.2s;
+    }
+    .quiz-opt-btn:hover { border-color: var(--primary); background: #f0fdf4; }
+    .quiz-opt-btn.selected-correct { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .quiz-opt-btn.selected-wrong { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 850px) {
+      .slide-body-content { grid-template-columns: 1fr; }
+      .character-column { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>💾 Μάθημα 12ο: Μέσα Αποθήκευσης</h1>
+        <p>Διαδραστικές Δραστηριότητες Πληροφορικής (Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε αυτό το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)"><span>1️⃣</span> Παρουσίαση Ηρώων</button>
+    <button class="tab-btn" onclick="switchTab(1)"><span>2️⃣</span> Σειρά Χωρητικότητας</button>
+    <button class="tab-btn" onclick="switchTab(2)"><span>3️⃣</span> Ταίριαξε τη Συσκευή</button>
+    <button class="tab-btn" onclick="switchTab(3)"><span>4️⃣</span> Αγώνας HDD vs SSD</button>
+    <button class="tab-btn" onclick="switchTab(4)"><span>5️⃣</span> Σωστό ή Λάθος (Βιβλίο)</button>
+    <button class="tab-btn" onclick="switchTab(5)"><span>6️⃣</span> Αντίγραφα Ασφαλείας</button>
+    <button class="tab-btn" onclick="switchTab(6)"><span>7️⃣</span> Αινίγματα Μέσων</button>
+    <button class="tab-btn" onclick="switchTab(7)"><span>8️⃣</span> Τελικό Κουίζ</button>
+  </nav>
+
+  <main>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 1: ΔΙΑΔΡΑΣΤΙΚΗ ΠΑΡΟΥΣΙΑΣΗ
+    ========================================================================== -->
+    <section class="activity-section active" id="act-0">
+      <div class="activity-header">
+        <h2>1️⃣ Παρουσίαση: Γνωριμία με τα Μέσα Αποθήκευσης!</h2>
+        <p>Ο Ήρωνας, η Υπατία και ο Τάλως μάς παρουσιάζουν πού και πώς αποθηκεύουμε τα δεδομένα μας.</p>
+      </div>
+
+      <div class="presentation-card">
+        <div class="slide-viewport">
+          <div class="slide-header">
+            <div class="slide-title-text" id="slide-title">1. Τι είναι τα Μέσα Αποθήκευσης;</div>
+            <div class="slide-badge-num" id="slide-counter">1 / 4</div>
+          </div>
+
+          <div class="slide-body-content">
+            <div class="character-column">
+              <svg class="character-svg-box" viewBox="0 0 100 120">
+                <circle cx="50" cy="50" r="40" fill="#fde68a"/>
+                <path d="M15,45 Q50,0 85,45 Q95,20 70,5 Q40,0 15,20 Z" fill="#ea580c"/>
+                <circle cx="36" cy="48" r="11" fill="none" stroke="#16a34a" stroke-width="3"/>
+                <circle cx="64" cy="48" r="11" fill="none" stroke="#16a34a" stroke-width="3"/>
+                <line x1="47" y1="48" x2="53" y2="48" stroke="#16a34a" stroke-width="3"/>
+                <circle cx="36" cy="48" r="4" fill="#0f172a"/>
+                <circle cx="64" cy="48" r="4" fill="#0f172a"/>
+                <path d="M38,72 Q50,86 62,72" fill="none" stroke="#b91c1c" stroke-width="3"/>
+                <path d="M20,95 Q50,88 80,95 L85,120 L15,120 Z" fill="#dc2626"/>
+              </svg>
+              <div class="character-tag">👦 Ήρωνας</div>
+            </div>
+
+            <div class="slide-middle-box">
+              <div class="dialogue-speech" id="slide-text">
+                «Εκτός από τον εσωτερικό δίσκο που βρίσκεται μέσα στον υπολογιστή, μπορούμε να συνδέσουμε και εξωτερικό δίσκο για να έχουμε περισσότερο χώρο ή να μεταφέρουμε τα αρχεία μας!»
+              </div>
+              <div class="slide-visual-aid" id="slide-visual">
+                💽 <strong>Δίσκος Αποθήκευσης:</strong> Εσωτερικός ή Εξωτερικός (HDD & SSD)!
+              </div>
+            </div>
+
+            <div class="character-column">
+              <svg class="character-svg-box" viewBox="0 0 100 120">
+                <circle cx="50" cy="50" r="40" fill="#fde68a"/>
+                <path d="M12,50 Q50,8 88,50 Q92,85 82,95 Q50,75 18,95 Z" fill="#78350f"/>
+                <circle cx="50" cy="54" r="33" fill="#fed7aa"/>
+                <path d="M14,48 A36,36 0 0,1 86,48" fill="none" stroke="#2563eb" stroke-width="7"/>
+                <rect x="8" y="42" width="12" height="24" rx="6" fill="#1d4ed8"/>
+                <rect x="80" y="42" width="12" height="24" rx="6" fill="#1d4ed8"/>
+                <circle cx="37" cy="50" r="10" fill="none" stroke="#9333ea" stroke-width="3"/>
+                <circle cx="63" cy="50" r="10" fill="none" stroke="#9333ea" stroke-width="3"/>
+                <line x1="47" y1="50" x2="53" y2="50" stroke="#9333ea" stroke-width="3"/>
+                <circle cx="37" cy="50" r="4" fill="#0f172a"/>
+                <circle cx="63" cy="50" r="4" fill="#0f172a"/>
+                <path d="M42,70 Q50,80 58,70" fill="none" stroke="#b45309" stroke-width="3"/>
+                <path d="M20,95 Q50,88 80,95 L85,120 L15,120 Z" fill="#eab308"/>
+              </svg>
+              <div class="character-tag">👧 Υπατία</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-controls-bar">
+          <button class="btn btn-secondary" onclick="changeSlide(-1)">◀ Προηγούμενη</button>
+          <div class="slide-dots-container" id="slide-dots"></div>
+          <button class="btn btn-primary" onclick="changeSlide(1)">Επόμενη ▶</button>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="markActDone(0)">✔️ Ολοκλήρωσα την Ανάγνωση!</button>
+      <div class="feedback-box" id="act0-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 2: ΣΕΙΡΑ ΧΩΡΗΤΙΚΟΤΗΤΑΣ
+    ========================================================== */
+    -->
+    <section class="activity-section" id="act-1">
+      <div class="activity-header">
+        <h2>2️⃣ Σειροθέτηση Χωρητικότητας (Από το Μεγαλύτερο στο Μικρότερο)</h2>
+        <p>Βάλε τα μέσα αποθήκευσης στη σωστή σειρά με βάση τη συνηθισμένη χωρητικότητά τους σύμφωνα με το βιβλίο.</p>
+      </div>
+
+      <div class="capacity-container" id="capacity-list"></div>
+
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="checkCapacityOrder()">✔️ Έλεγχος Σειράς</button>
+        <button class="btn btn-secondary" onclick="resetCapacityOrder()">🔄 Ανακάτεμα</button>
+      </div>
+      <div class="feedback-box" id="cap-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 3: ΤΑΙΡΙΑΞΕ ΤΗ ΣΥΣΚΕΥΗ
+    ========================================================== -->
+    <section class="activity-section" id="act-2">
+      <div class="activity-header">
+        <h2>3️⃣ Ταίριαξε τη Συσκευή με το Κατάλληλο Μέσο!</h2>
+        <p>Επίλεξε για κάθε ανάγκη το καταλληλότερο μέσο αποθήκευσης που αναφέρει το βιβλίο.</p>
+      </div>
+
+      <div class="match-grid">
+        <div class="match-card">
+          <div class="match-device">📷 Φωτογραφική Μηχανή & Smartphone</div>
+          <div class="match-desc">Είναι μικροσκοπικό, αποθηκεύει τις φωτογραφίες και μπαίνει στην ειδική υποδοχή της συσκευής.</div>
+          <select class="match-select" id="match-1">
+            <option value="">-- Επίλεξε Μέσο --</option>
+            <option value="flash">Μνήμη Φλας (USB)</option>
+            <option value="card">Κάρτα Μνήμης</option>
+            <option value="disk">Σκληρός Δίσκος</option>
+          </select>
+        </div>
+
+        <div class="match-card">
+          <div class="match-device">🎒 Μεταφορά Εργασίας στο Σχολείο</div>
+          <div class="match-desc">Είναι μικρή, ελαφριά, φτηνή και μπαίνει στην τσέπη για εύκολη μεταφορά αρχείων σε άλλον υπολογιστή.</div>
+          <select class="match-select" id="match-2">
+            <option value="">-- Επίλεξε Μέσο --</option>
+            <option value="flash">Μνήμη Φλας (USB)</option>
+            <option value="card">Κάρτα Μνήμης</option>
+            <option value="disk">Σκληρός Δίσκος HDD</option>
+          </select>
+        </div>
+
+        <div class="match-card">
+          <div class="match-device">💻 Εσωτερικός Χώρος Υπολογιστή</div>
+          <div class="match-desc">Έχει χωρητικότητα πολλών GB και φιλοξενεί όλα τα προγράμματα και το λειτουργικό σύστημα.</div>
+          <select class="match-select" id="match-3">
+            <option value="">-- Επίλεξε Μέσο --</option>
+            <option value="flash">Μνήμη Φλας (USB)</option>
+            <option value="card">Κάρτα Μνήμης</option>
+            <option value="disk">Δίσκος Αποθήκευσης (HDD/SSD)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="checkMatching()">✔️ Έλεγχος Επιλογών</button>
+      <div class="feedback-box" id="match-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 4: ΑΓΩΝΑΣ ΤΑΧΥΤΗΤΑΣ HDD vs SSD
+    ========================================================== -->
+    <section class="activity-section" id="act-3">
+      <div class="activity-header">
+        <h2>4️⃣ Αγώνας Ταχύτητας: Σκληρός Δίσκος HDD εναντίον SSD!</h2>
+        <p>Το βιβλίο μάς λέει: <em>«Ο δίσκος SSD λειτουργεί πιο γρήγορα»</em>. Πάτησε το κουμπί για να δεις τον αγώνα στην πράξη!</p>
+      </div>
+
+      <div class="race-box">
+        <h3 style="font-size: 1.5rem; color: #38bdf8; font-family: 'Comfortaa', cursive;">🏁 Αγώνας Εκκίνησης Εφαρμογής</h3>
+        <div class="race-track">
+          <div class="race-lane">
+            <div class="lane-label">⚡ Δίσκος SSD:</div>
+            <div class="lane-bar-track">
+              <div class="lane-bar-fill" id="ssd-bar" style="background: #10b981;"></div>
+            </div>
+            <span id="ssd-status" style="font-weight: 800; min-width: 90px;">0%</span>
+          </div>
+
+          <div class="race-lane">
+            <div class="lane-label">🐢 Δίσκος HDD:</div>
+            <div class="lane-bar-track">
+              <div class="lane-bar-fill" id="hdd-bar" style="background: #f59e0b;"></div>
+            </div>
+            <span id="hdd-status" style="font-weight: 800; min-width: 90px;">0%</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-start-race" onclick="startDiskRace()">🚀 Έναρξη Αγώνα!</button>
+      </div>
+
+      <div class="feedback-box" id="race-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 5: ΣΩΣΤΟ Ή ΛΑΘΟΣ (ΒΙΒΛΙΟ ΣΕΛ. 49)
+    ========================================================== -->
+    <section class="activity-section" id="act-4">
+      <div class="activity-header">
+        <h2>5️⃣ Σωστό ή Λάθος (Άσκηση Σχολικού Βιβλίου σελ. 49)</h2>
+        <p>Απάντησε στις επίσημες προτάσεις του βιβλίου σημειώνοντας αν είναι Σωστές (Σ) ή Λάθος (Λ).</p>
+      </div>
+
+      <div class="tf-container" id="tf-list">
+        <div class="tf-row" data-ans="true">
+          <div class="tf-statement">1. Συνήθως, ο δίσκος αποθήκευσης έχει χωρητικότητα πολλών GB ή είναι ακόμα μεγαλύτερος.</div>
+          <div class="tf-actions">
+            <button class="tf-btn" onclick="chooseTF(this, true)">Σωστό</button>
+            <button class="tf-btn" onclick="chooseTF(this, false)">Λάθος</button>
+          </div>
+        </div>
+
+        <div class="tf-row" data-ans="false">
+          <div class="tf-statement">2. Ο δίσκος αποθήκευσης βρίσκεται πάντα μέσα στον υπολογιστή.</div>
+          <div class="tf-actions">
+            <button class="tf-btn" onclick="chooseTF(this, true)">Σωστό</button>
+            <button class="tf-btn" onclick="chooseTF(this, false)">Λάθος</button>
+          </div>
+        </div>
+
+        <div class="tf-row" data-ans="true">
+          <div class="tf-statement">3. Με τη μνήμη φλας μπορώ να μεταφέρω εύκολα τα αρχεία μου σε άλλον υπολογιστή.</div>
+          <div class="tf-actions">
+            <button class="tf-btn" onclick="chooseTF(this, true)">Σωστό</button>
+            <button class="tf-btn" onclick="chooseTF(this, false)">Λάθος</button>
+          </div>
+        </div>
+
+        <div class="tf-row" data-ans="false">
+          <div class="tf-statement">4. Ο σκληρός δίσκος HDD είναι πιο γρήγορος από τον δίσκο SSD.</div>
+          <div class="tf-actions">
+            <button class="tf-btn" onclick="chooseTF(this, true)">Σωστό</button>
+            <button class="tf-btn" onclick="chooseTF(this, false)">Λάθος</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="checkTFAnswers()">✔️ Έλεγχος Όλων</button>
+      <div class="feedback-box" id="tf-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 6: ΑΝΤΙΓΡΑΦΑ ΑΣΦΑΛΕΙΑΣ
+    ========================================================== -->
+    <section class="activity-section" id="act-5">
+      <div class="activity-header">
+        <h2>6️⃣ Επιχείρηση: Αντίγραφα Ασφαλείας!</h2>
+        <p>Το βιβλίο τονίζει: <em>«Όλα τα μέσα αποθήκευσης είναι εξαρτήματα που μπορεί να χαλάσουν»</em>. Τι πρέπει να κάνουμε;</p>
+      </div>
+
+      <div class="backup-card">
+        <div class="backup-question">
+          ⚠️ Σενάριο: Ο υπολογιστής σου έπεσε κάτω και ο εσωτερικός δίσκος έπαθε βλάβη! Πώς θα βρεις ξανά τις φωτογραφίες και τις εργασίες σου;
+        </div>
+        <div class="backup-options">
+          <button class="backup-opt-btn" onclick="pickBackup(0, this)">
+            Α) Δεν υπάρχει σωτηρία, τα αρχεία χάθηκαν για πάντα γιατί δεν μπορώ να κάνω τίποτα.
+          </button>
+          <button class="backup-opt-btn" onclick="pickBackup(1, this)">
+            Β) Θα τα ανακτήσω αμέσως από τα Αντίγραφα Ασφαλείας που είχα κρατήσει προληπτικά σε εξωτερικό δίσκο ή μνήμη φλας!
+          </button>
+          <button class="backup-opt-btn" onclick="pickBackup(2, this)">
+            Γ) Θα βάλω τον υπολογιστή στο ψυγείο για να κρυώσει.
+          </button>
+        </div>
+      </div>
+
+      <div class="feedback-box" id="backup-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 7: ΑΙΝΙΓΜΑΤΑ ΜΕΣΩΝ
+    ========================================================== -->
+    <section class="activity-section" id="act-6">
+      <div class="activity-header">
+        <h2>7️⃣ Αινίγματα: Ποιο Μέσο Αποθήκευσης Είμαι;</h2>
+        <p>Διάβασε τα στοιχεία και μάντεψε για ποιο μέσο μιλάει κάθε αίνιγμα!</p>
+      </div>
+
+      <div class="riddle-card" id="riddle-1">
+        <div class="riddle-text">«Είμαι μικρή, ελαφριά, φτηνή και μπαίνω στην υποδοχή USB για να μεταφέρεις την εργασία σου στο σχολείο. Ποια είμαι;»</div>
+        <div class="riddle-buttons">
+          <button class="riddle-btn" onclick="checkRiddle(1, 'flash', this)">Μνήμη Φλας (USB)</button>
+          <button class="riddle-btn" onclick="checkRiddle(1, 'card', this)">Κάρτα Μνήμης</button>
+          <button class="riddle-btn" onclick="checkRiddle(1, 'hdd', this)">Σκληρός Δίσκος</button>
+        </div>
+      </div>
+
+      <div class="riddle-card" id="riddle-2">
+        <div class="riddle-text">«Είμαι πολύ λεπτή, ζω κυρίως μέσα σε κάμερες, φωτογραφικές μηχανές και κινητά τηλέφωνα. Ποια είμαι;»</div>
+        <div class="riddle-buttons">
+          <button class="riddle-btn" onclick="checkRiddle(2, 'hdd', this)">Δίσκος SSD</button>
+          <button class="riddle-btn" onclick="checkRiddle(2, 'card', this)">Κάρτα Μνήμης</button>
+          <button class="riddle-btn" onclick="checkRiddle(2, 'flash', this)">Μνήμη Φλας</button>
+        </div>
+      </div>
+
+      <div class="riddle-card" id="riddle-3">
+        <div class="riddle-text">«Είμαι δίσκος αποθήκευσης, δεν έχω μηχανικά μέρη όπως ο παλιός HDD και ανοίγω τα πάντα αστραπιαία. Ποιος είμαι;»</div>
+        <div class="riddle-buttons">
+          <button class="riddle-btn" onclick="checkRiddle(3, 'ssd', this)">Μαλακός Δίσκος SSD</button>
+          <button class="riddle-btn" onclick="checkRiddle(3, 'flash', this)">Μνήμη Φλας</button>
+          <button class="riddle-btn" onclick="checkRiddle(3, 'card', this)">Κάρτα Μνήμης</button>
+        </div>
+      </div>
+
+      <div class="feedback-box" id="riddle-fb"></div>
+    </section>
+
+    <!-- =========================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 8: ΤΕΛΙΚΟ ΚΟΥΙΖ
+    ========================================================== -->
+    <section class="activity-section" id="act-7">
+      <div class="activity-header">
+        <h2>8️⃣ Τελικό Κουίζ: Γίνε ο Ειδικός των Μέσων Αποθήκευσης!</h2>
+        <p>Απάντησε στις 3 ερωτήσεις για να κερδίσεις το τελευταίο αστέρι και το κύπελλο!</p>
+      </div>
+
+      <div id="quiz-container">
+        <div class="quiz-card">
+          <div class="quiz-question">1. Ποια δύο είδη δίσκων αποθήκευσης αναφέρει το βιβλίο;</div>
+          <div class="quiz-options" data-q="0">
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(0, 0, this)">Α) Σκληρός δίσκος HDD και μαλακός δίσκος SSD</button>
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(0, 1, this)">Β) CD και DVD</button>
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(0, 2, this)">Γ) Δίσκος μουσικής και δίσκος σερβιρίσματος</button>
+          </div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-question">2. Πού μπορούμε να συνδέσουμε έναν εξωτερικό δίσκο αποθήκευσης;</div>
+          <div class="quiz-options" data-q="1">
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(1, 0, this)">Α) Πουθενά, οι δίσκοι είναι πάντα βιδωμένοι μέσα</button>
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(1, 1, this)">Β) Στον υπολογιστή για περισσότερο χώρο, μεταφορά αρχείων ή αντίγραφα ασφαλείας</button>
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(1, 2, this)">Γ) Μόνο στην πρίζα του ρεύματος</button>
+          </div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-question">3. Γιατί συνηθίζουμε να κρατάμε αντίγραφα ασφαλείας των αρχείων μας;</div>
+          <div class="quiz-options" data-q="2">
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(2, 0, this)">Α) Για να γεμίζουμε τον υπολογιστή άσκοπα</button>
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(2, 1, this)">Β) Επειδή όλα τα μέσα αποθήκευσης μπορεί κάποια στιγμή να χαλάσουν</button>
+            <button class="quiz-opt-btn" onclick="pickQuizOpt(2, 2, this)">Γ) Γιατί μας το ζητάει το ποντίκι</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="checkFinalQuiz()">✔️ Έλεγχος Κουίζ</button>
+      <div class="feedback-box" id="quiz-fb"></div>
+    </section>
+
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master της Αποθήκευσης!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ο Ήρωνας, η Υπατία και ο Τάλως σε συγχαίρουν! Έμαθες τα πάντα για τους δίσκους HDD/SSD, τις μνήμες φλας, τις κάρτες μνήμης και τα αντίγραφα ασφαλείας!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER (Web Audio API) */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      if (type === 'correct') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.1);
+        osc.frequency.setValueAtTime(783.99, now + 0.2);
+        osc.frequency.setValueAtTime(1046.50, now + 0.3);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.5);
+      } else if (type === 'wrong') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.setValueAtTime(110, now + 0.15);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+        gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.08);
+      }
+    }
+
+    const completedActs = new Set();
+    function markActDone(index) {
+      if (!completedActs.has(index)) {
+        completedActs.add(index);
+        document.getElementById('global-stars').textContent = completedActs.size;
+        playSound('correct');
+        if (completedActs.size === 8) {
+          setTimeout(() => document.getElementById('victory-modal').classList.add('active'), 600);
+        }
+      }
+    }
+
+    function switchTab(index) {
+      playSound('click');
+      const tabs = document.querySelectorAll('.tab-btn');
+      const sections = document.querySelectorAll('.activity-section');
+      tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+      sections.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+    function closeModal() { document.getElementById('victory-modal').classList.remove('active'); }
+
+    /* =========================================================
+       ACT 1: PRESENTATION
+    ========================================================== */
+    const slidesData = [
+      {
+        title: "1. Τι είναι τα Μέσα Αποθήκευσης;",
+        speech: "«Εκτός από τον δίσκο αποθήκευσης που βρίσκεται μέσα στον υπολογιστή, μπορούμε να συνδέσουμε και εξωτερικό δίσκο για να έχουμε περισσότερο χώρο, να μεταφέρουμε τα αρχεία μας ή να τα αντιγράψουμε προληπτικά για ασφάλεια!»",
+        visual: "💽 <strong>Δίσκος Αποθήκευσης:</strong> Εσωτερικός ή Εξωτερικός (HDD & SSD)!"
+      },
+      {
+        title: "2. Σκληρός Δίσκος HDD και Μαλακός SSD",
+        speech: "«Οι πιο συνηθισμένες επιλογές είναι ο σκληρός δίσκος HDD και ο μαλακός δίσκος SSD. Ο δίσκος SSD λειτουργεί πιο γρήγορα! Συνήθως, ο δίσκος έχει χωρητικότητα πολλών GB ή είναι ακόμα μεγαλύτερος!»",
+        visual: "⚡ <strong>SSD:</strong> Ταχύτατος | 💽 <strong>HDD:</strong> Κλασικός σκληρός δίσκος"
+      },
+      {
+        title: "3. Μνήμη Φλας (USB) & Κάρτες Μνήμης",
+        speech: "«Η μνήμη φλας είναι μικρή, ελαφριά, φτηνή και ιδανική για μεταφορά αρχείων με χωρητικότητα μερικών GB. Οι κάρτες μνήμης χρησιμοποιούνται κυρίως σε κάμερες, φωτογραφικές και κινητά τηλέφωνα!»",
+        visual: "🔌 <strong>Μνήμη Φλας:</strong> Μερικά GB | 📷 <strong>Κάρτα Μνήμης:</strong> Αρκετά GB σε κάμερες/κινητά"
+      },
+      {
+        title: "4. Αντίγραφα Ασφαλείας (Backups)",
+        speech: "«Όλα τα μέσα αποθήκευσης είναι εξαρτήματα που μπορεί να χαλάσουν! Συνηθίζουμε να αντιγράφουμε τα αρχεία μας, έτσι ώστε, αν χαλάσει το μέσο αποθήκευσης, να βρούμε τα αντίγραφα που έχουμε κρατήσει!»",
+        visual: "🛡️ <strong>Κανόνας Ασφάλειας:</strong> Κρατάμε πάντα αντίγραφα των σημαντικών μας αρχείων!"
+      }
+    ];
+    let currentSlide = 0;
+
+    function renderPresentationSlide(idx) {
+      currentSlide = idx;
+      const s = slidesData[idx];
+      document.getElementById('slide-title').textContent = s.title;
+      document.getElementById('slide-counter').textContent = `${idx + 1} / ${slidesData.length}`;
+      document.getElementById('slide-text').textContent = s.speech;
+      document.getElementById('slide-visual').innerHTML = s.visual;
+
+      const dots = document.getElementById('slide-dots');
+      dots.innerHTML = '';
+      slidesData.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `slide-dot ${i === idx ? 'active' : ''}`;
+        dot.onclick = () => { playSound('click'); renderPresentationSlide(i); };
+        dots.appendChild(dot);
+      });
+    }
+
+    function changeSlide(dir) {
+      playSound('click');
+      const target = currentSlide + dir;
+      if (target >= 0 && target < slidesData.length) {
+        renderPresentationSlide(target);
+      }
+    }
+
+    /* =========================================================
+       ACT 2: CAPACITY SORTING
+    ========================================================== */
+    const originalCapData = [
+      { id: 1, name: "Δίσκος Αποθήκευσης (HDD / SSD)", cap: "Πολλά GB ή ακόμα μεγαλύτερος", icon: "💽" },
+      { id: 2, name: "Κάρτα Μνήμης (SD Card)", cap: "Αρκετά GB (για κάμερες/κινητά)", icon: "📷" },
+      { id: 3, name: "Μνήμη Φλας (USB Flash)", cap: "Μερικά GB (για μεταφορά αρχείων)", icon: "🔌" }
+    ];
+    let userCapData = [];
+
+    function resetCapacityOrder() {
+      userCapData = [...originalCapData].sort(() => Math.random() - 0.5);
+      renderCapacity();
+      document.getElementById('cap-fb').style.display = 'none';
+    }
+
+    function renderCapacity() {
+      const list = document.getElementById('capacity-list');
+      list.innerHTML = '';
+      userCapData.forEach((item, idx) => {
+        const el = document.createElement('div');
+        el.className = 'cap-item';
+        el.innerHTML = `
+          <div class="cap-info">
+            <span class="cap-icon">${item.icon}</span>
+            <div>
+              <div>${item.name}</div>
+              <div style="font-size: 1.1rem; color: #64748b; font-weight: 700;">${item.cap}</div>
+            </div>
+          </div>
+          <div class="cap-actions">
+            <button class="cap-btn-move" onclick="moveCap(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>⬆️</button>
+            <button class="cap-btn-move" onclick="moveCap(${idx}, 1)" ${idx === userCapData.length - 1 ? 'disabled' : ''}>⬇️</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    function moveCap(idx, dir) {
+      playSound('click');
+      const target = idx + dir;
+      if (target >= 0 && target < userCapData.length) {
+        [userCapData[idx], userCapData[target]] = [userCapData[target], userCapData[idx]];
+        renderCapacity();
+      }
+    }
+
+    function checkCapacityOrder() {
+      const fb = document.getElementById('cap-fb');
+      fb.style.display = 'flex';
+      const isCorrect = userCapData.every((item, i) => item.id === i + 1);
+      if (isCorrect) {
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Μπράβο! Τοποθέτησες σωστά τα μέσα: 1ος ο Δίσκος (Πολλά GB ή μεγαλύτερος), μετά η Κάρτα Μνήμης (Αρκετά GB) και η Μνήμη Φλας (Μερικά GB)!';
+        markActDone(1);
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Κάποια μέσα δεν είναι στη σωστή σειρά. Θυμήσου: ο δίσκος αποθήκευσης έχει τη μεγαλύτερη χωρητικότητα!';
+      }
+    }
+
+    /* =========================================================
+       ACT 3: MATCHING
+    ========================================================== */
+    function checkMatching() {
+      const m1 = document.getElementById('match-1').value;
+      const m2 = document.getElementById('match-2').value;
+      const m3 = document.getElementById('match-3').value;
+      const fb = document.getElementById('match-fb');
+      fb.style.display = 'flex';
+
+      if (m1 === 'card' && m2 === 'flash' && m3 === 'disk') {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Άριστα! Κάρτα μνήμης για τη φωτογραφική μηχανή, μνήμη φλας για τη μεταφορά στην τσέπη και δίσκος HDD/SSD για τον υπολογιστή!';
+        markActDone(2);
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Έχεις κάποιο λάθος ταίριασμα. Διάβασε προσεκτικά τις περιγραφές και ξαναπροσπάθησε!';
+      }
+    }
+
+    /* =========================================================
+       ACT 4: HDD vs SSD SPEED RACE
+    ========================================================== */
+    let raceRunning = false;
+    function startDiskRace() {
+      if (raceRunning) return;
+      raceRunning = true;
+      playSound('click');
+      document.getElementById('btn-start-race').disabled = true;
+
+      const ssdBar = document.getElementById('ssd-bar');
+      const hddBar = document.getElementById('hdd-bar');
+      const ssdStatus = document.getElementById('ssd-status');
+      const hddStatus = document.getElementById('hdd-status');
+      const fb = document.getElementById('race-fb');
+
+      ssdBar.style.width = '0%';
+      hddBar.style.width = '0%';
+      ssdStatus.textContent = '0%';
+      hddStatus.textContent = '0%';
+      fb.style.display = 'none';
+
+      let ssdP = 0, hddP = 0;
+      const raceInterval = setInterval(() => {
+        ssdP += 5; // SSD is 2.5x faster
+        hddP += 2;
+
+        if (ssdP > 100) ssdP = 100;
+        if (hddP > 100) hddP = 100;
+
+        ssdBar.style.width = ssdP + '%';
+        hddBar.style.width = hddP + '%';
+        ssdStatus.textContent = ssdP + '%';
+        hddStatus.textContent = hddP + '%';
+
+        if (ssdP === 100 && hddP < 100) {
+          ssdStatus.textContent = 'ΤΕΡΜΑΤΙΣΕ! 🏆';
+        }
+
+        if (ssdP === 100 && hddP === 100) {
+          clearInterval(raceInterval);
+          raceRunning = false;
+          document.getElementById('btn-start-race').disabled = false;
+          hddStatus.textContent = 'ΤΕΡΜΑΤΙΣΕ!';
+          playSound('correct');
+          fb.style.display = 'flex';
+          fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Νικητής ο SSD! Όπως αναφέρει το σχολικό μας βιβλίο: «Ο δίσκος SSD λειτουργεί πιο γρήγορα» από τον κλασικό μηχανικό HDD!';
+          markActDone(3);
+        }
+      }, 50);
+    }
+
+    /* =========================================================
+       ACT 5: TRUE OR FALSE
+    ========================================================== */
+    const userTF = {};
+    function chooseTF(btn, val) {
+      playSound('click');
+      const row = btn.closest('.tf-row');
+      const allBtns = row.querySelectorAll('.tf-btn');
+      allBtns.forEach(b => b.classList.remove('selected-true', 'selected-false'));
+
+      if (val) btn.classList.add('selected-true');
+      else btn.classList.add('selected-false');
+
+      const index = Array.from(document.querySelectorAll('.tf-row')).indexOf(row);
+      userTF[index] = val;
+    }
+
+    function checkTFAnswers() {
+      const rows = document.querySelectorAll('.tf-row');
+      const fb = document.getElementById('tf-fb');
+      fb.style.display = 'flex';
+
+      if (Object.keys(userTF).length < rows.length) {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Παρακαλώ απάντησε σε όλες τις προτάσεις (Σωστό ή Λάθος) προτού κάνεις έλεγχο!';
+        return;
+      }
+
+      let allCorrect = true;
+      rows.forEach((r, idx) => {
+        const correctVal = r.getAttribute('data-ans') === 'true';
+        if (userTF[idx] !== correctVal) allCorrect = false;
+      });
+
+      if (allCorrect) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Άριστα 4 στα 4! Απάντησες σωστά σε όλες τις ερωτήσεις του σχολικού βιβλίου (σελ. 49)!';
+        markActDone(4);
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Υπάρχουν κάποια λάθη. Θυμήσου: ο δίσκος αποθήκευσης ΔΕΝ βρίσκεται μόνο μέσα στον υπολογιστή (υπάρχει και εξωτερικός), και ο SSD είναι πιο γρήγορος!';
+      }
+    }
+
+    /* =========================================================
+       ACT 6: BACKUP CHALLENGE
+    ========================================================== */
+    function pickBackup(idx, btn) {
+      const fb = document.getElementById('backup-fb');
+      fb.style.display = 'flex';
+      document.querySelectorAll('.backup-opt-btn').forEach(b => b.classList.remove('correct-choice', 'wrong-choice'));
+
+      if (idx === 1) {
+        playSound('correct');
+        btn.classList.add('correct-choice');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Σωτήρια Επιλογή! Όπως λέει το βιβλίο μας: «Συνηθίζουμε να αντιγράφουμε τα αρχεία μας, έτσι ώστε, αν χαλάσει το μέσο αποθήκευσης, να βρούμε τα αντίγραφα που έχουμε κρατήσει»!';
+        markActDone(5);
+      } else {
+        playSound('wrong');
+        btn.classList.add('wrong-choice');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '❌ Λάθος σκέψη! Αν δεν έχουμε κρατήσει αντίγραφα ασφαλείας, τα αρχεία μας κινδυνεύουν σοβαρά σε μια βλάβη!';
+      }
+    }
+
+    /* =========================================================
+       ACT 7: RIDDLES
+    ========================================================== */
+    const riddleAns = { 1: false, 2: false, 3: false };
+    function checkRiddle(num, type, btn) {
+      const parent = document.getElementById(`riddle-${num}`);
+      parent.querySelectorAll('.riddle-btn').forEach(b => b.classList.remove('correct-pick', 'wrong-pick'));
+
+      const isRight = (num === 1 && type === 'flash') || (num === 2 && type === 'card') || (num === 3 && type === 'ssd');
+      if (isRight) {
+        playSound('correct');
+        btn.classList.add('correct-pick');
+        riddleAns[num] = true;
+      } else {
+        playSound('wrong');
+        btn.classList.add('wrong-pick');
+        riddleAns[num] = false;
+      }
+
+      if (riddleAns[1] && riddleAns[2] && riddleAns[3]) {
+        const fb = document.getElementById('riddle-fb');
+        fb.style.display = 'flex';
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Μπράβο! Έλυσες και τα 3 αινίγματα των μέσων αποθήκευσης!';
+        markActDone(6);
+      }
+    }
+
+    /* =========================================================
+       ACT 8: FINAL QUIZ
+    ========================================================== */
+    const userQuiz = {};
+    const quizCorrectAnswers = [0, 1, 1];
+
+    function pickQuizOpt(qIdx, optIdx, btn) {
+      playSound('click');
+      userQuiz[qIdx] = optIdx;
+      const opts = document.querySelector(`.quiz-options[data-q="${qIdx}"]`).children;
+      Array.from(opts).forEach(b => {
+        b.style.borderColor = '#cbd5e1';
+        b.style.background = 'white';
+      });
+      btn.style.borderColor = 'var(--primary)';
+      btn.style.background = '#eff6ff';
+    }
+
+    function checkFinalQuiz() {
+      const fb = document.getElementById('quiz-fb');
+      fb.style.display = 'flex';
+
+      if (Object.keys(userQuiz).length < 3) {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Παρακαλώ απάντησε και στις 3 ερωτήσεις του κουίζ!';
+        return;
+      }
+
+      let allOk = true;
+      for (let i = 0; i < 3; i++) {
+        const opts = document.querySelector(`.quiz-options[data-q="${i}"]`).children;
+        Array.from(opts).forEach((b, idx) => {
+          b.classList.remove('selected-correct', 'selected-wrong');
+          if (idx === userQuiz[i]) {
+            if (idx === quizCorrectAnswers[i]) b.classList.add('selected-correct');
+            else { b.classList.add('selected-wrong'); allOk = false; }
+          }
+        });
+      }
+
+      if (allOk) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Άριστα 3 στα 3! Είσαι πλέον επίσημος ειδικός στα Μέσα Αποθήκευσης της Δ΄ Δημοτικού!';
+        markActDone(7);
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Υπάρχουν κάποια λάθη σημειωμένα με κόκκινο. Ξανασκέψου τις απαντήσεις σου!';
+      }
+    }
+
+    /* DOWNLOAD FEATURE */
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima12_Mesa_Apothikefsis_D_Dimotikou.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    /* INIT */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderPresentationSlide(0);
+      resetCapacityOrder();
+    });
+  </script>
+</body>
+</html>
