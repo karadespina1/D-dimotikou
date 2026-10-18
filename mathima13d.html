@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 13: Οι Εφαρμογές του Υπολογιστή - Πληροφορική Δ΄ Δημοτικού</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #7c3aed;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --accent-pink: #db2777;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 50%, #fef3c7 100%);
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 26px;
+      --border-radius-btn: 18px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 30px -10px rgba(37, 99, 235, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid rgba(37, 99, 235, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1.1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.95rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.2rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.3s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .level-badge-container {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 0.4rem 1.1rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-pill.active {
+      background: #eff6ff;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.95rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border-radius: var(--border-radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    .btn-success { background: var(--accent-green); color: white; }
+    .btn-success:hover { background: #047857; transform: translateY(-2px); }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-secondary:hover { background: #cbd5e1; }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.8rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+    .feedback-box.info { background: #e0f2fe; color: #0369a1; border: 3px solid #38bdf8; display: flex; }
+
+    /* Custom Styles for Interactive Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.8rem;
+    }
+    .game-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .game-card-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .game-card-desc {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .game-select {
+      font-size: 1.25rem;
+      font-family: inherit;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 3px solid #cbd5e1;
+      font-weight: 800;
+      background: white;
+      cursor: pointer;
+    }
+    .game-select:focus { outline: none; border-color: var(--primary); }
+
+    /* Resolution & Customization Visualizers */
+    .preview-desktop-box {
+      border: 4px solid #334155;
+      border-radius: 20px;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 1.5rem;
+    }
+    .preview-wallpaper {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      transition: filter 0.3s, opacity 0.3s;
+    }
+    .preview-taskbar {
+      position: relative;
+      z-index: 2;
+      height: 48px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 1rem;
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .preview-start-btn {
+      background: var(--primary);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .preview-icons {
+      position: relative;
+      z-index: 2;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      width: 100px;
+    }
+    .preview-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>💻 Μάθημα 13: Οι Εφαρμογές του Υπολογιστή</h1>
+        <p>8 Διαδραστικές Δραστηριότητες Πολλαπλών Επιπέδων (Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε αυτό το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)"><span>1️⃣</span> Κατηγορίες Εφαρμογών</button>
+    <button class="tab-btn" onclick="switchTab(1)"><span>2️⃣</span> Ελεύθερο ή Εμπορικό;</button>
+    <button class="tab-btn" onclick="switchTab(2)"><span>3️⃣</span> Λειτουργικά Συστήματα</button>
+    <button class="tab-btn" onclick="switchTab(3)"><span>4️⃣</span> Σουίτα LibreOffice</button>
+    <button class="tab-btn" onclick="switchTab(4)"><span>5️⃣</span> Εξατομίκευση Desktop</button>
+    <button class="tab-btn" onclick="switchTab(5)"><span>6️⃣</span> Ρυθμίσεις & Ανάλυση</button>
+    <button class="tab-btn" onclick="switchTab(6)"><span>7️⃣</span> Ντετέκτιβ Εφαρμογών</button>
+    <button class="tab-btn" onclick="switchTab(7)"><span>8️⃣</span> Μέγα Κουίζ Γνώσεων</button>
+  </nav>
+
+  <main>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 1: ΚΑΤΗΓΟΡΙΕΣ ΕΦΑΡΜΟΓΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section active" id="act-0">
+      <div class="activity-header">
+        <h2>1️⃣ Ταξινόμηση Εφαρμογών σε Κατηγορίες</h2>
+        <p>Το λογισμικό χωρίζεται σε κατηγορίες ανάλογα με τη χρησιμότητά του. Ολοκλήρωσε και τα 3 επίπεδα!</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct1Level(1)">1: Βασικές Εφαρμογές</button>
+        <button class="level-pill" onclick="setAct1Level(2)">2: Ειδικές Εργασίες</button>
+        <button class="level-pill" onclick="setAct1Level(3)">3: Γνωστά Προγράμματα</button>
+      </div>
+
+      <div id="act1-content" class="cards-grid"></div>
+
+      <button class="btn btn-primary" onclick="checkAct1()">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act1-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 2: ΕΛΕΥΘΕΡΟ Ή ΕΜΠΟΡΙΚΟ ΛΟΓΙΣΜΙΚΟ; (2 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-1">
+      <div class="activity-header">
+        <h2>2️⃣ Ελεύθερο ή Εμπορικό Λογισμικό;</h2>
+        <p>«Το λογισμικό που παρέχεται δωρεάν ονομάζεται ελεύθερο, ενώ αυτό που πωλείται ονομάζεται εμπορικό».</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct2Level(1)">1: Ορισμοί & Έννοιες</button>
+        <button class="level-pill" onclick="setAct2Level(2)">2: Παραδείγματα Λογισμικού</button>
+      </div>
+
+      <div id="act2-content" class="cards-grid"></div>
+
+      <button class="btn btn-primary" onclick="checkAct2()">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act2-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 3: ΛΕΙΤΟΥΡΓΙΚΑ ΣΥΣΤΗΜΑΤΑ (3 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-2">
+      <div class="activity-header">
+        <h2>3️⃣ Ο Μαέστρος του Υπολογιστή: Το Λειτουργικό Σύστημα</h2>
+        <p>Το πρώτο λογισμικό που ενεργοποιείται και ελέγχει τα πάντα! Χωρίς αυτό, ο υπολογιστής δεν λειτουργεί.</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct3Level(1)">1: Οι Βασικοί Ρόλοι</button>
+        <button class="level-pill" onclick="setAct3Level(2)">2: Λειτουργικά για Η/Υ</button>
+        <button class="level-pill" onclick="setAct3Level(3)">3: Λειτουργικά Κινητών</button>
+      </div>
+
+      <div id="act3-content" class="cards-grid"></div>
+
+      <button class="btn btn-primary" onclick="checkAct3()">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act3-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 4: ΣΟΥΙΤΑ LIBREOFFICE (2 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-3">
+      <div class="activity-header">
+        <h2>4️⃣ Οι Εφαρμογές Γραφείου του LibreOffice</h2>
+        <p>Μάθε ποια εφαρμογή της δωρεάν σουίτας LibreOffice (Writer, Impress, Calc) επιλέγουμε για κάθε σχολική εργασία.</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct4Level(1)">1: Αντιστοίχιση Εργαλείων</button>
+        <button class="level-pill" onclick="setAct4Level(2)">2: Σχολικά Σενάρια</button>
+      </div>
+
+      <div id="act4-content" class="cards-grid"></div>
+
+      <button class="btn btn-primary" onclick="checkAct4()">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act4-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 5: ΕΞΑΤΟΜΙΚΕΥΣΗ DESKTOP (2 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-4">
+      <div class="activity-header">
+        <h2>5️⃣ Προσομοιωτής Εξατομίκευσης Περιβάλλοντος Εργασίας</h2>
+        <p>Ρύθμισε το φόντο, τα χρώματα των παραθύρων και τη γραμμή εργασιών του υπολογιστή σου!</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct5Level(1)">1: Φόντο & Χρώμα Παραθύρων</button>
+        <button class="level-pill" onclick="setAct5Level(2)">2: Γραμμή Εργασιών & Έναρξη</button>
+      </div>
+
+      <div class="preview-desktop-box" id="desktop-preview">
+        <div class="preview-wallpaper" id="preview-wall" style="background-color: #3b82f6;"></div>
+        <div class="preview-icons">
+          <div class="preview-icon-item">📁<span>Έγγραφα</span></div>
+          <div class="preview-icon-item">🗑️<span>Κάδος</span></div>
+        </div>
+        <div class="preview-taskbar" id="preview-tb">
+          <span class="preview-start-btn" id="start-btn-ui">🪟 Έναρξη</span>
+          <span style="font-size: 0.95rem;">Γραμμή Εργασιών</span>
+        </div>
+      </div>
+
+      <div id="act5-controls" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;"></div>
+
+      <button class="btn btn-primary" onclick="checkAct5()">✔️ Επιβεβαίωση Ρυθμίσεων</button>
+      <div class="feedback-box" id="act5-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 6: ΡΥΘΜΙΣΕΙΣ ΟΘΟΝΗΣ & ΑΝΑΛΥΣΗ (2 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-5">
+      <div class="activity-header">
+        <h2>6️⃣ Εργαστήριο: Φωτεινότητα & Ανάλυση Οθόνης</h2>
+        <p>«Η ανάλυση οθόνης δείχνει πόσα εικονοστοιχεία (pixels) έχει: στήλες × γραμμές. Όσο περισσότερα, τόσο περισσότερες λεπτομέρειες!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct6Level(1)">1: Ρύθμιση Φωτεινότητας</button>
+        <button class="level-pill" onclick="setAct6Level(2)">2: Ανάλυση & Εικονοστοιχεία</button>
+      </div>
+
+      <div id="act6-content" style="background: #f8fafc; border: 3px solid #cbd5e1; border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem;"></div>
+
+      <button class="btn btn-primary" onclick="checkAct6()">✔️ Έλεγχος Εργαστηρίου</button>
+      <div class="feedback-box" id="act6-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 7: ΝΤΕΤΕΚΤΙΒ ΕΦΑΡΜΟΓΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-6">
+      <div class="activity-header">
+        <h2>7️⃣ Ο Μυστικός Ντετέκτιβ Εφαρμογών</h2>
+        <p>Διάβασε τα στοιχεία του μυστηρίου και βρες ποια συγκεκριμένη εφαρμογή ψάχνει ο χρήστης!</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct7Level(1)">1: Μυστήριο στο Σχολείο</button>
+        <button class="level-pill" onclick="setAct7Level(2)">2: Εξερεύνηση στο Διαδίκτυο</button>
+        <button class="level-pill" onclick="setAct7Level(3)">3: Κώδικας & Προγραμματισμός</button>
+      </div>
+
+      <div id="act7-card" class="game-card" style="margin-bottom: 1.5rem;"></div>
+
+      <div class="feedback-box" id="act7-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 8: ΜΕΓΑ ΚΟΥΙΖ ΓΝΩΣΕΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================================== -->
+    <section class="activity-section" id="act-7">
+      <div class="activity-header">
+        <h2>8️⃣ Το Μεγάλο Κουίζ των Εφαρμογών</h2>
+        <p>Απάντησε σωστά στις ερωτήσεις και στα 3 επίπεδα δυσκολίας για να κερδίσεις το χρυσό κύπελλο!</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct8Level(1)">1: Εύκολες Ερωτήσεις</button>
+        <button class="level-pill" onclick="setAct8Level(2)">2: Μεσαίας Δυσκολίας</button>
+        <button class="level-pill" onclick="setAct8Level(3)">3: Για Ειδικούς!</button>
+      </div>
+
+      <div id="act8-content" class="game-card" style="margin-bottom: 1.5rem;"></div>
+
+      <button class="btn btn-primary" onclick="checkAct8()">✔️ Υποβολή Απάντησης</button>
+      <div class="feedback-box" id="act8-fb"></div>
+    </section>
+
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master των Εφαρμογών!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ολοκλήρωσες με επιτυχία και τα 8 επίπεδα των δραστηριοτήτων του Μαθήματος 13! Γνωρίζεις πλέον τα πάντα για το λειτουργικό σύστημα, τις κατηγορίες λογισμικού και τις ρυθμίσεις του υπολογιστή!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER (Web Audio API) */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      if (type === 'correct') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.1);
+        osc.frequency.setValueAtTime(783.99, now + 0.2);
+        osc.frequency.setValueAtTime(1046.50, now + 0.3);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.5);
+      } else if (type === 'wrong') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.setValueAtTime(110, now + 0.15);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+        gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.08);
+      }
+    }
+
+    const completedActs = new Set();
+    function markActDone(index) {
+      if (!completedActs.has(index)) {
+        completedActs.add(index);
+        document.getElementById('global-stars').textContent = completedActs.size;
+        playSound('correct');
+        if (completedActs.size === 8) {
+          setTimeout(() => document.getElementById('victory-modal').classList.add('active'), 600);
+        }
+      }
+    }
+
+    function switchTab(index) {
+      playSound('click');
+      const tabs = document.querySelectorAll('.tab-btn');
+      const sections = document.querySelectorAll('.activity-section');
+      tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+      sections.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+    function closeModal() { document.getElementById('victory-modal').classList.remove('active'); }
+
+    /* =========================================================
+       ACT 1: ΚΑΤΗΓΟΡΙΕΣ ΕΦΑΡΜΟΓΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act1Level = 1;
+    const act1Data = {
+      1: [
+        { desc: "Γράφουμε παραμύθια και σχολικές εργασίες με έντονα γράμματα.", correct: "text", label: "Επεξεργασία Κειμένου" },
+        { desc: "Ζωγραφίζουμε πολύχρωμα σχέδια και ψηφιακές ζωγραφιές.", correct: "paint", label: "Ζωγραφική" },
+        { desc: "Πλοηγούμαστε και επισκεπτόμαστε ιστοσελίδες στο διαδίκτυο.", correct: "browser", label: "Φυλλομετρητής" }
+      ],
+      2: [
+        { desc: "Φτιάχνουμε διαφάνειες με λίγα λόγια και εικόνες για να παρουσιάσουμε στην τάξη.", correct: "pres", label: "Παρουσιάσεις" },
+        { desc: "Κάνουμε αριθμητικές πράξεις και φτιάχνουμε πίνακες και γραφήματα.", correct: "calc", label: "Υπολογιστικά Φύλλα" },
+        { desc: "Δημιουργούμε δικά μας προγράμματα και παιχνίδια με εντολές.", correct: "code", label: "Προγραμματισμός" }
+      ],
+      3: [
+        { desc: "Προγραμματίζουμε τη γατούλα και δημιουργούμε ιστορίες στο Scratch.", correct: "code", label: "Προγραμματισμός" },
+        { desc: "Επεξεργαζόμαστε και αλλάζουμε χρώματα σε ψηφιακές εικόνες με το Gimp.", correct: "img", label: "Επεξεργασία Εικόνας" },
+        { desc: "Ανοίγουμε ιστοσελίδες χρησιμοποιώντας το Chrome, το Edge ή το Firefox.", correct: "browser", label: "Φυλλομετρητής" }
+      ]
+    };
+
+    function setAct1Level(lvl) {
+      playSound('click');
+      act1Level = lvl;
+      document.querySelectorAll('#act-0 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct1();
+    }
+
+    function renderAct1() {
+      const container = document.getElementById('act1-content');
+      container.innerHTML = '';
+      const items = act1Data[act1Level];
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div class="game-card-title">📌 Εργασία ${idx + 1}</div>
+          <div class="game-card-desc">${item.desc}</div>
+          <select class="game-select" id="act1-sel-${idx}">
+            <option value="">-- Επίλεξε Κατηγορία --</option>
+            <option value="text">Επεξεργασία Κειμένου</option>
+            <option value="paint">Ζωγραφική</option>
+            <option value="browser">Φυλλομετρητής (Browser)</option>
+            <option value="pres">Παρουσιάσεις</option>
+            <option value="calc">Υπολογιστικά Φύλλα</option>
+            <option value="code">Προγραμματισμός (Coding)</option>
+            <option value="img">Επεξεργασία Εικόνας</option>
+          </select>
+        `;
+        container.appendChild(card);
+      });
+      document.getElementById('act1-fb').style.display = 'none';
+    }
+
+    function checkAct1() {
+      const items = act1Data[act1Level];
+      const fb = document.getElementById('act1-fb');
+      fb.style.display = 'flex';
+      let allOk = true;
+
+      items.forEach((item, idx) => {
+        const val = document.getElementById(`act1-sel-${idx}`).value;
+        if (val !== item.correct) allOk = false;
+      });
+
+      if (allOk) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        if (act1Level < 3) {
+          fb.innerHTML = `🎉 Μπράβο! Ολοκλήρωσες το Επίπεδο ${act1Level}! Πάτησε το επόμενο επίπεδο για να συνεχίσεις.`;
+        } else {
+          fb.innerHTML = `🏆 Εξαιρετικά! Κατέκτησες και τα 3 επίπεδα κατηγοριοποίησης εφαρμογών! Κέρδισες το 1ο Αστέρι!`;
+          markActDone(0);
+        }
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Κάποια επιλογή δεν είναι σωστή. Ξαναδιάβασε την περιγραφή της εργασίας!';
+      }
+    }
+
+    /* =========================================================
+       ACT 2: ΕΛΕΥΘΕΡΟ Ή ΕΜΠΟΡΙΚΟ; (2 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act2Level = 1;
+    const act2Data = {
+      1: [
+        { q: "Το λογισμικό που παρέχεται εντελώς δωρεάν στους χρήστες:", correct: "free" },
+        { q: "Το λογισμικό που για να το αποκτήσουμε πρέπει να το αγοράσουμε (πωλείται):", correct: "commercial" }
+      ],
+      2: [
+        { q: "Η γλώσσα προγραμματισμού Scratch και η σουίτα LibreOffice:", correct: "free" },
+        { q: "Εμπορικές εφαρμογές όπως το Microsoft Office ή εμπορικά παιχνίδια:", correct: "commercial" }
+      ]
+    };
+
+    function setAct2Level(lvl) {
+      playSound('click');
+      act2Level = lvl;
+      document.querySelectorAll('#act-1 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct2();
+    }
+
+    function renderAct2() {
+      const container = document.getElementById('act2-content');
+      container.innerHTML = '';
+      const items = act2Data[act2Level];
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div class="game-card-title">❓ Ερώτημα ${idx + 1}</div>
+          <div class="game-card-desc">${item.q}</div>
+          <select class="game-select" id="act2-sel-${idx}">
+            <option value="">-- Επίλεξε Είδος --</option>
+            <option value="free">Ελεύθερο Λογισμικό (Δωρεάν)</option>
+            <option value="commercial">Εμπορικό Λογισμικό (Πωλείται)</option>
+          </select>
+        `;
+        container.appendChild(card);
+      });
+      document.getElementById('act2-fb').style.display = 'none';
+    }
+
+    function checkAct2() {
+      const items = act2Data[act2Level];
+      const fb = document.getElementById('act2-fb');
+      fb.style.display = 'flex';
+      let allOk = true;
+
+      items.forEach((item, idx) => {
+        const val = document.getElementById(`act2-sel-${idx}`).value;
+        if (val !== item.correct) allOk = false;
+      });
+
+      if (allOk) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        if (act2Level < 2) {
+          fb.innerHTML = `🎉 Πολύ σωστά! Προχώρα τώρα στο Επίπεδο 2 με τα συγκεκριμένα παραδείγματα.`;
+        } else {
+          fb.innerHTML = `🏆 Μπράβο! Γνωρίζεις άριστα τη διαφορά Ελεύθερου και Εμπορικού Λογισμικού! (2ο Αστέρι)`;
+          markActDone(1);
+        }
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Κάποια απάντηση είναι λάθος. Θυμήσου: Δωρεάν = Ελεύθερο, Αγορά = Εμπορικό!';
+      }
+    }
+
+    /* =========================================================
+       ACT 3: ΛΕΙΤΟΥΡΓΙΚΑ ΣΥΣΤΗΜΑΤΑ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act3Level = 1;
+    const act3Data = {
+      1: [
+        { text: "Πότε ενεργοποιείται το λειτουργικό σύστημα;", correct: "first", opts: [{ v: "first", t: "Είναι το πρώτο λογισμικό που ανοίγει μόλις ανάψουμε τον Η/Υ" }, { v: "last", t: "Μόνο όταν θέλουμε να παίξουμε παιχνίδια" }] },
+        { text: "Μπορεί ένας υπολογιστής να λειτουργήσει χωρίς λειτουργικό σύστημα;", correct: "no", opts: [{ v: "no", t: "Όχι, δεν μπορεί να κάνει καμία απολύτως εργασία!" }, { v: "yes", t: "Ναι, μπορεί να γράψει κανονικά κείμενο" }] }
+      ],
+      2: [
+        { text: "Ποιο από τα παρακάτω είναι γνωστό λειτουργικό σύστημα για υπολογιστές γραφείου και φορητούς;", correct: "win", opts: [{ v: "win", t: "Linux, Windows, MAC OS" }, { v: "other", t: "Writer, Impress, TuxPaint" }] }
+      ],
+      3: [
+        { text: "Ποια λειτουργικά συστήματα συναντάμε συνήθως σε ταμπλέτες και έξυπνα κινητά (smartphones);", correct: "mobile", opts: [{ v: "mobile", t: "Android και iOS" }, { v: "calc", t: "Excel και Calc" }] }
+      ]
+    };
+
+    function setAct3Level(lvl) {
+      playSound('click');
+      act3Level = lvl;
+      document.querySelectorAll('#act-2 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct3();
+    }
+
+    function renderAct3() {
+      const container = document.getElementById('act3-content');
+      container.innerHTML = '';
+      const items = act3Data[act3Level];
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div class="game-card-title">⚙️ Ερώτημα ${idx + 1}</div>
+          <div class="game-card-desc">${item.text}</div>
+          <select class="game-select" id="act3-sel-${idx}">
+            <option value="">-- Επίλεξε Απάντηση --</option>
+            ${item.opts.map(o => `<option value="${o.v}">${o.t}</option>`).join('')}
+          </select>
+        `;
+        container.appendChild(card);
+      });
+      document.getElementById('act3-fb').style.display = 'none';
+    }
+
+    function checkAct3() {
+      const items = act3Data[act3Level];
+      const fb = document.getElementById('act3-fb');
+      fb.style.display = 'flex';
+      let allOk = true;
+
+      items.forEach((item, idx) => {
+        const val = document.getElementById(`act3-sel-${idx}`).value;
+        if (val !== item.correct) allOk = false;
+      });
+
+      if (allOk) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        if (act3Level < 3) {
+          fb.innerHTML = `🎉 Σωστά! Πέρασε στο Επίπεδο ${act3Level + 1}!`;
+        } else {
+          fb.innerHTML = `🏆 Τέλεια! Έμαθες τα πάντα για το λειτουργικό σύστημα σε υπολογιστές και κινητά! (3ο Αστέρι)`;
+          markActDone(2);
+        }
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Κάποια απάντηση δεν είναι σωστή. Ξανασκέψου τον ρόλο του λειτουργικού!';
+      }
+    }
+
+    /* =========================================================
+       ACT 4: ΣΟΥΙΤΑ LIBREOFFICE (2 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act4Level = 1;
+    const act4Data = {
+      1: [
+        { tool: "Writer", correct: "doc", desc: "Τι είδους εφαρμογή είναι το Writer;" },
+        { tool: "Impress", correct: "pres", desc: "Τι είδους εφαρμογή είναι το Impress;" },
+        { tool: "Calc", correct: "sheet", desc: "Τι είδους εφαρμογή είναι το Calc;" }
+      ],
+      2: [
+        { tool: "Σενάριο 1", correct: "pres", desc: "«Η δασκάλα μάς ζήτησε να παρουσιάσουμε στην τάξη τα ζώα υπό εξαφάνιση με διαφάνειες και εικόνες»." },
+        { tool: "Σενάριο 2", correct: "doc", desc: "«Θέλω να γράψω ένα ποίημα για την άνοιξη και να εκτυπώσω το κείμενο»." },
+        { tool: "Σενάριο 3", correct: "sheet", desc: "«Καταγράφουμε πόσα παιδιά προτιμούν κάθε άθλημα και υπολογίζουμε το σύνολο αυτόματα»." }
+      ]
+    };
+
+    function setAct4Level(lvl) {
+      playSound('click');
+      act4Level = lvl;
+      document.querySelectorAll('#act-3 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct4();
+    }
+
+    function renderAct4() {
+      const container = document.getElementById('act4-content');
+      container.innerHTML = '';
+      const items = act4Data[act4Level];
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div class="game-card-title">📝 ${item.tool}</div>
+          <div class="game-card-desc">${item.desc}</div>
+          <select class="game-select" id="act4-sel-${idx}">
+            <option value="">-- Επίλεξε Εφαρμογή / Είδος --</option>
+            <option value="doc">Επεξεργασία Κειμένου (Writer)</option>
+            <option value="pres">Παρουσιάσεις (Impress)</option>
+            <option value="sheet">Υπολογιστικά Φύλλα (Calc)</option>
+          </select>
+        `;
+        container.appendChild(card);
+      });
+      document.getElementById('act4-fb').style.display = 'none';
+    }
+
+    function checkAct4() {
+      const items = act4Data[act4Level];
+      const fb = document.getElementById('act4-fb');
+      fb.style.display = 'flex';
+      let allOk = true;
+
+      items.forEach((item, idx) => {
+        const val = document.getElementById(`act4-sel-${idx}`).value;
+        if (val !== item.correct) allOk = false;
+      });
+
+      if (allOk) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        if (act4Level < 2) {
+          fb.innerHTML = `🎉 Μπράβο! Προχώρα στο Επίπεδο 2 για να λύσεις τα πραγματικά σχολικά σενάρια!`;
+        } else {
+          fb.innerHTML = `🏆 Εξαιρετικά! Γνωρίζεις πότε χρησιμοποιούμε Writer, Impress και Calc! (4ο Αστέρι)`;
+          markActDone(3);
+        }
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Κάποιο ταίριασμα είναι λάθος. Θυμήσου: Writer=Κείμενο, Impress=Παρουσιάσεις, Calc=Υπολογισμοί!';
+      }
+    }
+
+    /* =========================================================
+       ACT 5: ΕΞΑΤΟΜΙΚΕΥΣΗ DESKTOP (2 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act5Level = 1;
+    function setAct5Level(lvl) {
+      playSound('click');
+      act5Level = lvl;
+      document.querySelectorAll('#act-4 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct5();
+    }
+
+    function renderAct5() {
+      const ctrl = document.getElementById('act5-controls');
+      ctrl.innerHTML = '';
+      if (act5Level === 1) {
+        ctrl.innerHTML = `
+          <div style="flex: 1; min-width: 250px;">
+            <label style="font-weight: 800; display: block; margin-bottom: 0.5rem;">Εικόνα Φόντου (Wallpaper):</label>
+            <select class="game-select" style="width: 100%;" onchange="changeDesktopBg(this.value)">
+              <option value="#3b82f6">Μπλε Κλασικό</option>
+              <option value="#10b981">Πράσινο της Φύσης</option>
+              <option value="#f59e0b">Ηλιοβασίλεμα (Πορτοκαλί)</option>
+              <option value="#8b5cf6">Μοβ Μαγικό</option>
+            </select>
+          </div>
+          <div style="flex: 1; min-width: 250px;">
+            <label style="font-weight: 800; display: block; margin-bottom: 0.5rem;">Χρώμα Κουμπιού Έναρξης:</label>
+            <select class="game-select" style="width: 100%;" onchange="changeStartColor(this.value)">
+              <option value="#2563eb">Μπλε</option>
+              <option value="#dc2626">Κόκκινο</option>
+              <option value="#059669">Πράσινο</option>
+            </select>
+          </div>
+        `;
+      } else {
+        ctrl.innerHTML = `
+          <div style="flex: 1; min-width: 250px;">
+            <label style="font-weight: 800; display: block; margin-bottom: 0.5rem;">Διαφάνεια Γραμμής Εργασιών:</label>
+            <select class="game-select" style="width: 100%;" onchange="changeTaskbarOpacity(this.value)">
+              <option value="0.95">Σκούρα (Αδιαφανής)</option>
+              <option value="0.5">Ημιδιαφανής (Γυάλινη)</option>
+              <option value="0.2">Σχεδόν Αόρατη</option>
+            </select>
+          </div>
+        `;
+      }
+      document.getElementById('act5-fb').style.display = 'none';
+    }
+
+    function changeDesktopBg(color) {
+      document.getElementById('preview-wall').style.backgroundColor = color;
+      playSound('click');
+    }
+    function changeStartColor(color) {
+      document.getElementById('start-btn-ui').style.backgroundColor = color;
+      playSound('click');
+    }
+    function changeTaskbarOpacity(op) {
+      document.getElementById('preview-tb').style.backgroundColor = `rgba(15, 23, 42, ${op})`;
+      playSound('click');
+    }
+
+    function checkAct5() {
+      const fb = document.getElementById('act5-fb');
+      fb.style.display = 'flex';
+      playSound('correct');
+      fb.className = 'feedback-box correct';
+      if (act5Level === 1) {
+        fb.innerHTML = '🎉 Υπέροχα! Εξατομίκευσες το φόντο και τα χρώματα! Προχώρα στο Επίπεδο 2 για τις ρυθμίσεις γραμμής εργασιών.';
+      } else {
+        fb.innerHTML = '🏆 Συγχαρητήρια! Έμαθες πώς προσαρμόζουμε το περιβάλλον εργασίας στις προτιμήσεις μας! (5ο Αστέρι)';
+        markActDone(4);
+      }
+    }
+
+    /* =========================================================
+       ACT 6: ΡΥΘΜΙΣΕΙΣ ΟΘΟΝΗΣ & ΑΝΑΛΥΣΗ (2 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act6Level = 1;
+    function setAct6Level(lvl) {
+      playSound('click');
+      act6Level = lvl;
+      document.querySelectorAll('#act-5 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct6();
+    }
+
+    function renderAct6() {
+      const container = document.getElementById('act6-content');
+      if (act6Level === 1) {
+        container.innerHTML = `
+          <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem; color: #1e3a8a;">
+            💡 Σενάριο Φωτεινότητας: Εργάζεσαι στο δωμάτιό σου το βράδυ με χαμηλό φωτισμό. Τι πρέπει να κάνεις στη φωτεινότητα της οθόνης για να μην κουράζονται τα μάτια σου;
+          </div>
+          <select class="game-select" id="act6-q1" style="width: 100%;">
+            <option value="">-- Επίλεξε Ενέργεια --</option>
+            <option value="max">Να τη βάλω στο 100% μέγιστη για να τυφλώνομαι</option>
+            <option value="lower">Να μειώσω τη φωτεινότητα σε κατάλληλο επίπεδο</option>
+            <option value="off">Να κλείσω εντελώς τον υπολογιστή και να μην ξαναδιαβάσω</option>
+          </select>
+        `;
+      } else {
+        container.innerHTML = `
+          <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem; color: #1e3a8a;">
+            📐 Τι είναι η «Ανάλυση Οθόνης» σύμφωνα με το σχολικό βιβλίο;
+          </div>
+          <select class="game-select" id="act6-q2" style="width: 100%;">
+            <option value="">-- Επίλεξε Ορισμό --</option>
+            <option value="pixels">Δείχνει πόσα εικονοστοιχεία (στήλες × γραμμές pixels) έχει η οθόνη</option>
+            <option value="weight">Δείχνει πόσα κιλά ζυγίζει η οθόνη του υπολογιστή</option>
+            <option value="sound">Δείχνει πόσο δυνατά παίζουν τα ηχεία της οθόνης</option>
+          </select>
+        `;
+      }
+      document.getElementById('act6-fb').style.display = 'none';
+    }
+
+    function checkAct6() {
+      const fb = document.getElementById('act6-fb');
+      fb.style.display = 'flex';
+      if (act6Level === 1) {
+        const val = document.getElementById('act6-q1').value;
+        if (val === 'lower') {
+          playSound('correct');
+          fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Πολύ σωστά! Προσαρμόζουμε τη φωτεινότητα ανάλογα με το φως του χώρου. Προχώρα στο Επίπεδο 2!';
+        } else {
+          playSound('wrong');
+          fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Ξανασκέψου: σε σκοτεινό δωμάτιο θέλουμε απαλό φως για προστασία των ματιών!';
+        }
+      } else {
+        const val = document.getElementById('act6-q2').value;
+        if (val === 'pixels') {
+          playSound('correct');
+          fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Όσα περισσότερα εικονοστοιχεία (pixels) έχει η οθόνη, τόσο μεγαλύτερη λεπτομέρεια βλέπουμε! (6ο Αστέρι)';
+          markActDone(5);
+        } else {
+          playSound('wrong');
+          fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Λάθος επιλογή! Η ανάλυση σχετίζεται με τα εικονοστοιχεία (pixels)!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 7: ΝΤΕΤΕΚΤΙΒ ΕΦΑΡΜΟΓΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act7Level = 1;
+    const act7Cases = {
+      1: {
+        clue: "🔍 Στοιχείο 1: «Ο μαθητής θέλει να γράψει μια έκθεση με τίτλο 'Οι καλοκαιρινές μου διακοπές', να αλλάξει γραμματοσειρά και να βάλει έντονα γράμματα». Ποια εφαρμογή ψάχνει;",
+        correct: "writer",
+        opts: [
+          { v: "writer", t: "Επεξεργαστή Κειμένου (LibreOffice Writer)" },
+          { v: "calc", t: "Υπολογιστικό Φύλλο (Calc)" },
+          { v: "scratch", t: "Scratch" }
+        ]
+      },
+      2: {
+        clue: "🔍 Στοιχείο 2: «Η μαθήτρια θέλει να ψάξει πληροφορίες στο διαδίκτυο για τον Παρθενώνα και να ανοίξει ιστοσελίδες». Ποια εφαρμογή ψάχνει;",
+        correct: "browser",
+        opts: [
+          { v: "browser", t: "Φυλλομετρητή (Firefox / Chrome / Edge)" },
+          { v: "paint", t: "Ζωγραφική TuxPaint" },
+          { v: "impress", t: "Παρουσιάσεις Impress" }
+        ]
+      },
+      3: {
+        clue: "🔍 Στοιχείο 3: «Ο μαθητής θέλει να ενώσει εντολές σε μπλοκ, να προγραμματίσει κίνηση χαρακτήρων και να φτιάξει ένα ηλεκτρονικό παιχνίδι». Ποια εφαρμογή ψάχνει;",
+        correct: "scratch",
+        opts: [
+          { v: "scratch", t: "Εφαρμογή Προγραμματισμού (Scratch)" },
+          { v: "writer", t: "Επεξεργαστή Κειμένου Writer" },
+          { v: "calc", t: "Υπολογιστικά Φύλλα Calc" }
+        ]
+      }
+    };
+
+    function setAct7Level(lvl) {
+      playSound('click');
+      act7Level = lvl;
+      document.querySelectorAll('#act-6 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct7();
+    }
+
+    function renderAct7() {
+      const card = document.getElementById('act7-card');
+      const c = act7Cases[act7Level];
+      card.innerHTML = `
+        <div class="game-card-title">🕵️ Υπόθεση Ντετέκτιβ ${act7Level}</div>
+        <div class="game-card-desc" style="font-size: 1.3rem;">${c.clue}</div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
+          ${c.opts.map(o => `
+            <button class="btn btn-secondary" onclick="checkAct7Answer('${o.v}', this)">
+              ${o.t}
+            </button>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('act7-fb').style.display = 'none';
+    }
+
+    function checkAct7Answer(val, btn) {
+      const c = act7Cases[act7Level];
+      const fb = document.getElementById('act7-fb');
+      fb.style.display = 'flex';
+
+      if (val === c.correct) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        if (act7Level < 3) {
+          fb.innerHTML = `🎉 Μπράβο Ντετέκτιβ! Έλυσες την Υπόθεση ${act7Level}! Πέρασε στην επόμενη.`;
+        } else {
+          fb.innerHTML = `🏆 Συγχαρητήρια! Έλυσες και τις 3 υποθέσεις! Είσαι αληθινός ειδικός στις εφαρμογές! (7ο Αστέρι)`;
+          markActDone(6);
+        }
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '❌ Λάθος εφαρμογή! Ξαναδιάβασε το στοιχείο προσεκτικά!';
+      }
+    }
+
+    /* =========================================================
+       ACT 8: ΜΕΓΑ ΚΟΥΙΖ ΓΝΩΣΕΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act8Level = 1;
+    const act8Questions = {
+      1: {
+        q: "1. Ποιες είναι οι εφαρμογές που μαζί ονομάζονται «εφαρμογές γραφείου»;",
+        correct: 0,
+        opts: [
+          "Επεξεργασία κειμένου, παρουσιάσεις και υπολογιστικά φύλλα",
+          "Μόνο τα παιχνίδια και η μουσική",
+          "Μόνο η ζωγραφική TuxPaint"
+        ]
+      },
+      2: {
+        q: "2. Ποια είναι η βασική δουλειά του λειτουργικού συστήματος;",
+        correct: 1,
+        opts: [
+          "Να καθαρίζει τη σκόνη από την οθόνη του υπολογιστή",
+          "Να δείχνει την επιφάνεια εργασίας και να ελέγχει τη συνεργασία εφαρμογών και συσκευών",
+          "Να παίζει αυτόματα μουσική μόλις πατήσουμε το ποντίκι"
+        ]
+      },
+      3: {
+        q: "3. Τι συμβαίνει όταν αλλάζουμε την ανάλυση της οθόνης σε μεγαλύτερη;",
+        correct: 2,
+        opts: [
+          "Ο υπολογιστής σβήνει για πάντα",
+          "Τα γράμματα εξαφανίζονται και δεν μπορούμε να γράψουμε",
+          "Η οθόνη έχει περισσότερα εικονοστοιχεία (pixels) και φαίνονται περισσότερες λεπτομέρειες"
+        ]
+      }
+    };
+    let userAct8Choice = null;
+
+    function setAct8Level(lvl) {
+      playSound('click');
+      act8Level = lvl;
+      document.querySelectorAll('#act-7 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      userAct8Choice = null;
+      renderAct8();
+    }
+
+    function renderAct8() {
+      const container = document.getElementById('act8-content');
+      const item = act8Questions[act8Level];
+      container.innerHTML = `
+        <div class="game-card-title">❓ Ερώτηση Επιπέδου ${act8Level}</div>
+        <div class="game-card-desc" style="font-size: 1.35rem; font-weight: 800; color: #0f172a;">${item.q}</div>
+        <div style="display: flex; flex-direction: column; gap: 0.9rem; margin-top: 1rem;" id="act8-opts">
+          ${item.opts.map((o, idx) => `
+            <button class="btn btn-secondary" style="text-align: left; justify-content: flex-start;" onclick="pickAct8Opt(${idx}, this)">
+              ${o}
+            </button>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('act8-fb').style.display = 'none';
+    }
+
+    function pickAct8Opt(idx, btn) {
+      playSound('click');
+      userAct8Choice = idx;
+      document.querySelectorAll('#act8-opts button').forEach(b => {
+        b.style.borderColor = 'transparent';
+        b.style.background = '#e2e8f0';
+      });
+      btn.style.background = '#dbeafe';
+      btn.style.borderColor = 'var(--primary)';
+    }
+
+    function checkAct8() {
+      const fb = document.getElementById('act8-fb');
+      fb.style.display = 'flex';
+
+      if (userAct8Choice === null) {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '⚠️ Παρακαλώ επίλεξε μία απάντηση!';
+        return;
+      }
+
+      const item = act8Questions[act8Level];
+      if (userAct8Choice === item.correct) {
+        playSound('correct');
+        fb.className = 'feedback-box correct';
+        if (act8Level < 3) {
+          fb.innerHTML = `🎉 Μπράβο! Σωστή απάντηση στο Επίπεδο ${act8Level}! Προχώρα στο επόμενο!`;
+        } else {
+          fb.innerHTML = `🏆 ΑΡΙΣΤΑ! Ολοκλήρωσες και το τελευταίο επίπεδο του Μεγάλου Κουίζ! Κέρδισες και το 8ο Αστέρι!`;
+          markActDone(7);
+        }
+      } else {
+        playSound('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = '❌ Λανθασμένη απάντηση. Ξαναδιάβασε την ερώτηση προσεκτικά!';
+      }
+    }
+
+    /* DOWNLOAD FEATURE */
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima13_Efarmoges_Ypologisti_D_Dimotikou.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    /* INIT */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAct1();
+      renderAct2();
+      renderAct3();
+      renderAct4();
+      renderAct5();
+      renderAct6();
+      renderAct7();
+      renderAct8();
+    });
+  </script>
+</body>
+</html>
