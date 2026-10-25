@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 21: Εμπλουτίζω την Παρουσίασή μου - 8 Δραστηριότητες (Δ΄ Δημοτικού)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --secondary: #d97706;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --bg-gradient: linear-gradient(135deg, #ede9fe 0%, #e0f2fe 50%, #fef3c7 100%);
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 24px;
+      --border-radius-btn: 16px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 3px solid rgba(79, 70, 229, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.9rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.2rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.25s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .level-badge-container {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 0.55rem 1.3rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-pill.active {
+      background: #ede9fe;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .sub-activity-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .sub-card-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #312e81;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sub-card-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 1.5rem;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .opt-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .opt-btn:hover { border-color: var(--primary); background: #f5f3ff; }
+    .opt-btn.correct-choice { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .opt-btn.wrong-choice { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.95rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border-radius: var(--border-radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>🎬 Μάθημα 21: Εμπλουτίζω την Παρουσίασή μου</h1>
+        <p>Εφέ, Κίνηση, Ήχος & Πολυμέσα (8 Δραστηριότητες με 3 Επίπεδα - Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchMainTab(0)"><span>1️⃣</span> Εναλλαγή Διαφανειών</button>
+    <button class="tab-btn" onclick="switchMainTab(1)"><span>2️⃣</span> Κίνηση Αντικειμένων</button>
+    <button class="tab-btn" onclick="switchMainTab(2)"><span>3️⃣</span> Ο Κανόνας του Μέτρου</button>
+    <button class="tab-btn" onclick="switchMainTab(3)"><span>4️⃣</span> Ήχος & Μουσική</button>
+    <button class="tab-btn" onclick="switchMainTab(4)"><span>5️⃣</span> Βίντεο στη Διαφάνεια</button>
+    <button class="tab-btn" onclick="switchMainTab(5)"><span>6️⃣</span> Σχήματα & Βέλη</button>
+    <button class="tab-btn" onclick="switchMainTab(6)"><span>7️⃣</span> Χρονισμός & Πρόβα</button>
+    <button class="tab-btn" onclick="switchMainTab(7)"><span>8️⃣</span> Μέγα Κουίζ Εφέ</button>
+  </nav>
+
+  <main>
+    <div id="activities-wrapper"></div>
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master των Εφέ & της Κίνησης!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ολοκλήρωσες με επιτυχία και τα 24 επίπεδα του Μαθήματος 21! Γνωρίζεις πλέον πώς να εφαρμόζεις εντυπωσιακά εφέ εναλλαγής, κινήσεις εισόδου, πολυμέσα και μουσική με μέτρο και αρμονία!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER (Web Audio API) */
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        if (type === 'correct') {
+          const osc1 = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc1.frequency.setValueAtTime(659.25, now + 0.1);
+          osc1.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc1.connect(gain); gain.connect(audioCtx.destination);
+          osc1.start(now); osc1.stop(now + 0.4);
+        } else if (type === 'wrong') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.setValueAtTime(110, now + 0.15);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.35);
+        } else if (type === 'click') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.08);
+        }
+      } catch (e) {
+        // Fallback
+      }
+    }
+
+    /* ΟΛΑ ΤΑ ΔΕΔΟΜΕΝΑ ΤΩΝ 8 ΔΡΑΣΤΗΡΙΟΤΗΤΩΝ ΓΙΑ ΤΟ ΜΑΘΗΜΑ 21 (ΙΣΟΡΡΟΠΗΜΕΝΕΣ ΘΕΣΕΙΣ ΑΠΑΝΤΗΣΕΩΝ) */
+    const allActivities = [
+      {
+        title: "1️⃣ Εναλλαγή Διαφανειών (Slide Transitions)",
+        desc: "Μάθε πώς αλλάζει εντυπωσιακά η μία διαφάνεια στην επόμενη.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Τι είναι το Εφέ Εναλλαγής;",
+            text: "Ποια είναι η λειτουργία του εφέ εναλλαγής διαφάνειας (Slide Transition);",
+            options: [
+              { t: "Σβήνει όλα τα γράμματα από την οθόνη", c: false },
+              { t: "Είναι το οπτικό εφέ κίνησης που εμφανίζεται όταν περνάμε από τη μία διαφάνεια στην επόμενη (π.χ. ξεθώριασμα, ώθηση)", c: true },
+              { t: "Αλλάζει αυτόματα τη γλώσσα του κειμένου", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Το εφέ εναλλαγής ομορφαίνει το πέρασμα ανάμεσα στις διαφάνειες!",
+            fbWrong: "⚠️ Το transition είναι η κίνηση με την οποία αλλάζει η σελίδα/διαφάνεια!"
+          },
+          {
+            title: "Επίπεδο 2: Ταχύτητα και Διάρκεια Εναλλαγής",
+            text: "Ποια ταχύτητα εναλλαγής είναι η καταλληλότερη για μια σχολική παρουσίαση;",
+            options: [
+              { t: "Μια μέτρια και ομαλή ταχύτητα (1-2 δευτερόλεπτα), ώστε να μην κουράζει και να μη ζαλίζει το κοινό", c: true },
+              { t: "Μια πάρα πολύ αργή ταχύτητα που διαρκεί 10 λεπτά", c: false },
+              { t: "Δεν έχει καμία σημασία η ταχύτητα", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Οι μέτριες και ομαλές ταχύτητες κάνουν την παρουσίαση ξεκούραστη!",
+            fbWrong: "⚠️ Πολύ αργές ή αστραπιαίες κινήσεις κουράζουν τους θεατές!"
+          },
+          {
+            title: "Επίπεδο 3: Ομοιομορφία στα Εφέ Εναλλαγής",
+            text: "Τι συμβουλεύουν οι κανόνες καλής σχεδίασης για τα εφέ εναλλαγής;",
+            options: [
+              { t: "Να βάζουμε 15 διαφορετικά ακραία εφέ σε κάθε σελίδα", c: false },
+              { t: "Να μη χρησιμοποιούμε καθόλου υπολογιστή", c: false },
+              { t: "Να διατηρούμε το ίδιο ή παρόμοιο διακριτικό εφέ σε όλες τις διαφάνειες της παρουσίασης", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Η συνέπεια και η ομοιομορφία δίνουν σοβαρή και καλαίσθητη όψη!",
+            fbWrong: "⚠️ Πολλά διαφορετικά εφέ αποσπούν την προσοχή από το περιεχόμενο!"
+          }
+        ]
+      },
+      {
+        title: "2️⃣ Κίνηση Αντικειμένων (Custom Animation)",
+        desc: "Μάθε πώς κινούνται τα κείμενα και οι εικόνες μέσα στην ίδια διαφάνεια.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Τι είναι η Κίνηση Αντικειμένου;",
+            text: "Σε τι διαφέρει η κίνηση αντικειμένου (animation) από την εναλλαγή διαφάνειας;",
+            options: [
+              { t: "Δεν έχουν καμία απολύτως διαφορά", c: false },
+              { t: "Εφαρμόζεται σε συγκεκριμένα στοιχεία ΜΕΣΑ στη διαφάνεια (π.χ. σε μια εικόνα ή σε μια γραμμή κειμένου)", c: true },
+              { t: "Κουνάει ολόκληρη την οθόνη του υπολογιστή πάνω στο θρανίο", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Το animation κινεί μεμονωμένα κείμενα, σχήματα ή εικόνες!",
+            fbWrong: "⚠️ Το animation εφαρμόζεται στα αντικείμενα μέσα στη σελίδα!"
+          },
+          {
+            title: "Επίπεδο 2: Είδη Κίνησης Αντικειμένων",
+            text: "Ποιες είναι οι 3 βασικές κατηγορίες κινήσεων για ένα αντικείμενο;",
+            options: [
+              { t: "Πρωινή, μεσημεριανή και βραδινή κίνηση", c: false },
+              { t: "Γρήγορη, μέτρια και ακίνητη", c: false },
+              { t: "Είσοδος (πώς εμφανίζεται), Έμφαση (πώς τονίζεται) και Έξοδος (πώς εξαφανίζεται)", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Είσοδος (Entrance), Έμφαση (Emphasis) και Έξοδος (Exit)!",
+            fbWrong: "⚠️ Σκέψου τη ζωή ενός αντικειμένου: εμφανίζεται, τονίζεται, αποχωρεί!"
+          },
+          {
+            title: "Επίπεδο 3: Σειρά Εμφάνισης των Σημείων",
+            text: "Γιατί βάζουμε εφέ εισόδου στις κουκκίδες μιας λίστας να εμφανίζονται μία-μία;",
+            options: [
+              { t: "Για να εστιάζουν οι συμμαθητές μας σε αυτό ακριβώς που εξηγούμε εκείνη τη στιγμή!", c: true },
+              { t: "Για να καθυστερούμε το μάθημα επίτηδες", c: false },
+              { t: "Επειδή χάλασε το πληκτρολόγιο", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Η διαδοχική εμφάνιση κατευθύνει ιδανικά την προσοχή του κοινού!",
+            fbWrong: "⚠️ Όταν εμφανίζονται όλα μαζί, οι θεατές διαβάζουν μπροστά και δεν μας ακούν!"
+          }
+        ]
+      },
+      {
+        title: "3️⃣ Ο Κανόνας του Μέτρου στα Εφέ",
+        desc: "Μάθε πότε τα εφέ βοηθούν και πότε καταστρέφουν μια παρουσίαση.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Ποιος είναι ο κίνδυνος από τα υπερβολικά εφέ;",
+            text: "Αν βάλουμε γράμματα που στριφογυρίζουν, αναβοσβήνουν και πέφτουν από τον ουρανό:",
+            options: [
+              { t: "Οι συμμαθητές μας θα ζαλιστούν, θα κουραστούν και θα χάσουν το νόημα της εργασίας", c: true },
+              { t: "Η παρουσίαση θα γίνει η καλύτερη του κόσμου", c: false },
+              { t: "Ο υπολογιστής θα αρχίσει να τραγουδάει", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Ο χρυσός κανόνας είναι «παν μέτρον άριστον»!",
+            fbWrong: "⚠️ Τα υπερβολικά εφέ κουράζουν και αποσπούν την προσοχή!"
+          },
+          {
+            title: "Επίπεδο 2: Πότε ένα εφέ θεωρείται πετυχημένο;",
+            text: "Πότε η κίνηση ενός αντικειμένου βοηθά πραγματικά το κοινό;",
+            options: [
+              { t: "Μόνο όταν κάνει τρομακτικό θόρυβο", c: false },
+              { t: "Όταν είναι διακριτική, κομψή και τονίζει ένα σημαντικό συμπέρασμα ή μια εικόνα", c: true },
+              { t: "Όταν διαρκεί πάνω από ένα τέταρτο", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Το εφέ πρέπει να εξυπηρετεί το νόημα της παρουσίασης!",
+            fbWrong: "⚠️ Το εφέ πρέπει να βοηθά την κατανόηση, όχι να εντυπωσιάζει άσκοπα!"
+          },
+          {
+            title: "Επίπεδο 3: Ο σκοπός του ομιλητή",
+            text: "Ποιος είναι ο πρωταγωνιστής σε μια παρουσίαση στην τάξη;",
+            options: [
+              { t: "Τα κινούμενα σχεδιάκια και τα εφέ της οθόνης", c: false },
+              { t: "Το καλώδιο του προβολέα", c: false },
+              { t: "Ο μαθητής/ομιλητής με τις ιδέες του και τα λόγια του!", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Οι διαφάνειες είναι απλώς το βοήθημά μας, ο ομιλητής είναι ο πρωταγωνιστής!",
+            fbWrong: "⚠️ Τα εφέ δεν αντικαθιστούν τη φωνή και τις ιδέες του μαθητή!"
+          }
+        ]
+      },
+      {
+        title: "4️⃣ Ήχος & Μουσική στην Παρουσίαση",
+        desc: "Πώς χρησιμοποιούμε σωστά ηχητικά αποσπάσματα και μουσική υπόκρουση.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Πώς εισάγουμε ένα αρχείο ήχου;",
+            text: "Από ποιο βασικό μενού της εφαρμογής προσθέτουμε ένα αρχείο ήχου/τραγουδιού;",
+            options: [
+              { t: "Από το μενού «Διαγραφή»", c: false },
+              { t: "Από το μενού «Εισαγωγή» ➔ «Ήχος ή Βίντεο» (Insert Audio)", c: true },
+              { t: "Τραγουδώντας δυνατά στο πληκτρολόγιο", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Μέσα από το μενού Εισαγωγή προσθέτουμε όλα τα πολυμέσα!",
+            fbWrong: "⚠️ Χρησιμοποιούμε την καρτέλα Εισαγωγή (Insert)!"
+          },
+          {
+            title: "Επίπεδο 2: Ένταση Μουσικής Υπόκρουσης",
+            text: "Αν βάλεις απαλή μουσική να παίζει όσο μιλάς, πώς πρέπει να ρυθμίσεις την ένταση;",
+            options: [
+              { t: "Στο 100% τέρμα δυνατά για να μη σε ακούει κανείς", c: false },
+              { t: "Σε πολύ χαμηλή ένταση, ώστε η φωνή σου να ακούγεται καθαρά και δυνατά!", c: true },
+              { t: "Δεν έχει σημασία", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Η μουσική είναι διακριτικό παρασκήνιο, η φωνή σου πρέπει να κυριαρχεί!",
+            fbWrong: "⚠️ Αν η μουσική είναι δυνατή, θα σκεπάσει τα λόγια σου!"
+          },
+          {
+            title: "Επίπεδο 3: Ηχητικά Εφέ στα Γράμματα",
+            text: "Είναι σωστό να βάζουμε δυνατό ήχο (π.χ. σειρήνα ή έκρηξη) σε κάθε γράμμα που εμφανίζεται;",
+            options: [
+              { t: "Όχι! Γίνεται εκνευριστικό και κουραστικό για όλη την τάξη", c: true },
+              { t: "Ναι, είναι τέλειο να ακούγονται 50 εκρήξεις στη σειρά", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Αποφεύγουμε τους θορύβους σε κάθε κείμενο!",
+            fbWrong: "⚠️ Οι συνεχείς θόρυβοι διακόπτουν την προσοχή και εκνευρίζουν το κοινό!"
+          }
+        ]
+      },
+      {
+        title: "5️⃣ Βίντεο στη Διαφάνεια",
+        desc: "Μάθε πώς να ενσωματώνεις και να προβάλλεις σύντομα εκπαιδευτικά βίντεο.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Ποια είναι η ιδανική διάρκεια βίντεο;",
+            text: "Σε μια σχολική παρουσίαση 5-10 λεπτών, πόσο πρέπει να διαρκεί ένα βίντεο;",
+            options: [
+              { t: "Μια ολόκληρη ταινία μιάμισης ώρας", c: false },
+              { t: "Μισό δευτερόλεπτο", c: false },
+              { t: "Ένα σύντομο απόσπασμα 1 έως 2 λεπτών που εξηγεί ακριβώς το θέμα μας", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Ένα σύντομο και περιεκτικό βίντεο διατηρεί ζωντανό το ενδιαφέρον!",
+            fbWrong: "⚠️ Τα μεγάλα βίντεο κουράζουν και τρώνε όλο τον χρόνο της ομιλίας!"
+          },
+          {
+            title: "Επίπεδο 2: Έλεγχος πριν την Παρουσίαση",
+            text: "Τι πρέπει οπωσδήποτε να ελέγξεις πριν ξεκινήσει η παρουσίαση στην τάξη;",
+            options: [
+              { t: "Ότι τα ηχεία λειτουργούν και το βίντεο παίζει κανονικά χωρίς κόλλημα", c: true },
+              { t: "Αν η οθόνη έχει σκόνη", c: false },
+              { t: "Τίποτα, δεν χρειάζεται έλεγχος", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Κάνουμε πάντα δοκιμή ήχου και εικόνας πριν έρθει η σειρά μας!",
+            fbWrong: "⚠️ Αν δεν το ελέγξεις, μπορεί το βίντεο να μην ανοίξει την κρίσιμη στιγμή!"
+          },
+          {
+            title: "Επίπεδο 3: Αυτόματη ή Χειροκίνητη Εκκίνηση Βίντεο;",
+            text: "Πότε είναι καλύτερο να ξεκινάει το βίντεο;",
+            options: [
+              { t: "Μόλις κάνουμε κλικ επάνω του, ώστε να προλάβουμε να πούμε πρώτα δύο λόγια εισαγωγής", c: true },
+              { t: "Να παίζει μόνο του πριν καν μπούμε στην τάξη", c: false },
+              { t: "Να μην παίζει ποτέ", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Με το κλικ έχουμε τον απόλυτο έλεγχο για το πότε θα ξεκινήσει!",
+            fbWrong: "⚠️ Η εκκίνηση με κλικ μας δίνει χρόνο να προετοιμάσουμε τους συμμαθητές μας!"
+          }
+        ]
+      },
+      {
+        title: "6️⃣ Σχήματα, Βέλη & Πλαίσια (Shapes)",
+        desc: "Χρησιμοποίησε γεωμετρικά σχήματα και συννεφάκια για να οργανώσεις ιδέες.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Εισαγωγή Έτοιμων Σχημάτων",
+            text: "Ποια έτοιμα σχήματα μπορούμε να βάλουμε από το μενού Σχημάτων (Shapes);",
+            options: [
+              { t: "Μόνο έναν κύκλο", c: false },
+              { t: "Βέλη, ορθογώνια, αστέρια, καρδιές και συννεφάκια ομιλίας", c: true },
+              { t: "Κανένα σχήμα", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Η παλέτα σχημάτων έχει δεκάδες χρήσιμα γεωμετρικά σχέδια και βέλη!",
+            fbWrong: "⚠️ Υπάρχει τεράστια ποικιλία από σχήματα και βέλη!"
+          },
+          {
+            title: "Επίπεδο 2: Κείμενο ΜΕΣΑ σε Σχήμα",
+            text: "Μπορούμε να γράψουμε κείμενο μέσα σε ένα σχήμα (π.χ. μέσα σε ένα βέλος ή συννεφάκι);",
+            options: [
+              { t: "Όχι, απαγορεύεται αυστηρά", c: false },
+              { t: "Μόνο αν εκτυπώσουμε το σχήμα σε χαρτί", c: false },
+              { t: "Ναι! Κάνοντας διπλό κλικ πάνω στο σχήμα μπορούμε να πληκτρολογήσουμε λέξεις", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Τα σχήματα με κείμενο λειτουργούν σαν όμορφες πινακίδες μηνυμάτων!",
+            fbWrong: "⚠️ Κάθε σχήμα μπορεί να περιέχει κείμενο με διπλό κλικ!"
+          },
+          {
+            title: "Επίπεδο 3: Χρώμα Γεμίσματος & Περίγραμμα",
+            text: "Πώς αλλάζουμε την εμφάνιση ενός σχήματος;",
+            options: [
+              { t: "Επιλέγουμε το «Χρώμα Γεμίσματος» (Fill) για το εσωτερικό και το «Περίγραμμα» (Outline) για τις γραμμές του", c: true },
+              { t: "Χρωματίζουμε την οθόνη με ξυλομπογιές", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Το γέμισμα και το περίγραμμα αλλάζουν εντελώς την αισθητική του σχήματος!",
+            fbWrong: "⚠️ Χρησιμοποιούμε τα ψηφιακά εργαλεία Γέμισμα (Fill) και Περίγραμμα (Line)!"
+          }
+        ]
+      },
+      {
+        title: "7️⃣ Χρονισμός & Πρόβα Παρουσίασης",
+        desc: "Μάθε πώς να διαχειρίζεσαι τον χρόνο σου και να προετοιμάζεσαι σωστά.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Χειροκίνητη εναντίον Αυτόματης Αλλαγής",
+            text: "Γιατί σε μια ομιλία στην τάξη προτιμάμε να αλλάζουμε διαφάνειες με το χέρι (πλήκτρο Space/κλικ);",
+            options: [
+              { t: "Επειδή αν βάλουμε αυτόματο χρονόμετρο, η διαφάνεια μπορεί να φύγει πριν προλάβουμε να τελειώσουμε τα λόγια μας!", c: true },
+              { t: "Επειδή είναι πιο βαρετό", c: false },
+              { t: "Επειδή το διαστημόπλοιο δεν ξεκινάει", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Με τον χειροκίνητο έλεγχο μιλάμε με την άνεσή μας χωρίς άγχος!",
+            fbWrong: "⚠️ Ο αυτόματος χρονοδιακόπτης μπορεί να σε προλάβει πριν ολοκληρώσεις!"
+          },
+          {
+            title: "Επίπεδο 2: Η Αξία της Πρόβας",
+            text: "Τι κερδίζεις αν κάνεις μια δοκιμαστική παρουσίαση (πρόβα) στο σπίτι ή στην ομάδα σου πριν τη γιορτή;",
+            options: [
+              { t: "Χάνεις απλώς τον χρόνο σου", c: false },
+              { t: "Βλέπεις πόση ώρα διαρκεί, διορθώνεις τυχόν λάθη και νιώθεις σιγουριά και αυτοπεποίθηση!", c: true },
+              { t: "Ξεχνάς όσα ήξερες", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Η πρόβα είναι το μεγαλύτερο μυστικό όλων των σπουδαίων ομιλητών!",
+            fbWrong: "⚠️ Η πρόβα σου δίνει σιγουριά και διορθώνει τα λάθη εγκαίρως!"
+          },
+          {
+            title: "Επίπεδο 3: Συνεργασία και Συγχρονισμός στην Ομάδα",
+            text: "Αν ένα μέλος της ομάδας μιλάει, ποιος αλλάζει τις διαφάνειες στον υπολογιστή;",
+            options: [
+              { t: "Όποιος να 'ναι, πατώντας κουμπιά στην τύχη", c: false },
+              { t: "Κανένας", c: false },
+              { t: "Ο συμμαθητής που έχει αναλάβει τον ρόλο του χειριστή, προσέχοντας πότε ολοκληρώνει ο ομιλητής!", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Ο τέλειος συγχρονισμός ανάμεσα σε ομιλητή και χειριστή δείχνει σπουδαία ομάδα!",
+            fbWrong: "⚠️ Ο χειριστής ακούει προσεκτικά τον ομιλητή και αλλάζει διαφάνεια τη σωστή στιγμή!"
+          }
+        ]
+      },
+      {
+        title: "8️⃣ Το Μεγάλο Κουίζ των Εφέ & της Κίνησης",
+        desc: "Τελική δοκιμασία γνώσεων για να κερδίσεις και το 8ο αστέρι και το κύπελλο!",
+        levels: [
+          {
+            title: "Ερώτηση 1: Ποια είναι η διαφορά Transition και Animation;",
+            text: "Με απλά λόγια, ποια είναι η διαφορά μεταξύ εναλλαγής και κίνησης;",
+            options: [
+              { t: "Transition = πώς αλλάζει όλη η διαφάνεια | Animation = πώς κινούνται τα αντικείμενα μέσα στη διαφάνεια", c: true },
+              { t: "Είναι ακριβώς το ίδιο πράγμα με δύο ξένες λέξεις", c: false },
+              { t: "Το Transition είναι για φαγητό και το Animation για μουσική", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Το Transition αλλάζει τη σελίδα, το Animation κινεί τα επιμέρους στοιχεία!",
+            fbWrong: "⚠️ Θυμήσου: Transition για όλη τη σελίδα, Animation για τα αντικείμενα!"
+          },
+          {
+            title: "Ερώτηση 2: Πλήκτρο Προβολής από την Τρέχουσα Διαφάνεια",
+            text: "Το πλήκτρο F5 ξεκινάει την προβολή από την 1η διαφάνεια. Ποιος συνδυασμός ξεκινά από αυτήν που δουλεύεις τώρα;",
+            options: [
+              { t: "Ctrl + Alt + Delete", c: false },
+              { t: "Space + Enter", c: false },
+              { t: "Shift + F5 (προβολή από την τρέχουσα διαφάνεια)", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Με το Shift + F5 δοκιμάζεις αμέσως τη διαφάνεια που μόλις έφτιαξες!",
+            fbWrong: "⚠️ Το Shift + F5 είναι η μαγική συντόμευση για προβολή της τρέχουσας διαφάνειας!"
+          },
+          {
+            title: "Ερώτηση 3: Το απόλυτο μυστικό μιας πετυχημένης παρουσίασης",
+            text: "Τι κάνει μια σχολική παρουσίαση πραγματικά αξέχαστη;",
+            options: [
+              { t: "Να έχει 100 εκρήξεις και να μη μιλάει κανένας μαθητής", c: false },
+              { t: "Καθαρή δομή, μέτρο στα εφέ, σχετικές εικόνες και ζωντανή επικοινωνία με τους συμμαθητές μας!", c: true },
+              { t: "Να διαβάζουμε γρήγορα-γρήγορα κοιτάζοντας το πάτωμα", c: false }
+            ],
+            fbCorrect: "🏆 ΑΡΙΣΤΑ! Ολοκλήρωσες και τα 24 επίπεδα! Είσαι πλέον ο απόλυτος Master των Παρουσιάσεων! (8/8 ⭐)",
+            fbWrong: "⚠️ Μια εξαιρετική παρουσίαση συνδυάζει μέτρο, καθαριότητα και ζωντανή φωνή!"
+          }
+        ]
+      }
+    ];
+
+    /* ΚΑΤΑΣΤΑΣΗ ΠΡΟΟΔΟΥ */
+    const completedStars = new Set();
+    const currentSubLevels = [0, 0, 0, 0, 0, 0, 0, 0];
+    let currentMainTab = 0;
+    const greekLetters = ['Α) ', 'Β) ', 'Γ) ', 'Δ) '];
+
+    function buildUI() {
+      const wrapper = document.getElementById('activities-wrapper');
+      if (!wrapper) return;
+      wrapper.innerHTML = '';
+
+      allActivities.forEach((act, actIdx) => {
+        const sec = document.createElement('section');
+        sec.className = `activity-section ${actIdx === 0 ? 'active' : ''}`;
+        sec.id = `act-sec-${actIdx}`;
+
+        let html = `
+          <div class="activity-header">
+            <h2>${act.title}</h2>
+            <p>${act.desc}</p>
+          </div>
+          <div class="level-badge-container">
+            <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+            <button class="level-pill active" id="pill-${actIdx}-0" onclick="switchSubLevel(${actIdx}, 0)">1: ${act.levels[0].title.split(':')[1] || 'Επίπεδο 1'}</button>
+            <button class="level-pill" id="pill-${actIdx}-1" onclick="switchSubLevel(${actIdx}, 1)">2: ${act.levels[1].title.split(':')[1] || 'Επίπεδο 2'}</button>
+            <button class="level-pill" id="pill-${actIdx}-2" onclick="switchSubLevel(${actIdx}, 2)">3: ${act.levels[2].title.split(':')[1] || 'Επίπεδο 3'}</button>
+          </div>
+          <div id="sub-card-container-${actIdx}"></div>
+          <div class="feedback-box" id="fb-${actIdx}"></div>
+        `;
+        sec.innerHTML = html;
+        wrapper.appendChild(sec);
+      });
+
+      renderCurrentSubLevel(0);
+    }
+
+    function switchMainTab(idx) {
+      playSound('click');
+      currentMainTab = idx;
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      document.querySelectorAll('.activity-section').forEach((s, i) => s.classList.toggle('active', i === idx));
+      renderCurrentSubLevel(idx);
+    }
+
+    function switchSubLevel(actIdx, lvlIdx) {
+      playSound('click');
+      currentSubLevels[actIdx] = lvlIdx;
+      for (let i = 0; i < 3; i++) {
+        const pill = document.getElementById(`pill-${actIdx}-${i}`);
+        if (pill) pill.classList.toggle('active', i === lvlIdx);
+      }
+      renderCurrentSubLevel(actIdx);
+    }
+
+    function renderCurrentSubLevel(actIdx) {
+      const container = document.getElementById(`sub-card-container-${actIdx}`);
+      const fb = document.getElementById(`fb-${actIdx}`);
+      if (!container) return;
+      fb.style.display = 'none';
+
+      const lvlIdx = currentSubLevels[actIdx];
+      const data = allActivities[actIdx].levels[lvlIdx];
+
+      container.innerHTML = `
+        <div class="sub-activity-card">
+          <div class="sub-card-title">🎯 ${data.title}</div>
+          <div class="sub-card-text">${data.text}</div>
+          <div class="options-grid">
+            ${data.options.map((opt, oIdx) => `
+              <button class="opt-btn" onclick="checkOption(${actIdx}, ${lvlIdx}, ${oIdx}, this)">
+                <strong>${greekLetters[oIdx]}</strong>${opt.t}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function checkOption(actIdx, lvlIdx, optIdx, btn) {
+      const data = allActivities[actIdx].levels[lvlIdx];
+      const fb = document.getElementById(`fb-${actIdx}`);
+      fb.style.display = 'flex';
+
+      const allBtns = btn.closest('.options-grid').querySelectorAll('.opt-btn');
+      allBtns.forEach(b => b.classList.remove('correct-choice', 'wrong-choice'));
+
+      if (data.options[optIdx].c) {
+        playSound('correct');
+        btn.classList.add('correct-choice');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = data.fbCorrect;
+
+        if (lvlIdx === 2) {
+          markStarDone(actIdx);
+        }
+      } else {
+        playSound('wrong');
+        btn.classList.add('wrong-choice');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = data.fbWrong;
+      }
+    }
+
+    function markStarDone(actIdx) {
+      if (!completedStars.has(actIdx)) {
+        completedStars.add(actIdx);
+        document.getElementById('global-stars').textContent = completedStars.size;
+        if (completedStars.size === 8) {
+          setTimeout(() => {
+            document.getElementById('victory-modal').classList.add('active');
+          }, 600);
+        }
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('victory-modal').classList.remove('active');
+    }
+
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima21_Emploutismos_Parousiasis_D_Dimotikou.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildUI);
+    } else {
+      buildUI();
+    }
+  </script>
+</body>
+</html>
