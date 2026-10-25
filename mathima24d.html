@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Η Περιπέτεια της Παρουσίασης - Μάθημα 24 (Δ' Δημοτικού)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for winning celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Fredoka', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+        }
+        .bouncy-btn {
+            transition: transform 0.1s ease, background-color 0.2s;
+        }
+        .bouncy-btn:active {
+            transform: scale(0.95);
+        }
+        .game-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border: 4px solid #fff;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- HEADER & HEROES MASCOTS -->
+        <header class="game-card rounded-3xl p-6 mb-8 text-center relative overflow-hidden">
+            <div class="absolute -top-6 -left-6 bg-yellow-300 w-28 h-28 rounded-full opacity-60 blur-xl"></div>
+            <div class="absolute -bottom-6 -right-6 bg-pink-300 w-28 h-28 rounded-full opacity-60 blur-xl"></div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                <div class="flex gap-2 text-5xl">
+                    <span title="Ήρωνας" class="animate-bounce">🤖</span>
+                    <span title="Υπατία" class="animate-pulse">👩‍💻</span>
+                    <span title="Τάλως" class="animate-bounce">🦸‍♂️</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-indigo-700 tracking-wide">Η Περιπέτεια της Παρουσίασης!</h1>
+                    <p class="text-gray-600 font-medium text-lg mt-1">Μάθημα 24: Δημιουργία & Αποθήκευση (Δ' Δημοτικού)</p>
+                </div>
+            </div>
+
+            <!-- STATS & BADGES -->
+            <div class="flex flex-wrap justify-center gap-4 mt-6">
+                <div class="bg-indigo-100 text-indigo-800 px-5 py-2 rounded-full font-bold text-lg shadow-sm">
+                    ⭐ Σκορ: <span id="score-val">0</span> / 24
+                </div>
+                <div class="bg-amber-100 text-amber-800 px-5 py-2 rounded-full font-bold text-lg shadow-sm">
+                    🏆 Κονκάρδες Αποστολών: <span id="badge-count">0</span> / 8
+                </div>
+            </div>
+            
+            <!-- MASCOT SPEECH -->
+            <div id="mascot-speech" class="mt-4 bg-indigo-50 border-2 border-indigo-200 text-indigo-900 px-5 py-3 rounded-2xl inline-block text-sm md:text-base font-semibold shadow-inner">
+                Γεια σας! Είμαστε ο Ήρωνας, η Υπατία και ο Τάλως! Έτοιμοι για τις 8 αποστολές του Μαθήματος 24; Διάλεξε αποστολή παρακάτω!
+            </div>
+        </header>
+
+        <!-- MISSION SELECTOR GRID -->
+        <div id="mission-menu" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <button onclick="switchMission(1)" class="mission-btn bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">🧩</span><span>Αποστολή 1</span><span id="m1-status" class="text-xs bg-emerald-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(2)" class="mission-btn bg-sky-500 hover:bg-sky-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">💾</span><span>Αποστολή 2</span><span id="m2-status" class="text-xs bg-sky-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(3)" class="mission-btn bg-amber-500 hover:bg-amber-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">✨</span><span>Αποστολή 3</span><span id="m3-status" class="text-xs bg-amber-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(4)" class="mission-btn bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">📋</span><span>Αποστολή 4</span><span id="m4-status" class="text-xs bg-purple-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(5)" class="mission-btn bg-rose-500 hover:bg-rose-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">🖼️</span><span>Αποστολή 5</span><span id="m5-status" class="text-xs bg-rose-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(6)" class="mission-btn bg-teal-500 hover:bg-teal-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">⚖️</span><span>Αποστολή 6</span><span id="m6-status" class="text-xs bg-teal-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(7)" class="mission-btn bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">🎬</span><span>Αποστολή 7</span><span id="m7-status" class="text-xs bg-orange-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+            <button onclick="switchMission(8)" class="mission-btn bg-indigo-500 hover:bg-indigo-600 text-white p-4 rounded-2xl font-bold shadow-lg bouncy-btn flex flex-col items-center gap-1">
+                <span class="text-3xl">🚀</span><span>Αποστολή 8</span><span id="m8-status" class="text-xs bg-indigo-700 px-2 py-0.5 rounded-full">0/3</span>
+            </button>
+        </div>
+
+        <!-- CONTAINER FOR ACTIVE MISSION -->
+        <main id="mission-container" class="game-card rounded-3xl p-6 md:p-8">
+            <!-- Dynamically populated via JS -->
+        </main>
+    </div>
+
+    <!-- AUDIO SYNTHESIZER & GAME LOGIC -->
+    <script>
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                } else if (type === 'badge') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.4);
+                }
+            } catch(e) {}
+        }
+
+        let currentMission = 1;
+        const solved = {}; 
+
+        const missions = {
+            1: {
+                title: "Αποστολή 1: Τα Βασικά της Παρουσίασης",
+                desc: "Μάθε τι είναι οι διαφάνειες και ποια είναι η δομή τους!",
+                subs: [
+                    { id: "1-1", type: "mc", q: "1.1 Ποιο είναι το αντίστοιχο μιας «σελίδας» σε μια ψηφιακή παρουσίαση;", options: ["Α) Φάκελος", "Β) Διαφάνεια", "Γ) Εικόνα"], ans: "Β", correctText: "Β) Διαφάνεια" },
+                    { id: "1-2", type: "tf", q: "1.2 Σωστό ή Λάθος: Η πρώτη διαφάνεια μιας παρουσίασης περιλαμβάνει πλαίσια για τίτλο και υπότιτλο.", options: ["Σωστό", "Λάθος"], ans: "Σωστό", correctText: "Σωστό" },
+                    { id: "1-3", type: "match", q: "1.3 Αντιστοίχιση τμημάτων 1ης διαφάνειας:", pairs: [ {label: "Μικρό πλαίσιο", target: "Εισαγωγή τίτλου"}, {label: "Μεγάλο πλαίσιο", target: "Υπότιτλος / Πληροφορίες"} ], correctText: "Μικρό πλαίσιο -> Εισαγωγή τίτλου | Μεγάλο πλαίσιο -> Υπότιτλος / Πληροφορίες" }
+                ]
+            },
+            2: {
+                title: "Αποστολή 2: Αποθήκευση και Αρχεία Εργασίας",
+                desc: "Μην ξεχνάς ποτέ να αποθηκεύεις τον κόπο σου!",
+                subs: [
+                    { id: "2-1", type: "tf", q: "2.1 Σωστό ή Λάθος: Δεν χρειάζεται να αποθηκεύουμε την εργασία μας ποτέ.", options: ["Σωστό", "Λάθος"], ans: "Λάθος", correctText: "Λάθος (Πάντα αποθηκεύουμε την εργασία μας!σελ. 93)" },
+                    { id: "2-2", type: "mc", q: "2.2 Ποια διαδρομή μενού επιλέγουμε για αποθήκευση;", options: ["Α) Αρχείο -> Αποθήκευση", "Β) Προβολή -> Νέα διαφάνεια", "Γ) Επεξεργασία -> Διαγραφή"], ans: "Α", correctText: "Α) Αρχείο -> Αποθήκευση" },
+                    { id: "2-3", type: "fill", q: "2.3 Συμπλήρωση: Πριν κλείσουμε την εφαρμογή, επιλέγουμε Αρχείο -> _________", ans: "αποθηκευση", correctText: "αποθήκευση" }
+                ]
+            },
+            3: {
+                title: "Αποστολή 3: Προσθήκη Νέας Διαφάνειας & Πολυμέσων",
+                desc: "Πώς προσθέτουμε νέες σελίδες και εικόνες;",
+                subs: [
+                    { id: "3-1", type: "match", q: "3.1 Ταιριάξτε τους τρόπους προσθήκης νέας διαφάνειας:", pairs: [ {label: "Οριζόντιο μενού", target: "Εισαγωγή -> Νέα διαφάνεια"}, {label: "Αριστερή πλευρά", target: "Δεξί κλικ -> Νέα διαφάνεια"}, {label: "Πληκτρολόγιο", target: "Συντόμευση Ctrl + M"} ], correctText: "Οριζόντιο μενού -> Εισαγωγή -> Νέα διαφάνεια | Αριστερή πλευρά -> Δεξί κλικ -> Νέα διαφάνεια | Πληκτρολόγιο -> Συντόμευση Ctrl + M" },
+                    { id: "3-2", type: "tf", q: "3.2 Σωστό ή Λάθος: Οι νέες διαφάνειες έχουν εικονίδια που μας βοηθούν να βάλουμε εικόνες και βίντεο.", options: ["Σωστό", "Λάθος"], ans: "Σωστό", correctText: "Σωστό" },
+                    { id: "3-3", type: "mc", q: "3.3 Τι άλλο περιέχει μια νέα διαφάνεια εκτός από τίτλο;", options: ["Α) Μόνο κενό λευκό χώρο", "Β) Προτροπή εισαγωγής κειμένου και πολυμεσικών (εικόνα, βίντεο)", "Γ) Αυτόματα παιχνίδια"], ans: "Β", correctText: "Β) Προτροπή εισαγωγής κειμένου και πολυμεσικών (εικόνα, βίντεο)" }
+                ]
+            },
+            4: {
+                title: "Αποστολή 4: Αντιγραφή και Επικόλληση Κειμένου",
+                desc: "Μεταφορά πληροφοριών από το διαδίκτυο στη διαφάνεια!",
+                subs: [
+                    { id: "4-1", type: "tf", q: "4.1 Σωστό ή Λάθος: Για να μεταφέρουμε κείμενο από ιστοσελίδα, το πληκτρολογούμε υποχρεωτικά με το χέρι.", options: ["Σωστό", "Λάθος"], ans: "Λάθος", correctText: "Λάθος (Χρησιμοποιούμε Αντιγραφή και Επικόλληση! σελ. 93-94)" },
+                    { id: "4-2", type: "order", q: "4.2 Βάλτε τα βήματα αντιγραφής κειμένου στη σωστή σειρά:", steps: ["Επιλογή κειμένου και δεξί κλικ -> Αντιγραφή", "Μετάβαση στη διαφάνεια της παρουσίασης", "Δεξί κλικ σε άδειο σημείο -> Επικόλληση"], correctText: "1. Επιλογή κειμένου και δεξί κλικ -> Αντιγραφή, 2. Μετάβαση στη διαφάνεια της παρουσίασης, 3. Δεξί κλικ σε άδειο σημείο -> Επικόλληση" },
+                    { id: "4-3", type: "mc", q: "4.3 Ποια εντολή επιλέγουμε στο κείμενο της ιστοσελίδας;", options: ["Α) Αποθήκευση εικόνας ως", "Β) Αντιγραφή", "Γ) Διαγραφή"], ans: "Β", correctText: "Β) Αντιγραφή" }
+                ]
+            },
+            5: {
+                title: "Αποστολή 5: Διαχείριση και Εισαγωγή Εικόνας",
+                desc: "Αποθήκευση και τοποθέτηση εικόνων με ασφάλεια.",
+                subs: [
+                    { id: "5-1", type: "match", q: "5.1 Ταιριάξτε ενέργειες εικόνας:", pairs: [ {label: "Αντιγραφή εικόνας", target: "Άμεση επικόλληση στη διαφάνεια"}, {label: "Αποθήκευση εικόνας ως", target: "Αποθήκευση αρχείου στον υπολογιστή"} ], correctText: "Αντιγραφή εικόνας -> Άμεση επικόλληση στη διαφάνεια | Αποθήκευση εικόνας ως -> Αποθήκευση αρχείου στον υπολογιστή" },
+                    { id: "5-2", type: "tf", q: "5.2 Σωστό ή Λάθος: Μπορούμε να αποθηκεύσουμε μια εικόνα στον υπολογιστή μας και μετά να την εισάγουμε.", options: ["Σωστό", "Λάθος"], ans: "Σωστό", correctText: "Σωστό" },
+                    { id: "5-3", type: "mc", q: "5.3 Ποια εντολή επιλέγουμε για να αποθηκεύσουμε μόνιμη τοπική κόπια εικόνας;", options: ["Α) Αποθήκευση εικόνας ως", "Β) Άνοιγμα σε νέα καρτέλα", "Γ) Αντιγραφή συνδέσμου"], ans: "Α", correctText: "Α) Αποθήκευση εικόνας ως" }
+                ]
+            },
+            6: {
+                title: "Αποστολή 6: Πνευματικά Δικαιώματα & Αναφορά Πηγών",
+                desc: "Σεβόμαστε τους δημιουργούς και τις πηγές μας!",
+                subs: [
+                    { id: "6-1", type: "tf", q: "6.1 Σωστό ή Λάθος: Όταν χρησιμοποιούμε έργα τρίτων, δεν χρειάζεται να αναφέρουμε ποιος τα έφτιαξε.", options: ["Σωστό", "Λάθος"], ans: "Λάθος", correctText: "Λάθος (Πάντα αναφέρουμε τον δημιουργό και την πηγή! σελ. 94)" },
+                    { id: "6-2", type: "mc", q: "6.2 Τι οφείλουμε να κάνουμε αν χρησιμοποιήσουμε δημιούργημα τρίτου;", options: ["Α) Να γράψουμε ποιος το έφτιαξε και από πού το πήραμε", "Β) Να το παρουσιάσουμε αποκλειστικά ως δικό μας", "Γ) Να το διαγράψουμε"], ans: "Α", correctText: "Α) Να γράψουμε ποιος το έφτιαξε και από πού το πήραμε" },
+                    { id: "6-3", type: "fill", q: "6.3 Συμπλήρωση: Αν χρησιμοποιούμε υλικό άλλου, γράφουμε ποιος το έφτιαξε και από πού το _________", ans: "πηρε", correctText: "πήρε" }
+                ]
+            },
+            7: {
+                title: "Αποστολή 7: Προσομοίωση Προβολής Διαφανειών (Slide Show)",
+                desc: "Παρουσίασε το έργο σου σε όλη την τάξη!",
+                subs: [
+                    { id: "7-1", type: "tf", q: "7.1 Σωστό ή Λάθος: Το πλήκτρο F5 στο πληκτρολόγιο ξεκινά άμεσα την προβολή διαφανειών.", options: ["Σωστό", "Λάθος"], ans: "Σωστό", correctText: "Σωστό" },
+                    { id: "7-2", type: "match", q: "7.2 Ταιριάξτε τα πλήκτρα ελέγχου:", pairs: [ {label: "F5", target: "Έναρξη προβολής"}, {label: "Δεξί βέλος (→)", target: "Επόμενη διαφάνεια"}, {label: "Esc", target: "Έξοδος / επιστροφή"} ], correctText: "F5 -> Έναρξη προβολής | Δεξί βέλος -> Επόμενη διαφάνεια | Esc -> Έξοδος / επιστροφή" },
+                    { id: "7-3", type: "mc", q: "7.3 Ποιο πλήκτρο πατάμε αν θέλουμε να διακόψουμε την προβολή πρόωρα;", options: ["Α) Enter", "Β) Esc", "Γ) Space"], ans: "Β", correctText: "Β) Esc" }
+                ]
+            },
+            8: {
+                title: "Αποστολή 8: Ομαδική Εργασία «Ολυμπιακοί Αγώνες»",
+                desc: "Η τελική πρόκληση σύνθεσης και αποστολής!",
+                subs: [
+                    { id: "8-1", type: "tf", q: "8.1 Σωστό ή Λάθος: Η παρουσίαση «Ολυμπιακοί αγώνες» περιλαμβάνει συνολικά 5 διαφάνειες (1 τίτλου + 4 αθλημάτων).", options: ["Σωστό", "Λάθος"], ans: "Σωστό", correctText: "Σωστό" },
+                    { id: "8-2", type: "mc", q: "8.2 Ποιος είναι ο σωστός τρόπος αποστολής της έτοιμης παρουσίασης στον δάσκαλο;", options: ["Α) Ως συνημμένο αρχείο μέσω email", "Β) Με εκτύπωση σε χαρτί", "Γ) Με προφορική περιγραφή"], ans: "Α", correctText: "Α) Ως συνημμένο αρχείο μέσω email" },
+                    { id: "8-3", type: "order", q: "8.3 Βάλτε τα βήματα παράδοσης εργασίας στη σωστή σειρά:", steps: ["Ολοκλήρωση 5 διαφανειών και αποθήκευση 'Ολυμπιακοί αγώνες'", "Σύνδεση στο webmail / πλατφόρμα και επιλογή 'Νέο Μήνυμα'", "Επισύναψη αρχείου παρουσίασης και πάτημα 'Αποστολή'"], correctText: "1. Ολοκλήρωση 5 διαφανειών και αποθήκευση, 2. Σύνδεση στο webmail και 'Νέο Μήνυμα', 3. Επισύναψη αρχείου και 'Αποστολή'" }
+                ]
+            }
+        };
+
+        function switchMission(mNum) {
+            currentMission = mNum;
+            renderMission();
+        }
+
+        function updateGlobalStats() {
+            let totalSolved = Object.keys(solved).length;
+            document.getElementById('score-val').innerText = totalSolved;
+
+            let badgesEarned = 0;
+            for (let m = 1; m <= 8; m++) {
+                let allSubSolved = true;
+                for (let s = 0; s < 3; s++) {
+                    if (!solved[`${m}-${s+1}`]) {
+                        allSubSolved = false;
+                        break;
+                    }
+                }
+                let statusEl = document.getElementById(`m${m}-status`);
+                let count = 0;
+                for (let s = 0; s < 3; s++) {
+                    if (solved[`${m}-${s+1}`]) count++;
+                }
+                statusEl.innerText = `${count}/3`;
+                if (allSubSolved) {
+                    badgesEarned++;
+                    statusEl.className = "text-xs bg-amber-500 text-white px-2 py-0.5 rounded-full font-bold";
+                }
+            }
+            document.getElementById('badge-count').innerText = badgesEarned;
+
+            if (totalSolved === 24) {
+                document.getElementById('mascot-speech').innerText = "🎉 ΕΚΠΛΗΚΤΙΚΑ! Έλυσες ΟΛΕΣ τις αποστολές και κέρδισες όλα τα αστέρια! Είσαι πρωταθλητής!";
+                playSound('badge');
+                try {
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                } catch(e){}
+            }
+        }
+
+        function renderMission() {
+            const m = missions[currentMission];
+            let html = `
+                <div class="flex items-center justify-between mb-6 border-b pb-4">
+                    <div>
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Αποστολή ${currentMission} από 8</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mt-1">${m.title}</h2>
+                        <p class="text-gray-600 text-sm mt-1">${m.desc}</p>
+                    </div>
+                    <div class="text-4xl animate-bounce">🚀</div>
+                </div>
+                <div class="space-y-6">
+            `;
+
+            m.subs.forEach((sub, idx) => {
+                let subId = `${currentMission}-${idx+1}`;
+                let isAlreadySolved = solved[subId];
+
+                html += `<div class="bg-gray-50 border-2 ${isAlreadySolved ? 'border-emerald-300 bg-emerald-50/30' : 'border-gray-200'} rounded-2xl p-5 shadow-sm relative">`;
+                html += `<p class="font-bold text-gray-800 text-lg mb-3">${sub.q}</p>`;
+
+                if (sub.type === 'mc') {
+                    html += `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">`;
+                    sub.options.forEach(opt => {
+                        let optLetter = opt.charAt(0);
+                        html += `
+                            <button onclick="checkMC('${subId}', '${optLetter}', '${sub.ans}', '${escapeHtml(sub.correctText)}')" 
+                                class="bg-white border-2 border-gray-200 hover:border-indigo-400 p-3 rounded-xl font-semibold text-gray-700 text-left transition shadow-sm hover:shadow">
+                                ${opt}
+                            </button>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (sub.type === 'tf') {
+                    html += `<div class="flex gap-4">`;
+                    sub.options.forEach(opt => {
+                        html += `
+                            <button onclick="checkTF('${subId}', '${opt}', '${sub.ans}', '${escapeHtml(sub.correctText)}')" 
+                                class="flex-1 bg-white border-2 border-gray-200 hover:border-indigo-400 py-3 rounded-xl font-bold text-gray-700 text-center transition shadow-sm hover:shadow">
+                                ${opt}
+                            </button>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (sub.type === 'fill') {
+                    html += `
+                        <div class="flex gap-3">
+                            <input type="text" id="input-${subId}" placeholder="Γράψε εδώ την απάντηση..." 
+                                class="flex-1 bg-white border-2 border-gray-300 rounded-xl px-4 py-2 font-medium focus:outline-none focus:border-indigo-500">
+                            <button onclick="checkFill('${subId}', '${sub.ans}', '${escapeHtml(sub.correctText)}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2 rounded-xl shadow">Έλεγχος</button>
+                        </div>
+                    `;
+                } else if (sub.type === 'match') {
+                    html += `<div class="space-y-3">`;
+                    sub.pairs.forEach((pair, pIdx) => {
+                        html += `
+                            <div class="flex flex-col sm:flex-row items-center justify-between bg-white p-3 rounded-xl border gap-2">
+                                <span class="font-semibold text-gray-700">${pair.label}</span>
+                                <select id="match-${subId}-${pIdx}" data-correct="${pair.target}" class="bg-gray-50 border border-gray-300 rounded-lg p-2 font-medium w-full sm:w-64">
+                                    <option value="">-- Επιλέξτε ταίρι --</option>
+                        `;
+                        let shuffledTargets = [...sub.pairs].map(p => p.target).sort(() => Math.random() - 0.5);
+                        shuffledTargets.forEach(t => {
+                            html += `<option value="${t}">${t}</option>`;
+                        });
+                        html += `</select></div>`;
+                    });
+                    html += `<button onclick="checkMatch('${subId}', '${escapeHtml(sub.correctText)}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2 rounded-xl shadow mt-2">Έλεγχος Αντιστοίχισης</button></div>`;
+                } else if (sub.type === 'order') {
+                    html += `<div class="space-y-2">`;
+                    let shuffledSteps = [...sub.steps].sort(() => Math.random() - 0.5);
+                    shuffledSteps.forEach((st, sIdx) => {
+                        html += `
+                            <div class="flex items-center justify-between bg-white p-3 rounded-xl border gap-3">
+                                <span class="font-semibold text-gray-700 text-sm">📌 ${st}</span>
+                                <select id="order-${subId}-${sIdx}" data-original="${sub.steps.indexOf(st) + 1}" class="bg-gray-50 border border-gray-300 rounded-lg p-2 font-bold w-28">
+                                    <option value="">Σειρά</option>
+                                    <option value="1">1ο βήμα</option>
+                                    <option value="2">2ο βήμα</option>
+                                    <option value="3">3ο βήμα</option>
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `<button onclick="checkOrder('${subId}', ${sub.steps.length}, '${escapeHtml(sub.correctText)}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2 rounded-xl shadow mt-2">Έλεγχος Σειράς</button></div>`;
+                }
+
+                html += `<div id="fb-${subId}" class="mt-3 font-bold text-sm"></div>`;
+                if (isAlreadySolved) {
+                    html += `<div class="mt-2 text-emerald-600 font-bold text-sm">✅ Ολοκληρώθηκε επιτυχώς!</div>`;
+                }
+                html += `</div>`;
+            });
+
+            html += `</div>`;
+            document.getElementById('mission-container').innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        }
+
+        // FEEDBACK HANDLER WITH CORRECT ANSWER DISPLAY
+        function handleResult(subId, success, correctText) {
+            let fb = document.getElementById(`fb-${subId}`);
+            if (success) {
+                fb.className = "mt-3 font-bold text-sm bg-emerald-100 text-emerald-800 p-3 rounded-xl border border-emerald-300";
+                fb.innerHTML = "🎉 Μπράβο! Το βρήκες σωστά!";
+                solved[subId] = true;
+                playSound('success');
+                updateGlobalStats();
+                document.getElementById('mascot-speech').innerText = "Εξαιρετικά! Ο Ήρωνας και η Υπατία χαμογελούν!";
+            } else {
+                fb.className = "mt-3 font-bold text-sm bg-rose-100 text-rose-800 p-3 rounded-xl border border-rose-300 shadow-sm";
+                fb.innerHTML = `❌ Λάθος απάντηση.<br><span class="text-indigo-900 mt-1 block bg-white/80 p-2 rounded-lg border border-indigo-200">💡 <strong>Η σωστή απάντηση είναι:</strong> ${correctText}</span>`;
+                playSound('error');
+                document.getElementById('mascot-speech').innerText = "Μην ανησυχείς! Διάβασε τη σωστή απάντηση για να τη θυμάσαι!";
+            }
+        }
+
+        function checkMC(subId, chosen, correct, correctText) {
+            handleResult(subId, chosen === correct, correctText);
+        }
+
+        function checkTF(subId, chosen, correct, correctText) {
+            handleResult(subId, chosen === correct, correctText);
+        }
+
+        function checkFill(subId, correctAns, correctText) {
+            let val = document.getElementById(`input-${subId}`).value.trim().toLowerCase();
+            handleResult(subId, val === correctAns.toLowerCase(), correctText);
+        }
+
+        function checkMatch(subId, correctText) {
+            const m = missions[currentMission];
+            const subObj = m.subs.find(s => s.id === subId);
+            let allCorrect = true;
+            subObj.pairs.forEach((p, idx) => {
+                let sel = document.getElementById(`match-${subId}-${idx}`).value;
+                if (sel !== p.target) allCorrect = false;
+            });
+            handleResult(subId, allCorrect, correctText);
+        }
+
+        function checkOrder(subId, count, correctText) {
+            let correct = true;
+            for (let i = 0; i < count; i++) {
+                let sel = document.getElementById(`order-${subId}-${i}`);
+                let orig = sel.getAttribute('data-original');
+                if (sel.value !== orig) {
+                    correct = false;
+                    break;
+                }
+            }
+            handleResult(subId, correct, correctText);
+        }
+
+        window.onload = function() {
+            renderMission();
+            updateGlobalStats();
+        };
+    </script>
+</body>
+</html>
