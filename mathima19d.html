@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 19: Εννοιολογικοί Χάρτες - 8 Δραστηριότητες (Δ΄ Δημοτικού)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #7c3aed;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fef3c7 100%);
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 24px;
+      --border-radius-btn: 16px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 3px solid rgba(37, 99, 235, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.9rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.2rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.25s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .level-badge-container {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 0.55rem 1.3rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-pill.active {
+      background: #eff6ff;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .sub-activity-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .sub-card-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #1e3a8a;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sub-card-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 1.5rem;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .opt-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .opt-btn:hover { border-color: var(--primary); background: #eff6ff; }
+    .opt-btn.correct-choice { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .opt-btn.wrong-choice { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.95rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border-radius: var(--border-radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>🗺️ Μάθημα 19: Εννοιολογικός Χάρτης</h1>
+        <p>8 Δραστηριότητες με 3 Εσωτερικά Επίπεδα η καθεμία (Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchMainTab(0)"><span>1️⃣</span> Βασικά Στοιχεία</button>
+    <button class="tab-btn" onclick="switchMainTab(1)"><span>2️⃣</span> Οι Έννοιες</button>
+    <button class="tab-btn" onclick="switchMainTab(2)"><span>3️⃣</span> Οι Συνδέσεις</button>
+    <button class="tab-btn" onclick="switchMainTab(3)"><span>4️⃣</span> Εικόνες στον Χάρτη</button>
+    <button class="tab-btn" onclick="switchMainTab(4)"><span>5️⃣</span> Υπερσύνδεσμοι (Links)</button>
+    <button class="tab-btn" onclick="switchMainTab(5)"><span>6️⃣</span> Χρώματα & Οργάνωση</button>
+    <button class="tab-btn" onclick="switchMainTab(6)"><span>7️⃣</span> Ντετέκτιβ Λαθών</button>
+    <button class="tab-btn" onclick="switchMainTab(7)"><span>8️⃣</span> Μέγα Κουίζ</button>
+  </nav>
+
+  <main>
+    <div id="activities-wrapper"></div>
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master των Χαρτών!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ολοκλήρωσες με επιτυχία και τα 24 επίπεδα των δραστηριοτήτων! Γνωρίζεις πλέον πώς να οργανώνεις τις σκέψεις σου με έννοιες, συνδέσεις, εικόνες και υπερσυνδέσμους!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER (Web Audio API) */
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        if (type === 'correct') {
+          const osc1 = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc1.frequency.setValueAtTime(659.25, now + 0.1);
+          osc1.frequency.setValueAtTime(783.99, now + 0.2);
+          osc1.frequency.setValueAtTime(1046.50, now + 0.3);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc1.connect(gain); gain.connect(audioCtx.destination);
+          osc1.start(now); osc1.stop(now + 0.4);
+        } else if (type === 'wrong') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.setValueAtTime(110, now + 0.15);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.35);
+        } else if (type === 'click') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.08);
+        }
+      } catch (e) {
+        // Audio fallback
+      }
+    }
+
+    /* ΟΛΑ ΤΑ ΔΕΔΟΜΕΝΑ ΤΩΝ 8 ΔΡΑΣΤΗΡΙΟΤΗΤΩΝ (ΜΕ ΠΟΙΚΙΛΙΑ ΣΤΗ ΘΕΣΗ ΤΗΣ ΣΩΣΤΗΣ ΑΠΑΝΤΗΣΗΣ) */
+    const allActivities = [
+      {
+        title: "1️⃣ Τα Βασικά Στοιχεία ενός Εννοιολογικού Χάρτη",
+        desc: "Μάθε ποια είναι τα βασικά δομικά υλικά που συνθέτουν έναν εννοιολογικό χάρτη.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Ποια είναι τα δύο απαραίτητα στοιχεία;",
+            text: "Σε κάθε εννοιολογικό χάρτη, οι πληροφορίες οργανώνονται με:",
+            options: [
+              { t: "Μόνο σκέτες λέξεις σκόρπιες σε μια άδεια σελίδα", c: false },
+              { t: "Έννοιες (σε πλαίσια/σχήματα) και Συνδέσεις (γραμμές/βέλη με λόγια)", c: true },
+              { t: "Μόνο γραμμές και βέλη χωρίς καθόλου γράμματα", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Οι έννοιες και οι συνδέσεις είναι τα δύο βασικά στοιχεία κάθε χάρτη!",
+            fbWrong: "⚠️ Σκέψου: χρειαζόμαστε και τα κουτάκια (έννοιες) και τις γραμμές που τα ενώνουν!"
+          },
+          {
+            title: "Επίπεδο 2: Γιατί φτιάχνουμε εννοιολογικούς χάρτες;",
+            text: "Ποιος είναι ο κύριος σκοπός ενός εννοιολογικού χάρτη στο σχολείο;",
+            options: [
+              { t: "Για να γεμίζουμε την οθόνη χωρίς νόημα", c: false },
+              { t: "Μας βοηθά να οργανώσουμε τις σκέψεις μας και να κατανοήσουμε καλύτερα ένα μάθημα", c: true },
+              { t: "Για να ακούμε μουσική", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Ο εννοιολογικός χάρτης οργανώνει τις γνώσεις μας και κάνει τη μάθηση παιχνίδι!",
+            fbWrong: "⚠️ Ο χάρτης είναι ένα εργαλείο οργάνωσης της σκέψης μας!"
+          },
+          {
+            title: "Επίπεδο 3: Πώς διαβάζεται μια σύνδεση;",
+            text: "Όταν δύο έννοιες ενώνονται με βέλος και μια φράση σύνδεσης, τι σχηματίζουν;",
+            options: [
+              { t: "Μια λάθος λέξη χωρίς νόημα", c: false },
+              { t: "Ένα απλό κενό διάστημα", c: false },
+              { t: "Μια ολοκληρωμένη και λογική πρόταση (π.χ. [Ο Ήλιος] ➔ είναι ένα ➔ [Άστρο])", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Δύο έννοιες και η λέξη σύνδεσης σχηματίζουν μια αληθινή πρόταση!",
+            fbWrong: "⚠️ Διάβασε από την πρώτη έννοια προς τη δεύτερη ακολουθώντας το βέλος!"
+          }
+        ]
+      },
+      {
+        title: "2️⃣ Οι Έννοιες στον Χάρτη (Κόμβοι)",
+        desc: "Μάθε πώς επιλέγουμε και τοποθετούμε τις έννοιες μέσα στα πλαίσια.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Η Κεντρική Έννοια",
+            text: "Πού τοποθετείται συνήθως η πιο σημαντική (κεντρική) έννοια του χάρτη μας;",
+            options: [
+              { t: "Κρυμμένη σε μια άκρη για να μην τη βλέπει κανείς", c: false },
+              { t: "Πουθενά, δεν βάζουμε κεντρικό θέμα", c: false },
+              { t: "Στην κορυφή ή στο κέντρο του χάρτη, ώστε να ξεκινούν από εκεί οι διακλαδώσεις", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Το βασικό θέμα μπαίνει πάντα στο κέντρο ή στην κορυφή!",
+            fbWrong: "⚠️ Το κεντρικό θέμα πρέπει να είναι σε εμφανές σημείο!"
+          },
+          {
+            title: "Επίπεδο 2: Πόσο κείμενο γράφουμε μέσα σε μια έννοια;",
+            text: "Ποιος είναι ο χρυσός κανόνας για το κείμενο μέσα σε κάθε πλαίσιο;",
+            options: [
+              { t: "Αντιγράφουμε 20 γραμμές από το βιβλίο μέσα στο ίδιο πλαίσιο", c: false },
+              { t: "Γράφουμε σύντομες λέξεις-κλειδιά (1-3 λέξεις), όχι ολόκληρες παραγράφους!", c: true },
+              { t: "Δεν γράφουμε καθόλου γράμματα", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Στις έννοιες βάζουμε μόνο λέξεις-κλειδιά για να είναι ο χάρτης καθαρός!",
+            fbWrong: "⚠️ Αν γράψουμε ολόκληρο κατεβατό, ο χάρτης γίνεται δυσανάγνωστος!"
+          },
+          {
+            title: "Επίπεδο 3: Ιεραρχία εννοιών (Από το γενικό στο ειδικό)",
+            text: "Πώς οργανώνονται οι υπο-έννοιες καθώς απλώνεται ο χάρτης;",
+            options: [
+              { t: "Προχωράμε από τις πιο γενικές έννοιες προς τις πιο ειδικές και λεπτομερείς", c: true },
+              { t: "Βάζουμε τις λέξεις εντελώς στην τύχη", c: false }
+            ],
+            fbCorrect: "🏆 Εξαιρετικά! Αυτή είναι η ιεραρχική δομή του εννοιολογικού χάρτη!",
+            fbWrong: "⚠️ Ξεκινάμε από το γενικό θέμα και προχωράμε σε λεπτομέρειες!"
+          }
+        ]
+      },
+      {
+        title: "3️⃣ Οι Συνδέσεις και οι Φράσεις Σύνδεσης",
+        desc: "Μάθε πώς να δίνεις νόημα στις γραμμές που ενώνουν τις έννοιες.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Αρκεί μια σκέτη γραμμή;",
+            text: "Αν ενώσουμε δύο έννοιες με μια απλή γραμμή χωρίς καμία λέξη, τι λείπει;",
+            options: [
+              { t: "Δεν λείπει τίποτα, οι σκέτες γραμμές είναι τέλειες", c: false },
+              { t: "Λείπει η φράση σύνδεσης που εξηγεί πώς σχετίζονται οι δύο έννοιες!", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Πάνω σε κάθε γραμμή πρέπει να υπάρχει φράση σύνδεσης!",
+            fbWrong: "⚠️ Χωρίς λέξη σύνδεσης, δεν ξέρουμε ποια είναι η σχέση των εννοιών!"
+          },
+          {
+            title: "Επίπεδο 2: Επιλογή της κατάλληλης φράσης",
+            text: "Έχουμε τις έννοιες [Η Γη] και [Πλανήτης]. Ποια φράση ταιριάζει στη σύνδεση;",
+            options: [
+              { t: "«είναι ένας» ➔ [Η Γη] είναι ένας [Πλανήτης]", c: true },
+              { t: "«τρώει έναν»", c: false },
+              { t: "«πετάει πάνω από»", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Η Γη είναι ένας πλανήτης!",
+            fbWrong: "⚠️ Διάλεξε τη φράση που σχηματίζει μια σωστή πρόταση!"
+          },
+          {
+            title: "Επίπεδο 3: Η σημασία του βέλους (Κατεύθυνση)",
+            text: "Γιατί οι γραμμές στους εννοιολογικούς χάρτες έχουν συνήθως βέλος στην άκρη;",
+            options: [
+              { t: "Απλώς για να φαίνεται πιο όμορφο το σχέδιο", c: false },
+              { t: "Για να δείχνει ότι ο υπολογιστής φορτίζει", c: false },
+              { t: "Μας δείχνουν τη φορά με την οποία πρέπει να διαβάσουμε την πρόταση", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Το βέλος δείχνει από ποια έννοια ξεκινάμε να διαβάζουμε!",
+            fbWrong: "⚠️ Το βέλος καθορίζει τη σειρά ανάγνωσης της πρότασης!"
+          }
+        ]
+      },
+      {
+        title: "4️⃣ Εμπλουτισμός με Εικόνες",
+        desc: "Πώς οι εικόνες κάνουν τον χάρτη πιο ζωντανό και ευχάριστο.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Γιατί προσθέτουμε εικόνες σε έναν χάρτη;",
+            text: "Ποιο είναι το μεγαλύτερο όφελος από την προσθήκη εικόνων δίπλα στις έννοιες;",
+            options: [
+              { t: "Για να μη χρειάζεται να διαβάζουμε καθόλου", c: false },
+              { t: "Βοηθούν την οπτική μας μνήμη να κατανοήσει και να θυμάται ευκολότερα τις έννοιες", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Μια εικόνα ισούται με χίλιες λέξεις για τη μνήμη μας!",
+            fbWrong: "⚠️ Οι εικόνες βοηθούν στην καλύτερη κατανόηση και απομνημόνευση!"
+          },
+          {
+            title: "Επίπεδο 2: Πού τοποθετείται η εικόνα μέσα στην έννοια;",
+            text: "Όταν βάζουμε μια εικόνα σε ένα πλαίσιο με κείμενο, τι πρέπει να προσέχουμε;",
+            options: [
+              { t: "Να κρύβει εντελώς τη λέξη για να μην φαίνεται", c: false },
+              { t: "Να καλύπτει ολόκληρη την οθόνη του υπολογιστή", c: false },
+              { t: "Να μην σκεπάζει τα γράμματα, αλλά να μπαίνει πάνω ή δίπλα από το κείμενο", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Το κείμενο πρέπει να παραμένει καθαρό και ευανάγνωστο!",
+            fbWrong: "⚠️ Αν η εικόνα κρύψει τα γράμματα, δεν θα μπορούμε να διαβάσουμε την έννοια!"
+          },
+          {
+            title: "Επίπεδο 3: Κατάλληλο μέγεθος εικόνας",
+            text: "Τι συμβαίνει αν βάλουμε μια τεράστια εικόνα μέσα σε ένα μικρό κουτάκι;",
+            options: [
+              { t: "Χαλάει η διάταξη του χάρτη, γι' αυτό ρυθμίζουμε το μέγεθος σε κατάλληλες διαστάσεις", c: true },
+              { t: "Δεν πειράζει καθόλου όσο μεγάλη κι αν είναι", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Ρυθμίζουμε πάντα το μέγεθος των εικόνων ώστε να ταιριάζουν όμορφα στον χάρτη!",
+            fbWrong: "⚠️ Το μέγεθος της εικόνας πρέπει να ταιριάζει με το μέγεθος του πλαισίου!"
+          }
+        ]
+      },
+      {
+        title: "5️⃣ Υπερσύνδεσμοι & Εξωτερικές Πηγές",
+        desc: "Σύνδεση του χάρτη με τον παγκόσμιο ιστό και τα πολυμέσα.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Τι είναι ένας υπερσύνδεσμος (link) σε έναν χάρτη;",
+            text: "Όταν προσθέτουμε έναν υπερσύνδεσμο σε μια έννοια, τι συμβαίνει όταν κάνουμε κλικ;",
+            options: [
+              { t: "Σβήνει ολόκληρος ο χάρτης", c: false },
+              { t: "Ανοίγει στον φυλλομετρητή μια ιστοσελίδα ή ένα εκπαιδευτικό βίντεο σχετικό με την έννοια!", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Ο υπερσύνδεσμος μας ταξιδεύει σε πλούσιο υλικό στο ίντερνετ!",
+            fbWrong: "⚠️ Ο υπερσύνδεσμος είναι μια ηλεκτρονική γέφυρα προς το διαδίκτυο!"
+          },
+          {
+            title: "Επίπεδο 2: Τι είναι ο «Πολυμεσικός Εννοιολογικός Χάρτης»;",
+            text: "Πότε ένας χάρτης ονομάζεται πολυμεσικός;",
+            options: [
+              { t: "Όταν έχει μόνο απλό μαύρο κείμενο χωρίς τίποτα άλλο", c: false },
+              { t: "Όταν είναι εκτυπωμένος σε χαρτί εφημερίδας", c: false },
+              { t: "Όταν συνδυάζει κείμενο, εικόνες, ήχους και βίντεο μέσω υπερσυνδέσμων", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Πολυμέσα σημαίνει συνδυασμός πολλών μορφών πληροφορίας!",
+            fbWrong: "⚠️ Πολυμεσικός είναι ο χάρτης που έχει εικόνες, βίντεο και ήχο!"
+          },
+          {
+            title: "Επίπεδο 3: Πώς προσέχουμε τις διευθύνσεις ιστού (URL);",
+            text: "Τι πρέπει να προσέχουμε όταν αντιγράφουμε έναν σύνδεσμο για να λειτουργεί σωστά;",
+            options: [
+              { t: "Να γράφουμε μόνο μία τυχαία λέξη", c: false },
+              { t: "Να αντιγράφουμε ολόκληρη και σωστά τη διεύθυνση URL (χωρίς να ξεχνάμε γράμματα)", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Η σωστή διεύθυνση URL εξασφαλίζει ότι ο σύνδεσμος θα ανοίξει χωρίς σφάλμα!",
+            fbWrong: "⚠️ Αν λείπει έστω κι ένα γράμμα από το URL, η σελίδα δεν θα ανοίξει!"
+          }
+        ]
+      },
+      {
+        title: "6️⃣ Χρώματα & Οπτική Οργάνωση",
+        desc: "Πώς τα χρώματα και τα σχήματα βοηθούν στην κατανόηση του χάρτη.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Γιατί χρησιμοποιούμε χρώματα στις έννοιες;",
+            text: "Ποια είναι η χρησιμότητα των διαφορετικών χρωμάτων στα πλαίσια;",
+            options: [
+              { t: "Απλώς για να μοιάζει με ουράνιο τόξο χωρίς νόημα", c: false },
+              { t: "Για να ξοδεύουμε πιο γρήγορα την μπαταρία της οθόνης", c: false },
+              { t: "Ομαδοποιούμε τις συγγενικές έννοιες ώστε να ξεχωρίζουν οι κατηγορίες με μια ματιά", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Τα χρώματα ομαδοποιούν τις έννοιες σε κατηγορίες!",
+            fbWrong: "⚠️ Το χρώμα είναι εργαλείο οργάνωσης και κατηγοριοποίησης!"
+          },
+          {
+            title: "Επίπεδο 2: Αντίθεση χρωμάτων (Ευανάγνωστο κείμενο)",
+            text: "Αν ένα πλαίσιο έχει σκούρο μπλε χρώμα φόντου, τι χρώμα πρέπει να έχουν τα γράμματα;",
+            options: [
+              { t: "Ανοιχτό χρώμα (π.χ. λευκό ή κίτρινο) για να διαβάζονται εύκολα", c: true },
+              { t: "Σκούρο μαύρο ώστε να μην φαίνονται καθόλου", c: false },
+              { t: "Σκούρο καφέ", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Χρειαζόμαστε καλή αντίθεση για να διαβάζονται τα γράμματα!",
+            fbWrong: "⚠️ Σκούρα γράμματα σε σκούρο φόντο δεν διαβάζονται!"
+          },
+          {
+            title: "Επίπεδο 3: Διαφορετικά σχήματα πλαισίων",
+            text: "Μπορούμε να χρησιμοποιούμε διαφορετικά σχήματα (π.χ. οβάλ για έννοιες, ορθογώνια για παραδείγματα);",
+            options: [
+              { t: "Όχι, όλα πρέπει υποχρεωτικά να είναι ίδια", c: false },
+              { t: "Ναι! Τα διαφορετικά σχήματα βοηθούν να ξεχωρίζουμε τα είδη των πληροφοριών", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Τα σχήματα προσφέρουν επιπλέον οπτική οργάνωση!",
+            fbWrong: "⚠️ Μπορούμε να αξιοποιήσουμε διάφορα σχήματα για διάκριση πληροφοριών!"
+          }
+        ]
+      },
+      {
+        title: "7️⃣ Ο Ντετέκτιβ Λαθών στους Χάρτες",
+        desc: "Εντόπισε τα συνηθισμένα λάθη και μάθε πώς να τα διορθώνεις.",
+        levels: [
+          {
+            title: "Υπόθεση 1: Ο μπερδεμένος λαβύρινθος",
+            text: "Ένας μαθητής έφτιαξε έναν χάρτη όπου οι γραμμές διασταυρώνονται συνεχώς και περνούν η μία πάνω από την άλλη. Πώς διορθώνεται;",
+            options: [
+              { t: "Σβήνουμε όλο τον υπολογιστή", c: false },
+              { t: "Μετακινούμε τα πλαίσια με σύρσιμο (drag) ώστε οι γραμμές να απλωθούν καθαρά χωρίς να μπλέκονται", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο Ντετέκτιβ! Μετακινούμε τις έννοιες για να είναι οι γραμμές ευδιάκριτες!",
+            fbWrong: "⚠️ Αρκεί να μετακινήσουμε τα πλαίσια σε πιο άνετες θέσεις!"
+          },
+          {
+            title: "Υπόθεση 2: Η εικόνα που δεν ταιριάζει",
+            text: "Σε έναν χάρτη για τα «Μέσα Μεταφοράς», στην έννοια «Αεροπλάνο» μπήκε φωτογραφία μιας πίτσας! Τι πρέπει να γίνει;",
+            options: [
+              { t: "Αλλάζουμε την εικόνα με μία που να δείχνει πραγματικά αεροπλάνο", c: true },
+              { t: "Αφήνουμε την πίτσα γιατί είναι νόστιμη", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Οι εικόνες πρέπει να έχουν άμεση σχέση με το θέμα της έννοιας!",
+            fbWrong: "⚠️ Οι εικόνες στον χάρτη πρέπει να είναι απόλυτα σχετικές με την έννοια!"
+          },
+          {
+            title: "Υπόθεση 3: Το σβήσιμο κατά λάθος",
+            text: "Πάτησες κατά λάθος Διαγραφή σε μια σημαντική έννοια. Ποια ενέργεια σε σώζει αμέσως;",
+            options: [
+              { t: "Να αρχίσεις να κλαις", c: false },
+              { t: "Να κλείσεις τον γενικό διακόπτη του ρεύματος", c: false },
+              { t: "Η εντολή «Αναίρεση» (Undo ↩️)", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Η Αναίρεση ακυρώνει το λάθος στη στιγμή!",
+            fbWrong: "⚠️ Το κουμπί Αναίρεση επαναφέρει αμέσως ό,τι σβήστηκε!"
+          }
+        ]
+      },
+      {
+        title: "8️⃣ Το Μεγάλο Κουίζ του Χαρτογράφου",
+        desc: "Τελική δοκιμασία για να αποδείξεις ότι έγινες Master στους Εννοιολογικούς Χάρτες!",
+        levels: [
+          {
+            title: "Ερώτηση 1: Ποιο είναι το τρίπτυχο της επιτυχίας ενός χάρτη;",
+            text: "Ένας καλός και κατανοητός εννοιολογικός χάρτης έχει:",
+            options: [
+              { t: "Ατελείωτα κατεβατά κειμένου και μπερδεμένες γραμμές", c: false },
+              { t: "Σύντομες λέξεις-κλειδιά, καθαρές γραμμές με λέξεις σύνδεσης και όμορφη οργάνωση", c: true }
+            ],
+            fbCorrect: "🎉 Σωστά! Συντομία, σαφήνεια και καθαρές συνδέσεις!",
+            fbWrong: "⚠️ Ο καλός χάρτης είναι απλός, σύντομος και ευανάγνωστος!"
+          },
+          {
+            title: "Ερώτηση 2: Σε ποια μαθήματα μπορούμε να φτιάξουμε χάρτες;",
+            text: "Πού μπορεί να μας φανεί χρήσιμος ένας εννοιολογικός χάρτης;",
+            options: [
+              { t: "Πουθενά, μόνο για να περνάμε την ώρα μας", c: false },
+              { t: "Μόνο στη ζωγραφική", c: false },
+              { t: "Σε όλα τα μαθήματα (Ιστορία, Φυσική, Γεωγραφία, Γλώσσα, Πληροφορική)!", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Οι εννοιολογικοί χάρτες χρησιμοποιούνται σε όλα τα μαθήματα!",
+            fbWrong: "⚠️ Μπορούμε να συνοψίσουμε οποιοδήποτε μάθημα με έναν χάρτη!"
+          },
+          {
+            title: "Ερώτηση 3: Γιατί ο χάρτης είναι καλύτερος από ένα απλό κείμενο;",
+            text: "Τι προσφέρει η οπτική αναπαράσταση ενός χάρτη στον ανθρώπινο εγκέφαλο;",
+            options: [
+              { t: "Βλέπουμε αμέσως τις σχέσεις των εννοιών και μαθαίνουμε πιο γρήγορα και ευχάριστα!", c: true },
+              { t: "Μας κάνει να ξεχνάμε όσα διαβάσαμε", c: false },
+              { t: "Τίποτα απολύτως", c: false }
+            ],
+            fbCorrect: "🏆 ΑΡΙΣΤΑ! Ολοκλήρωσες και τα 24 επίπεδα! Είσαι πλέον επίσημος Master των Εννοιολογικών Χαρτών! (8/8 ⭐)",
+            fbWrong: "⚠️ Η οπτική μάθηση βοηθά τον εγκέφαλο να συνδέει τις πληροφορίες!"
+          }
+        ]
+      }
+    ];
+
+    /* ΚΑΤΑΣΤΑΣΗ ΠΡΟΟΔΟΥ */
+    const completedStars = new Set();
+    const currentSubLevels = [0, 0, 0, 0, 0, 0, 0, 0];
+    let currentMainTab = 0;
+    const greekLetters = ['Α) ', 'Β) ', 'Γ) ', 'Δ) '];
+
+    function buildUI() {
+      const wrapper = document.getElementById('activities-wrapper');
+      if (!wrapper) return;
+      wrapper.innerHTML = '';
+
+      allActivities.forEach((act, actIdx) => {
+        const sec = document.createElement('section');
+        sec.className = `activity-section ${actIdx === 0 ? 'active' : ''}`;
+        sec.id = `act-sec-${actIdx}`;
+
+        let html = `
+          <div class="activity-header">
+            <h2>${act.title}</h2>
+            <p>${act.desc}</p>
+          </div>
+          <div class="level-badge-container">
+            <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+            <button class="level-pill active" id="pill-${actIdx}-0" onclick="switchSubLevel(${actIdx}, 0)">1: ${act.levels[0].title.split(':')[1] || 'Επίπεδο 1'}</button>
+            <button class="level-pill" id="pill-${actIdx}-1" onclick="switchSubLevel(${actIdx}, 1)">2: ${act.levels[1].title.split(':')[1] || 'Επίπεδο 2'}</button>
+            <button class="level-pill" id="pill-${actIdx}-2" onclick="switchSubLevel(${actIdx}, 2)">3: ${act.levels[2].title.split(':')[1] || 'Επίπεδο 3'}</button>
+          </div>
+          <div id="sub-card-container-${actIdx}"></div>
+          <div class="feedback-box" id="fb-${actIdx}"></div>
+        `;
+        sec.innerHTML = html;
+        wrapper.appendChild(sec);
+      });
+
+      renderCurrentSubLevel(0);
+    }
+
+    function switchMainTab(idx) {
+      playSound('click');
+      currentMainTab = idx;
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      document.querySelectorAll('.activity-section').forEach((s, i) => s.classList.toggle('active', i === idx));
+      renderCurrentSubLevel(idx);
+    }
+
+    function switchSubLevel(actIdx, lvlIdx) {
+      playSound('click');
+      currentSubLevels[actIdx] = lvlIdx;
+      for (let i = 0; i < 3; i++) {
+        const pill = document.getElementById(`pill-${actIdx}-${i}`);
+        if (pill) pill.classList.toggle('active', i === lvlIdx);
+      }
+      renderCurrentSubLevel(actIdx);
+    }
+
+    function renderCurrentSubLevel(actIdx) {
+      const container = document.getElementById(`sub-card-container-${actIdx}`);
+      const fb = document.getElementById(`fb-${actIdx}`);
+      if (!container) return;
+      fb.style.display = 'none';
+
+      const lvlIdx = currentSubLevels[actIdx];
+      const data = allActivities[actIdx].levels[lvlIdx];
+
+      container.innerHTML = `
+        <div class="sub-activity-card">
+          <div class="sub-card-title">🎯 ${data.title}</div>
+          <div class="sub-card-text">${data.text}</div>
+          <div class="options-grid">
+            ${data.options.map((opt, oIdx) => `
+              <button class="opt-btn" onclick="checkOption(${actIdx}, ${lvlIdx}, ${oIdx}, this)">
+                <strong>${greekLetters[oIdx]}</strong>${opt.t}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function checkOption(actIdx, lvlIdx, optIdx, btn) {
+      const data = allActivities[actIdx].levels[lvlIdx];
+      const fb = document.getElementById(`fb-${actIdx}`);
+      fb.style.display = 'flex';
+
+      const allBtns = btn.closest('.options-grid').querySelectorAll('.opt-btn');
+      allBtns.forEach(b => b.classList.remove('correct-choice', 'wrong-choice'));
+
+      if (data.options[optIdx].c) {
+        playSound('correct');
+        btn.classList.add('correct-choice');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = data.fbCorrect;
+
+        if (lvlIdx === 2) {
+          markStarDone(actIdx);
+        }
+      } else {
+        playSound('wrong');
+        btn.classList.add('wrong-choice');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = data.fbWrong;
+      }
+    }
+
+    function markStarDone(actIdx) {
+      if (!completedStars.has(actIdx)) {
+        completedStars.add(actIdx);
+        document.getElementById('global-stars').textContent = completedStars.size;
+        if (completedStars.size === 8) {
+          setTimeout(() => {
+            document.getElementById('victory-modal').classList.add('active');
+          }, 600);
+        }
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('victory-modal').classList.remove('active');
+    }
+
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima19_Ennoiologikoi_Xartes_D_Dimotikou_v3.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    // Direct startup
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildUI);
+    } else {
+      buildUI();
+    }
+  </script>
+</body>
+</html>
