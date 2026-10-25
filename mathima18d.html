@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 18: Επεξεργασία Δεδομένων - 8 Διαδραστικές Δραστηριότητες (Δ΄ Δημοτικού)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --secondary: #6366f1;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --accent-cyan: #06b6d4;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 50%, #f0fdf4 100%);
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 26px;
+      --border-radius-btn: 18px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 30px -10px rgba(2, 132, 199, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid rgba(2, 132, 199, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1.1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.95rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.2rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.3s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .level-badge-container {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-pill.active {
+      background: #e0f2fe;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.95rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border-radius: var(--border-radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    .btn-success { background: var(--accent-green); color: white; }
+    .btn-success:hover { background: #047857; transform: translateY(-2px); }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .btn-danger { background: var(--accent-red); color: white; }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.8rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+    .feedback-box.info { background: #e0f2fe; color: #0369a1; border: 3px solid #38bdf8; display: flex; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.8rem;
+    }
+    .game-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .game-card-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .game-card-desc {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .game-select {
+      font-size: 1.25rem;
+      font-family: inherit;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 3px solid #cbd5e1;
+      font-weight: 800;
+      background: white;
+      cursor: pointer;
+    }
+    .game-select:focus { outline: none; border-color: var(--primary); }
+
+    /* Interactive Simulation Canvas / Boxes */
+    .sim-box {
+      background: #0f172a;
+      border-radius: 22px;
+      padding: 2rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      border: 3px solid #334155;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>📊 Μάθημα 18: Επεξεργασία Δεδομένων</h1>
+        <p>8 Δραστηριότητες με 3 Εσωτερικά Επίπεδα η καθεμία (Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε αυτό το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)"><span>1️⃣</span> Μεγάλος Όγκος Δεδομένων</button>
+    <button class="tab-btn" onclick="switchTab(1)"><span>2️⃣</span> Οι Αισθητήρες (Sensors)</button>
+    <button class="tab-btn" onclick="switchTab(2)"><span>3️⃣</span> Αισθητήρες στο Αυτοκίνητο</button>
+    <button class="tab-btn" onclick="switchTab(3)"><span>4️⃣</span> Το Έξυπνο Σπίτι (Smart Home)</button>
+    <button class="tab-btn" onclick="switchTab(4)"><span>5️⃣</span> Διαδίκτυο Πραγμάτων (IoT)</button>
+    <button class="tab-btn" onclick="switchTab(5)"><span>6️⃣</span> Η Έξυπνη Πόλη (Smart City)</button>
+    <button class="tab-btn" onclick="switchTab(6)"><span>7️⃣</span> Συλλογή Δεδομένων</button>
+    <button class="tab-btn" onclick="switchTab(7)"><span>8️⃣</span> Μέγα Κουίζ Δεδομένων</button>
+  </nav>
+
+  <main>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 1: ΜΕΓΑΛΟΣ ΟΓΚΟΣ ΔΕΔΟΜΕΝΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section active" id="act-0">
+      <div class="activity-header">
+        <h2>1️⃣ Ο Υπολογιστής και ο Μεγάλος Όγκος Δεδομένων (σελ. 70)</h2>
+        <p>«Όσο περισσότερα δεδομένα έχουμε, τόσο πιο χρήσιμος είναι ο υπολογιστής γιατί επεξεργάζεται γρήγορα πολλά δεδομένα!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct1Level(1)">1: Άνθρωπος vs Υπολογιστής</button>
+        <button class="level-pill" onclick="setAct1Level(2)">2: Επιστήμες & Δεδομένα</button>
+        <button class="level-pill" onclick="setAct1Level(3)">3: Ταίριαξε το Επάγγελμα</button>
+      </div>
+
+      <div id="act1-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct1()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act1-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 2: ΟΙ ΑΙΣΘΗΤΗΡΕΣ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-1">
+      <div class="activity-header">
+        <h2>2️⃣ Τι είναι οι Αισθητήρες (Sensors); (σελ. 71)</h2>
+        <p>«Ο αισθητήρας είναι εξάρτημα που μετράει κάτι στο περιβάλλον και το μεταφέρει σε μια συσκευή για αυτόματη ενέργεια!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct2Level(1)">1: Ορισμός & Λειτουργία</button>
+        <button class="level-pill" onclick="setAct2Level(2)">2: Είδη Αισθητήρων</button>
+        <button class="level-pill" onclick="setAct2Level(3)">3: Η Αλυσίδα του Αυτοματισμού</button>
+      </div>
+
+      <div id="act2-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct2()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act2-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 3: ΑΙΣΘΗΤΗΡΕΣ ΣΤΟ ΑΥΤΟΚΙΝΗΤΟ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-2">
+      <div class="activity-header">
+        <h2>3️⃣ Αισθητήρες στο Σύγχρονο Αυτοκίνητο (σελ. 71)</h2>
+        <p>«Ένα σύγχρονο αυτοκίνητο που κινείται με όπισθεν έχει αισθητήρα απόστασης και ειδοποιεί τον οδηγό!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct3Level(1)">1: Αισθητήρας Απόστασης</button>
+        <button class="level-pill" onclick="setAct3Level(2)">2: Προσομοιωτής Παρκαρίσματος</button>
+        <button class="level-pill" onclick="setAct3Level(3)">3: Κι άλλοι Αισθητήρες Οχήματος</button>
+      </div>
+
+      <div id="act3-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct3()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act3-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 4: ΤΟ ΕΞΥΠΝΟ ΣΠΙΤΙ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-3">
+      <div class="activity-header">
+        <h2>4️⃣ Το Έξυπνο Σπίτι (Smart Home) (σελ. 71)</h2>
+        <p>«Στο έξυπνο σπίτι υπάρχουν συσκευές που ρυθμίζουν αυτόματα τη λειτουργία τους και τις ελέγχουμε από απόσταση με το κινητό!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct4Level(1)">1: Έξυπνος Θερμοστάτης</button>
+        <button class="level-pill" onclick="setAct4Level(2)">2: Συσκευές Έξυπνου Σπιτιού</button>
+        <button class="level-pill" onclick="setAct4Level(3)">3: Εξοικονόμηση Ενέργειας</button>
+      </div>
+
+      <div id="act4-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct4()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act4-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 5: ΤΟ ΔΙΑΔΙΚΤΥΟ ΤΩΝ ΠΡΑΓΜΑΤΩΝ - IOT (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-4">
+      <div class="activity-header">
+        <h2>5️⃣ Το Διαδίκτυο των Πραγμάτων (IoT - Internet of Things) (σελ. 71-72)</h2>
+        <p>«Παγκόσμιο δίκτυο συνδεδεμένων έξυπνων συσκευών που επικοινωνούν, ανταλλάσσουν δεδομένα και προσαρμόζονται!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct5Level(1)">1: Τι σημαίνει IoT;</button>
+        <button class="level-pill" onclick="setAct5Level(2)">2: Ποιες συσκευές είναι IoT;</button>
+        <button class="level-pill" onclick="setAct5Level(3)">3: Σωστό ή Λάθος στο IoT</button>
+      </div>
+
+      <div id="act5-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct5()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act5-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 6: Η ΕΞΥΠΝΗ ΠΟΛΗ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-5">
+      <div class="activity-header">
+        <h2>6️⃣ Η Έξυπνη Πόλη (Smart City) & Έξυπνος Φωτισμός (σελ. 72)</h2>
+        <p>«Χρησιμοποιεί υπολογιστές, διαδίκτυο και αισθητήρες για να κάνει πιο εύκολη τη ζωή και να μειώσει την ενέργεια!»</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct6Level(1)">1: Προσομοιωτής Φωτισμού (σελ. 72)</button>
+        <button class="level-pill" onclick="setAct6Level(2)">2: Έξυπνα Φανάρια Κυκλοφορίας</button>
+        <button class="level-pill" onclick="setAct6Level(3)">3: Οφέλη για τους Πολίτες</button>
+      </div>
+
+      <div id="act6-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct6()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act6-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 7: ΣΥΛΛΟΓΗ ΔΕΔΟΜΕΝΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-6">
+      <div class="activity-header">
+        <h2>7️⃣ Συλλογή Δεδομένων: Στην Τάξη και στον Κόσμο (σελ. 70)</h2>
+        <p>Πότε μετράμε μόνοι μας και πότε χρειαζόμαστε υπολογιστές και αισθητήρες;</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct7Level(1)">1: Το Φρούτο των 20 Μαθητών</button>
+        <button class="level-pill" onclick="setAct7Level(2)">2: Σεισμοί 50 Ετών στην Ελλάδα</button>
+        <button class="level-pill" onclick="setAct7Level(3)">3: Τρόποι Συλλογής Δεδομένων</button>
+      </div>
+
+      <div id="act7-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct7()" style="margin-top: 1rem;">✔️ Έλεγχος Επιπέδου</button>
+      <div class="feedback-box" id="act7-fb"></div>
+    </section>
+
+    <!-- =========================================================================
+         ΔΡΑΣΤΗΡΙΟΤΗΤΑ 8: ΜΕΓΑ ΚΟΥΙΖ ΔΕΔΟΜΕΝΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== -->
+    <section class="activity-section" id="act-7">
+      <div class="activity-header">
+        <h2>8️⃣ Το Μεγάλο Κουίζ της Επεξεργασίας Δεδομένων!</h2>
+        <p>Ολοκλήρωσε και τα 3 επίπεδα ερωτήσεων για να κερδίσεις το χρυσό κύπελλο!</p>
+      </div>
+
+      <div class="level-badge-container">
+        <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+        <button class="level-pill active" onclick="setAct8Level(1)">1: Βασικές Έννοιες</button>
+        <button class="level-pill" onclick="setAct8Level(2)">2: Αισθητήρες & Αυτοματισμοί</button>
+        <button class="level-pill" onclick="setAct8Level(3)">3: Smart Home, Smart City & IoT</button>
+      </div>
+
+      <div id="act8-content"></div>
+
+      <button class="btn btn-primary" onclick="checkAct8()" style="margin-top: 1rem;">✔️ Υποβολή Απάντησης</button>
+      <div class="feedback-box" id="act8-fb"></div>
+    </section>
+
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master των Δεδομένων & του IoT!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ολοκλήρωσες με απόλυτη επιτυχία και τα 3 εσωτερικά επίπεδα και στις 8 διαδραστικές δραστηριότητες του Μαθήματος 18! Γνωρίζεις πλέον πώς επεξεργαζόμαστε μεγάλο όγκο δεδομένων, πώς λειτουργούν οι αισθητήρες, το έξυπνο σπίτι, η έξυπνη πόλη και το IoT!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER (Web Audio API) */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      if (type === 'correct') {
+        const osc1 = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(523.25, now);
+        osc1.frequency.setValueAtTime(659.25, now + 0.1);
+        osc1.frequency.setValueAtTime(783.99, now + 0.2);
+        osc1.frequency.setValueAtTime(1046.50, now + 0.3);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc1.connect(gain); gain.connect(audioCtx.destination);
+        osc1.start(now); osc1.stop(now + 0.5);
+      } else if (type === 'wrong') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.setValueAtTime(110, now + 0.15);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.08);
+      } else if (type === 'beep') {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.05);
+      }
+    }
+
+    const completedActs = new Set();
+    function markActDone(index) {
+      if (!completedActs.has(index)) {
+        completedActs.add(index);
+        document.getElementById('global-stars').textContent = completedActs.size;
+        playSound('correct');
+        if (completedActs.size === 8) {
+          setTimeout(() => document.getElementById('victory-modal').classList.add('active'), 600);
+        }
+      }
+    }
+
+    function switchTab(index) {
+      playSound('click');
+      const tabs = document.querySelectorAll('.tab-btn');
+      const sections = document.querySelectorAll('.activity-section');
+      tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+      sections.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+    function closeModal() { document.getElementById('victory-modal').classList.remove('active'); }
+
+    /* =========================================================
+       ACT 1: ΜΕΓΑΛΟΣ ΟΓΚΟΣ ΔΕΔΟΜΕΝΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act1Level = 1;
+    function setAct1Level(lvl) {
+      playSound('click');
+      act1Level = lvl;
+      document.querySelectorAll('#act-0 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct1();
+    }
+
+    function renderAct1() {
+      const container = document.getElementById('act1-content');
+      document.getElementById('act1-fb').style.display = 'none';
+
+      if (act1Level === 1) {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">🍎 Το αγαπημένο φρούτο 20 παιδιών</div>
+              <div class="game-card-desc">Μπορεί ένας άνθρωπος να μετρήσει και να βρει το αποτέλεσμα με ένα χαρτί και μολύβι;</div>
+              <select class="game-select" id="act1-q1">
+                <option value="">-- Επίλεξε Απάντηση --</option>
+                <option value="human">Ναι, είναι λίγα δεδομένα και γίνεται εύκολα από άνθρωπο</option>
+                <option value="supercomp">Όχι, χρειάζεται υποχρεωτικά υπερυπολογιστής</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">🌍 Σεισμοί των τελευταίων 50 ετών σε όλη τη Γη</div>
+              <div class="game-card-desc">Εκατομμύρια καταγραφές δονήσεων, μεγεθών και συντεταγμένων. Τι χρειαζόμαστε;</div>
+              <select class="game-select" id="act1-q2">
+                <option value="">-- Επίλεξε Απάντηση --</option>
+                <option value="computer">Υπολογιστές, γιατί επεξεργάζονται γρήγορα τεράστιο όγκο δεδομένων!</option>
+                <option value="human">Ένας άνθρωπος με χάρακα σε 5 λεπτά</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else if (act1Level === 2) {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">🩺 Στον χώρο της Υγείας (σελ. 70-71)</div>
+              <div class="game-card-desc">Γιατί οι γιατροί χρησιμοποιούν υπολογιστές με πολλά δεδομένα ασθενειών;</div>
+              <select class="game-select" id="act1-q3">
+                <option value="">-- Επίλεξε Απάντηση --</option>
+                <option value="diagnosis">Για διάγνωση και συμβουλές προστασίας από ασθένειες που εξαπλώνονται</option>
+                <option value="games">Για να παίζουν ηλεκτρονικά παιχνίδια</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">🗺️ Συστήματα GPS & Χάρτες (σελ. 71)</div>
+              <div class="game-card-desc">Ποια δεδομένα επεξεργάζεται το GPS στο αυτοκίνητο ή στο κινητό;</div>
+              <select class="game-select" id="act1-q4">
+                <option value="">-- Επίλεξε Απάντηση --</option>
+                <option value="routes">Δεδομένα χαρτών και κίνησης δρόμων για να βρει την ταχύτερη διαδρομή</option>
+                <option value="music">Δεδομένα τραγουδιών για το ραδιόφωνο</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">🌤️ Μετεωρολόγοι</div>
+              <div class="game-card-desc">Ποια δεδομένα επεξεργάζονται για να κάνουν πρόγνωση του καιρού (σελ. 71);</div>
+              <select class="game-select" id="act1-q5">
+                <option value="">-- Επίλεξε Δεδομένα --</option>
+                <option value="weather">Ηλιακή ακτινοβολία, ταχύτητα ανέμων, εξάτμιση και σύννεφα</option>
+                <option value="traffic">Ατυχήματα και μονοδρομήσεις δρόμων</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">🏛️ Αρμόδια Υπηρεσία του Δήμου</div>
+              <div class="game-card-desc">Ποια δεδομένα επεξεργάζεται ο δήμος για ασφαλείς δρόμους (σελ. 71);</div>
+              <select class="game-select" id="act1-q6">
+                <option value="">-- Επίλεξε Δεδομένα --</option>
+                <option value="traffic">Κυκλοφορία οχημάτων, πεζών και επικίνδυνα σημεία για πινακίδες</option>
+                <option value="weather">Σύννεφα και θαλάσσια ρεύματα</option>
+              </select>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct1() {
+      const fb = document.getElementById('act1-fb');
+      fb.style.display = 'flex';
+
+      if (act1Level === 1) {
+        const q1 = document.getElementById('act1-q1').value;
+        const q2 = document.getElementById('act1-q2').value;
+        if (q1 === 'human' && q2 === 'computer') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Για λίγα δεδομένα αρκεί ο άνθρωπος, αλλά για εκατομμύρια δεδομένα ο υπολογιστής είναι απαραίτητος! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Σκέψου: ποια εργασία έχει πάρα πολλά δεδομένα που δεν μπορεί να μετρήσει ένας άνθρωπος μόνος του;';
+        }
+      } else if (act1Level === 2) {
+        const q3 = document.getElementById('act1-q3').value;
+        const q4 = document.getElementById('act1-q4').value;
+        if (q3 === 'diagnosis' && q4 === 'routes') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Οι γιατροί βοηθούνται στη διάγνωση και το GPS βρίσκει την ταχύτερη διαδρομή! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Ξαναδιάβασε τις περιγραφές της σελίδας 70-71!';
+        }
+      } else {
+        const q5 = document.getElementById('act1-q5').value;
+        const q6 = document.getElementById('act1-q6').value;
+        if (q5 === 'weather' && q6 === 'traffic') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Ολοκλήρωσες και τα 3 επίπεδα για τον όγκο δεδομένων! (1ο Αστέρι ⭐)';
+          markActDone(0);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Οι μετεωρολόγοι ασχολούνται με τον καιρό και ο δήμος με τους δρόμους της πόλης!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 2: ΟΙ ΑΙΣΘΗΤΗΡΕΣ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act2Level = 1;
+    function setAct2Level(lvl) {
+      playSound('click');
+      act2Level = lvl;
+      document.querySelectorAll('#act-1 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct2();
+    }
+
+    function renderAct2() {
+      const container = document.getElementById('act2-content');
+      document.getElementById('act2-fb').style.display = 'none';
+
+      if (act2Level === 1) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🎯 Τι είναι ο αισθητήρας (sensor) σύμφωνα με το βιβλίο (σελ. 71);</div>
+            <div class="game-card-desc">Επίλεξε τον σωστό ορισμό:</div>
+            <select class="game-select" id="act2-q1">
+              <option value="">-- Επίλεξε Ορισμό --</option>
+              <option value="sensorDef">Εξάρτημα που μετράει κάτι στο περιβάλλον και το μεταφέρει σε μια συσκευή για αυτόματη ενέργεια</option>
+              <option value="screen">Μια οθόνη που δείχνει ταινίες</option>
+              <option value="game">Ένα παιχνίδι προγραμματισμού στο Scratch</option>
+            </select>
+          </div>
+        `;
+      } else if (act2Level === 2) {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">🌡️ Αισθητήρας Θερμοκρασίας</div>
+              <div class="game-card-desc">Τι μετράει στο περιβάλλον;</div>
+              <select class="game-select" id="act2-q2">
+                <option value="">-- Επίλεξε Μέτρηση --</option>
+                <option value="temp">Πόσο ζέστη ή κρύο κάνει (βαθμούς Κελσίου)</option>
+                <option value="dist">Πόσο μακριά είναι ένα τοίχος</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">📏 Αισθητήρας Απόστασης</div>
+              <div class="game-card-desc">Τι μετράει στο περιβάλλον;</div>
+              <select class="game-select" id="act2-q3">
+                <option value="">-- Επίλεξε Μέτρηση --</option>
+                <option value="dist">Πόσο κοντά βρίσκεται ένα εμπόδιο</option>
+                <option value="temp">Πόσο ζεστό είναι το νερό</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">⚙️ Η Αλυσίδα του Αυτοματισμού</div>
+            <div class="game-card-desc">Βάλε στη σωστή σειρά τα 3 βήματα: Πώς αντιδρά μια έξυπνη συσκευή;</div>
+            <select class="game-select" id="act2-q4">
+              <option value="">-- Επίλεξε Σειρά --</option>
+              <option value="chain">1. Μέτρηση Αισθητήρα ➔ 2. Επεξεργασία από Υπολογιστή ➔ 3. Αυτόματη Ενέργεια</option>
+              <option value="wrong">1. Αυτόματη Ενέργεια ➔ 2. Μέτρηση ➔ 3. Σβήσιμο</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct2() {
+      const fb = document.getElementById('act2-fb');
+      fb.style.display = 'flex';
+
+      if (act2Level === 1) {
+        const val = document.getElementById('act2-q1').value;
+        if (val === 'sensorDef') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Ο αισθητήρας είναι τα «μάτια και τα αυτιά» του υπολογιστή στο περιβάλλον! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Ξανασκέψου: ο αισθητήρας μετράει κάτι από τον γύρω κόσμο!';
+        }
+      } else if (act2Level === 2) {
+        const q2 = document.getElementById('act2-q2').value;
+        const q3 = document.getElementById('act2-q3').value;
+        if (q2 === 'temp' && q3 === 'dist') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Θερμοκρασία ➔ Ζέστη/Κρύο, Απόσταση ➔ Εμπόδια! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Έλεγξε ξανά τα δύο είδη αισθητήρων!';
+        }
+      } else {
+        const val = document.getElementById('act2-q4').value;
+        if (val === 'chain') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Πρώτα μετράει ο αισθητήρας, μετά σκέφτεται ο υπολογιστής και τέλος γίνεται η ενέργεια! (2ο Αστέρι ⭐)';
+          markActDone(1);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Πρώτα πρέπει να μετρήσει ο αισθητήρας!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 3: ΑΙΣΘΗΤΗΡΕΣ ΣΤΟ ΑΥΤΟΚΙΝΗΤΟ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act3Level = 1;
+    let carDist = 100;
+    let parkInterval = null;
+
+    function setAct3Level(lvl) {
+      playSound('click');
+      act3Level = lvl;
+      if (parkInterval) clearInterval(parkInterval);
+      document.querySelectorAll('#act-2 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct3();
+    }
+
+    function renderAct3() {
+      const container = document.getElementById('act3-content');
+      document.getElementById('act3-fb').style.display = 'none';
+
+      if (act3Level === 1) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🚗 Αισθητήρας Όπισθεν (σελ. 71)</div>
+            <div class="game-card-desc">«Ένα σύγχρονο αυτοκίνητο που κινείται με όπισθεν έχει αισθητήρα απόστασης. Όταν πλησιάζει προς ένα εμπόδιο...» Τι κάνει αυτόματα;</div>
+            <select class="game-select" id="act3-q1">
+              <option value="">-- Επίλεξε Ενέργεια --</option>
+              <option value="beep">Κάνει χαρακτηριστικό προειδοποιητικό ήχο (μπιπ-μπιπ) και ειδοποιεί τον οδηγό</option>
+              <option value="fly">Ανοίγει φτερά και πετάει</option>
+              <option value="music">Αλλάζει ραδιοφωνικό σταθμό</option>
+            </select>
+          </div>
+        `;
+      } else if (act3Level === 2) {
+        carDist = 100;
+        container.innerHTML = `
+          <div class="sim-box" style="text-align: center;">
+            <h3 style="font-family: 'Comfortaa', cursive; color: #38bdf8; margin-bottom: 1rem;">🅿️ Προσομοιωτής Παρκαρίσματος με Όπισθεν</h3>
+            <div style="font-size: 1.3rem; margin-bottom: 1rem;">Απόσταση από τον τοίχο: <strong id="park-dist-val" style="color: #38bdf8;">100</strong> cm</div>
+            <div style="background: #1e293b; height: 60px; border-radius: 30px; position: relative; overflow: hidden; margin-bottom: 1.5rem; display: flex; align-items: center; padding: 0 1rem; border: 2px solid #475569;">
+              <span id="car-sprite" style="font-size: 2.5rem; position: absolute; left: 10px; transition: left 0.2s;">🚗</span>
+              <span style="font-size: 2.5rem; position: absolute; right: 10px;">🧱</span>
+            </div>
+            <button class="btn btn-primary" onclick="stepCarCloser()">🚘 Κάνε λίγο όπισθεν προς τον τοίχο!</button>
+            <div id="park-sound-msg" style="margin-top: 1rem; font-weight: 800; font-size: 1.2rem; color: #facc15;"></div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">🌧️ Αισθητήρας Βροχής</div>
+              <div class="game-card-desc">Μόλις πέσουν οι πρώτες σταγόνες στο παρμπρίζ, τι ενεργοποιείται αυτόματα;</div>
+              <select class="game-select" id="act3-q2">
+                <option value="">-- Επίλεξε Σύστημα --</option>
+                <option value="wipers">Οι υαλοκαθαριστήρες αυτόματα</option>
+                <option value="tires">Τα λάστιχα</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">🌙 Αισθητήρας Φωτός</div>
+              <div class="game-card-desc">Μόλις το αυτοκίνητο μπει σε τούνελ ή νυχτώσει, τι ανάβει μόνο του;</div>
+              <select class="game-select" id="act3-q3">
+                <option value="">-- Επίλεξε Σύστημα --</option>
+                <option value="lights">Τα φώτα του αυτοκινήτου</option>
+                <option value="horn">Η κόρνα</option>
+              </select>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function stepCarCloser() {
+      if (carDist > 20) {
+        carDist -= 20;
+        document.getElementById('park-dist-val').textContent = carDist;
+        const leftPercent = 10 + (100 - carDist) * 0.7;
+        document.getElementById('car-sprite').style.left = leftPercent + '%';
+
+        // Beep sound
+        playSound('beep');
+        const msg = document.getElementById('park-sound-msg');
+        if (carDist <= 20) {
+          msg.textContent = '🔊 ΜΠΙΠ-ΜΠΙΠ-ΜΠΙΠ! ΣΤΟΠ! Πλησίασες πάρα πολύ κοντά!';
+          msg.style.color = '#ef4444';
+          playSound('correct');
+        } else if (carDist <= 40) {
+          msg.textContent = '🔊 Μπιπ... μπιπ... μπιπ! Προσοχή, πλησιάζεις!';
+          msg.style.color = '#f59e0b';
+        } else {
+          msg.textContent = '🔊 Μπιπ....... μπιπ....... (αρκετά μακριά ακόμα)';
+          msg.style.color = '#38bdf8';
+        }
+      }
+    }
+
+    function checkAct3() {
+      const fb = document.getElementById('act3-fb');
+      fb.style.display = 'flex';
+
+      if (act3Level === 1) {
+        const val = document.getElementById('act3-q1').value;
+        if (val === 'beep') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Ο αισθητήρας ειδοποιεί με ήχο τον οδηγό για να μην τρακάρει! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Θυμήσου: ο αισθητήρας κάνει ήχο όταν πλησιάζει εμπόδιο!';
+        }
+      } else if (act3Level === 2) {
+        if (carDist <= 40) {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Είδες πώς ο αισθητήρας αυξάνει τα μπιπ όσο πλησιάζει ο τοίχος! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('info'); fb.className = 'feedback-box info';
+          fb.innerHTML = 'ℹ️ Κάνε λίγο ακόμα όπισθεν πατώντας το κουμπί για να ακούσεις τον αισθητήρα να προειδοποιεί!';
+        }
+      } else {
+        const q2 = document.getElementById('act3-q2').value;
+        const q3 = document.getElementById('act3-q3').value;
+        if (q2 === 'wipers' && q3 === 'lights') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Τέλεια! Αισθητήρας βροχής για υαλοκαθαριστήρες και φωτός για τα φανάρια! (3ο Αστέρι ⭐)';
+          markActDone(2);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Έλεγξε ξανά τις απαντήσεις σου!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 4: ΤΟ ΕΞΥΠΝΟ ΣΠΙΤΙ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act4Level = 1;
+    function setAct4Level(lvl) {
+      playSound('click');
+      act4Level = lvl;
+      document.querySelectorAll('#act-3 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct4();
+    }
+
+    function renderAct4() {
+      const container = document.getElementById('act4-content');
+      document.getElementById('act4-fb').style.display = 'none';
+
+      if (act4Level === 1) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🌡️ Έξυπνος Θερμοστάτης (σελ. 71)</div>
+            <div class="game-card-desc">«Ένα θερμαντικό σώμα ή κλιματιστικό έχει αισθητήρα θερμοκρασίας. Όταν η θερμοκρασία είναι χαμηλή...» Τι συμβαίνει;</div>
+            <select class="game-select" id="act4-q1">
+              <option value="">-- Επίλεξε Ενέργεια --</option>
+              <option value="heat">Το σώμα αυτόματα αρχίζει να λειτουργεί και να θερμαίνει τον χώρο!</option>
+              <option value="cold">Βγάζει παγάκια</option>
+              <option value="off">Σβήνει για πάντα</option>
+            </select>
+          </div>
+        `;
+      } else if (act4Level === 2) {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">🌱 Έξυπνο Πότισμα Κήπου</div>
+              <div class="game-card-desc">Αν ο αισθητήρας υγρασίας μετρήσει ότι το χώμα είναι στεγνό, τι κάνει;</div>
+              <select class="game-select" id="act4-q2">
+                <option value="">-- Επίλεξε Ενέργεια --</option>
+                <option value="water">Ανοίγει αυτόματα το πότισμα</option>
+                <option value="stop">Σταματάει το νερό</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">💡 Έξυπνος Φωτισμός Δωματίου</div>
+              <div class="game-card-desc">Αν ο αισθητήρας κίνησης δει ότι δεν υπάρχει κανείς στο δωμάτιο για 10 λεπτά:</div>
+              <select class="game-select" id="act4-q3">
+                <option value="">-- Επίλεξε Ενέργεια --</option>
+                <option value="turnOff">Σβήνει αυτόματα τα φώτα για οικονομία</option>
+                <option value="disco">Ανάβει φώτα ντίσκο</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">📱 Έλεγχος από Απόσταση (σελ. 71-72)</div>
+            <div class="game-card-desc">«Στο έξυπνο σπίτι (smart home)... ο άνθρωπος ρυθμίζει τη λειτουργία των συσκευών από απόσταση με...»</div>
+            <select class="game-select" id="act4-q4">
+              <option value="">-- Επίλεξε Συσκευή --</option>
+              <option value="phone">Το κινητό του τηλέφωνο μέσω διαδικτύου</option>
+              <option value="whistle">Μια σφυρίχτρα</option>
+              <option value="letter">Ένα παραδοσιακό γράμμα</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct4() {
+      const fb = document.getElementById('act4-fb');
+      fb.style.display = 'flex';
+
+      if (act4Level === 1) {
+        const val = document.getElementById('act4-q1').value;
+        if (val === 'heat') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Ανάβει αυτόματα όταν κάνει κρύο για να κρατάει το σπίτι ζεστό! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Θυμήσου: όταν πέσει η θερμοκρασία, το καλοριφέρ ανάβει αυτόματα!';
+        }
+      } else if (act4Level === 2) {
+        const q2 = document.getElementById('act4-q2').value;
+        const q3 = document.getElementById('act4-q3').value;
+        if (q2 === 'water' && q3 === 'turnOff') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Ποτίζει μόνο όταν χρειάζεται και σβήνει τα φώτα μόλις φύγουμε! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Έλεγξε τις επιλογές σου για το πότισμα και τα φώτα!';
+        }
+      } else {
+        const val = document.getElementById('act4-q4').value;
+        if (val === 'phone') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Με το smartphone ελέγχουμε το έξυπνο σπίτι από οπουδήποτε κι αν βρισκόμαστε! (4ο Αστέρι ⭐)';
+          markActDone(3);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Στο βιβλίο (σελ. 72) αναφέρεται ρητά το κινητό τηλέφωνο!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 5: ΤΟ ΔΙΑΔΙΚΤΥΟ ΤΩΝ ΠΡΑΓΜΑΤΩΝ - IOT (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act5Level = 1;
+    function setAct5Level(lvl) {
+      playSound('click');
+      act5Level = lvl;
+      document.querySelectorAll('#act-4 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct5();
+    }
+
+    function renderAct5() {
+      const container = document.getElementById('act5-content');
+      document.getElementById('act5-fb').style.display = 'none';
+
+      if (act5Level === 1) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🌐 Τι είναι το Διαδίκτυο των Πραγμάτων (IoT) (σελ. 71);</div>
+            <div class="game-card-desc">Επίλεξε την πρόταση του βιβλίου:</div>
+            <select class="game-select" id="act5-q1">
+              <option value="">-- Επίλεξε Απάντηση --</option>
+              <option value="iotDef">Παγκόσμιο δίκτυο συνδεδεμένων έξυπνων συσκευών που επικοινωνούν και ανταλλάσσουν δεδομένα</option>
+              <option value="shop">Ένα ηλεκτρονικό κατάστημα για ψώνια</option>
+              <option value="book">Μια απλή βιβλιοθήκη με χάρτινα βιβλία</option>
+            </select>
+          </div>
+        `;
+      } else if (act5Level === 2) {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">⌚ Έξυπνο Ρολόι (Smartwatch)</div>
+              <div class="game-card-desc">Μετράει βήματα, παλμούς καρδιάς και στέλνει δεδομένα στο κινητό:</div>
+              <select class="game-select" id="act5-q2">
+                <option value="">-- Είναι συσκευή IoT; --</option>
+                <option value="yes">Ναι, είναι συσκευή IoT!</option>
+                <option value="no">Όχι</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">🪵 Απλό Ξύλινο Μολύβι</div>
+              <div class="game-card-desc">Γράφει στο τετράδιο, δεν έχει μπαταρία ούτε σύνδεση:</div>
+              <select class="game-select" id="act5-q3">
+                <option value="">-- Είναι συσκευή IoT; --</option>
+                <option value="no">Όχι, είναι απλό αντικείμενο!</option>
+                <option value="yes">Ναι, είναι IoT</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🔒 Ασφάλεια στο IoT</div>
+            <div class="game-card-desc">Επειδή οι συσκευές IoT συνδέονται στο διαδίκτυο, τι πρέπει να προσέχουμε;</div>
+            <select class="game-select" id="act5-q4">
+              <option value="">-- Επίλεξε Κανόνα --</option>
+              <option value="secure">Να προστατεύουμε το Wi-Fi με ισχυρό κωδικό πρόσβασης και να ενημερώνουμε το λογισμικό</option>
+              <option value="open">Να αφήνουμε το δίκτυο ξεκλείδωτο για όλους</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct5() {
+      const fb = document.getElementById('act5-fb');
+      fb.style.display = 'flex';
+
+      if (act5Level === 1) {
+        const val = document.getElementById('act5-q1').value;
+        if (val === 'iotDef') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Στο IoT οι συσκευές «μιλάνε» μεταξύ τους μέσω διαδικτύου! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Διάβασε τον ορισμό του IoT στη σελίδα 71!';
+        }
+      } else if (act5Level === 2) {
+        const q2 = document.getElementById('act5-q2').value;
+        const q3 = document.getElementById('act5-q3').value;
+        if (q2 === 'yes' && q3 === 'no') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Το smartwatch είναι IoT, ενώ το απλό μολύβι όχι! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Μόνο οι συσκευές που συνδέονται και μεταφέρουν δεδομένα είναι IoT!';
+        }
+      } else {
+        const val = document.getElementById('act5-q4').value;
+        if (val === 'secure') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Η ασφάλεια των κωδικών είναι θεμελιώδης στο IoT! (5ο Αστέρι ⭐)';
+          markActDone(4);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Οι έξυπνες συσκευές χρειάζονται πάντα ασφαλές δίκτυο!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 6: Η ΕΞΥΠΝΗ ΠΟΛΗ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act6Level = 1;
+    let lightMode = 'day';
+
+    function setAct6Level(lvl) {
+      playSound('click');
+      act6Level = lvl;
+      document.querySelectorAll('#act-5 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct6();
+    }
+
+    function renderAct6() {
+      const container = document.getElementById('act6-content');
+      document.getElementById('act6-fb').style.display = 'none';
+
+      if (act6Level === 1) {
+        container.innerHTML = `
+          <div class="sim-box" style="text-align: center;">
+            <h3 style="font-family: 'Comfortaa', cursive; color: #38bdf8; margin-bottom: 1rem;">💡 Προσομοιωτής Έξυπνου Φωτισμού Δρόμου (σελ. 72)</h3>
+            <div style="font-size: 1.25rem; margin-bottom: 1.2rem;">
+              «Σε μια έξυπνη πόλη... χρειάζεται ο φωτισμός να λειτουργεί όλες τις ώρες με την ίδια ένταση;»
+            </div>
+            <div id="street-lamp-visual" style="background: #1e293b; padding: 2rem; border-radius: 20px; margin-bottom: 1.5rem; border: 2px solid #475569;">
+              <div id="lamp-bulb" style="font-size: 4rem; filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.2)); transition: all 0.3s;">💡</div>
+              <div id="lamp-power" style="font-size: 1.5rem; font-weight: 900; color: #94a3b8; margin-top: 0.5rem;">Ένταση: 20% (Οικονομία - δεν περνάει κανείς)</div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="setLampSim('nobody')">🚶‍♂️ Κανένας στον δρόμο</button>
+              <button class="btn btn-primary" onclick="setLampSim('car')">🚗 Πλησιάζει αυτοκίνητο / πεζός</button>
+            </div>
+          </div>
+        `;
+      } else if (act6Level === 2) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🚦 Έξυπνα Φανάρια (Smart Traffic Lights - σελ. 72)</div>
+            <div class="game-card-desc">Πώς λειτουργεί ένα έξυπνο φανάρι με αισθητήρες;</div>
+            <select class="game-select" id="act6-q2">
+              <option value="">-- Επίλεξε Λειτουργία --</option>
+              <option value="adaptive">Αλλάζει χρόνο ανάλογα με την ουρά των αυτοκινήτων: αν έχει πολλά, κρατάει περισσότερο το πράσινο!</option>
+              <option value="random">Ανάβει όποιο χρώμα θέλει στην τύχη</option>
+            </select>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🏙️ Σκοπός της Έξυπνης Πόλης (σελ. 72)</div>
+            <div class="game-card-desc">«Παρόμοια λειτουργεί η έξυπνη πόλη (smart city)... Σκοπός είναι να:»</div>
+            <select class="game-select" id="act6-q3">
+              <option value="">-- Επίλεξε Σκοπό --</option>
+              <option value="cityGoal">Κάνει πιο εύκολη τη ζωή των κατοίκων, να μειώσει την ενέργεια, εξοικονομώντας χρήματα και προστατεύοντας το περιβάλλον</option>
+              <option value="bad">Να κλείσει όλα τα σχολεία και τους δρόμους</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    function setLampSim(state) {
+      playSound('click');
+      const bulb = document.getElementById('lamp-bulb');
+      const pwr = document.getElementById('lamp-power');
+      if (state === 'car') {
+        bulb.style.filter = 'drop-shadow(0 0 35px #facc15)';
+        pwr.textContent = 'Ένταση: 100% (Μέγιστος Φωτισμός & Ασφάλεια!)';
+        pwr.style.color = '#facc15';
+        playSound('correct');
+      } else {
+        bulb.style.filter = 'drop-shadow(0 0 10px rgba(250, 204, 21, 0.2))';
+        pwr.textContent = 'Ένταση: 20% (Οικονομία - δεν περνάει κανείς)';
+        pwr.style.color = '#94a3b8';
+      }
+    }
+
+    function checkAct6() {
+      const fb = document.getElementById('act6-fb');
+      fb.style.display = 'flex';
+
+      if (act6Level === 1) {
+        playSound('correct'); fb.className = 'feedback-box correct';
+        fb.innerHTML = '🎉 Μπράβο! Είδες πώς στην έξυπνη πόλη (σελ. 72) η λάμπα ανάβει στο 100% μόνο όταν πλησιάζει όχημα και στο 20% όταν δεν περνάει κανείς! Πέρασε στο Επίπεδο 2!';
+      } else if (act6Level === 2) {
+        const val = document.getElementById('act6-q2').value;
+        if (val === 'adaptive') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Τα έξυπνα φανάρια προσαρμόζουν το πράσινο στην κίνηση! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Τα έξυπνα φανάρια χρησιμοποιούν αισθητήρες για να μειώνουν το μποτιλιάρισμα!';
+        }
+      } else {
+        const val = document.getElementById('act6-q3').value;
+        if (val === 'cityGoal') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Η έξυπνη πόλη εξοικονομεί ενέργεια και κάνει καλύτερη τη ζωή όλων μας! (6ο Αστέρι ⭐)';
+          markActDone(5);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Διάβασε τον σκοπό της έξυπνης πόλης στη σελίδα 72!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 7: ΣΥΛΛΟΓΗ ΔΕΔΟΜΕΝΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act7Level = 1;
+    function setAct7Level(lvl) {
+      playSound('click');
+      act7Level = lvl;
+      document.querySelectorAll('#act-6 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct7();
+    }
+
+    function renderAct7() {
+      const container = document.getElementById('act7-content');
+      document.getElementById('act7-fb').style.display = 'none';
+
+      if (act7Level === 1) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🍎 Το ερώτημα της τάξης (σελ. 70)</div>
+            <div class="game-card-desc">«Ποιο είναι το αγαπημένο φρούτο των 20 παιδιών της τάξης μας;» Πώς συλλέγουμε αυτά τα δεδομένα;</div>
+            <select class="game-select" id="act7-q1">
+              <option value="">-- Επίλεξε Τρόπο Συλλογής --</option>
+              <option value="survey">Ρωτάμε τα 20 παιδιά και καταγράφουμε πόσα προτιμούν το μήλο, την μπανάνα κ.λπ.</option>
+              <option value="satellites">Στέλνουμε δορυφόρο στο διάστημα</option>
+            </select>
+          </div>
+        `;
+      } else if (act7Level === 2) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">🌍 Σεισμοί 50 ετών στην Ελλάδα (σελ. 70)</div>
+            <div class="game-card-desc">«Συλλέγουμε από το διαδίκτυο δεδομένα για το πόσοι σεισμοί έχουν γίνει στις πόλεις της Ελλάδας κάθε χρόνο τα τελευταία 50 χρόνια». Πού αποθηκεύονται και πώς επεξεργάζονται;</div>
+            <select class="game-select" id="act7-q2">
+              <option value="">-- Επίλεξε Απάντηση --</option>
+              <option value="webDb">Σε υπολογιστικές βάσεις δεδομένων, και αναλύονται με ειδικά προγράμματα</option>
+              <option value="memory">Στη μνήμη ενός μόνο ανθρώπου</option>
+            </select>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="cards-grid">
+            <div class="game-card">
+              <div class="game-card-title">📡 Αυτόματη Συλλογή</div>
+              <div class="game-card-desc">Ποιος συλλέγει δεδομένα συνεχώς χωρίς να κουράζεται μέρα-νύχτα;</div>
+              <select class="game-select" id="act7-q3">
+                <option value="">-- Επίλεξε --</option>
+                <option value="sensor">Οι ηλεκτρονικοί αισθητήρες</option>
+                <option value="human">Ένας μαθητής χωρίς να κοιμάται</option>
+              </select>
+            </div>
+            <div class="game-card">
+              <div class="game-card-title">📝 Χειροκίνητη Συλλογή</div>
+              <div class="game-card-desc">Πότε ρωτάμε ανθρώπους με ερωτηματολόγιο;</div>
+              <select class="game-select" id="act7-q4">
+                <option value="">-- Επίλεξε --</option>
+                <option value="opinion">Όταν θέλουμε να μάθουμε γνώμες και συνήθειες (π.χ. αγαπημένο φαγητό)</option>
+                <option value="temp">Για να μετρήσουμε τη θερμοκρασία της λάμπας</option>
+              </select>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct7() {
+      const fb = document.getElementById('act7-fb');
+      fb.style.display = 'flex';
+
+      if (act7Level === 1) {
+        const val = document.getElementById('act7-q1').value;
+        if (val === 'survey') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Κάνουμε ένα μικρό ερωτηματολόγιο στην τάξη! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Για 20 παιδιά αρκεί μια απλή ερώτηση στην τάξη!';
+        }
+      } else if (act7Level === 2) {
+        const val = document.getElementById('act7-q2').value;
+        if (val === 'webDb') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Σωστά! Οι σεισμοί καταγράφονται σε επιστημονικές βάσεις δεδομένων! Πέρασε στο Επίπεδο 3!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Εκατομμύρια σεισμοί χρειάζονται υπολογιστικές βάσεις!';
+        }
+      } else {
+        const q3 = document.getElementById('act7-q3').value;
+        const q4 = document.getElementById('act7-q4').value;
+        if (q3 === 'sensor' && q4 === 'opinion') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 Άριστα! Οι αισθητήρες μετρούν ασταμάτητα και τα ερωτηματολόγια καταγράφουν απόψεις! (7ο Αστέρι ⭐)';
+          markActDone(6);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Έλεγξε ξανά τις απαντήσεις σου!';
+        }
+      }
+    }
+
+    /* =========================================================
+       ACT 8: ΜΕΓΑ ΚΟΥΙΖ ΔΕΔΟΜΕΝΩΝ (3 ΕΠΙΠΕΔΑ)
+    ========================================================== */
+    let act8Level = 1;
+    function setAct8Level(lvl) {
+      playSound('click');
+      act8Level = lvl;
+      document.querySelectorAll('#act-7 .level-pill').forEach((p, i) => p.classList.toggle('active', i + 1 === lvl));
+      renderAct8();
+    }
+
+    function renderAct8() {
+      const container = document.getElementById('act8-content');
+      document.getElementById('act8-fb').style.display = 'none';
+
+      if (act8Level === 1) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">❓ Επίπεδο 1: Γιατί ο υπολογιστής είναι χρήσιμος στην επεξεργασία δεδομένων;</div>
+            <select class="game-select" id="act8-q1">
+              <option value="">-- Επίλεξε Απάντηση --</option>
+              <option value="fast">Επειδή επεξεργάζεται γρήγορα μεγάλο όγκο δεδομένων χωρίς λάθη</option>
+              <option value="heavy">Επειδή είναι βαρύς</option>
+              <option value="slow">Επειδή κουράζεται εύκολα</option>
+            </select>
+          </div>
+        `;
+      } else if (act8Level === 2) {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">❓ Επίπεδο 2: Ποιος είναι ο ρόλος ενός αισθητήρα;</div>
+            <select class="game-select" id="act8-q2">
+              <option value="">-- Επίλεξε Απάντηση --</option>
+              <option value="sense">Να μετράει κάτι στο περιβάλλον και να δίνει τα δεδομένα σε συσκευή για αυτόματη ενέργεια</option>
+              <option value="paint">Να ζωγραφίζει εικόνες στον τοίχο</option>
+              <option value="cook">Να μαγειρεύει φαγητό</option>
+            </select>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="game-card">
+            <div class="game-card-title">❓ Επίπεδο 3: Τι κοινό έχουν το Έξυπνο Σπίτι και η Έξυπνη Πόλη;</div>
+            <select class="game-select" id="act8-q3">
+              <option value="">-- Επίλεξε Απάντηση --</option>
+              <option value="smartAll">Χρησιμοποιούν αισθητήρες, υπολογιστές και δεδομένα για να κάνουν τη ζωή καλύτερη και να εξοικονομούν ενέργεια</option>
+              <option value="none">Δεν έχουν καμία απολύτως σχέση</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct8() {
+      const fb = document.getElementById('act8-fb');
+      fb.style.display = 'flex';
+
+      if (act8Level === 1) {
+        const val = document.getElementById('act8-q1').value;
+        if (val === 'fast') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Μπράβο! Ο υπολογιστής επεξεργάζεται ταχύτατα μεγάλο όγκο δεδομένων! Πέρασε στο Επίπεδο 2!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Θυμήσου το βασικό πλεονέκτημα του υπολογιστή!';
+        }
+      } else if (act8Level === 2) {
+        const val = document.getElementById('act8-q2').value;
+        if (val === 'sense') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🎉 Πολύ σωστά! Ο αισθητήρας μετράει το περιβάλλον για αυτόματες ενέργειες! Πέρασε στο 3ο και τελικό Επίπεδο!';
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Ξανασκέψου τον ορισμό του αισθητήρα!';
+        }
+      } else {
+        const val = document.getElementById('act8-q3').value;
+        if (val === 'smartAll') {
+          playSound('correct'); fb.className = 'feedback-box correct';
+          fb.innerHTML = '🏆 ΑΡΙΣΤΑ! Ολοκλήρωσες και το τελευταίο επίπεδο του Μεγάλου Κουίζ! Κέρδισες και τα 8 Αστέρια! (8/8 ⭐)';
+          markActDone(7);
+        } else {
+          playSound('wrong'); fb.className = 'feedback-box wrong';
+          fb.innerHTML = '⚠️ Και τα δύο αξιοποιούν αισθητήρες και δεδομένα για εξοικονόμηση και άνεση!';
+        }
+      }
+    }
+
+    /* DOWNLOAD CURRENT HTML FILE */
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima18_Epexergasia_Dedomenon_D_Dimotikou.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAct1();
+      renderAct2();
+      renderAct3();
+      renderAct4();
+      renderAct5();
+      renderAct6();
+      renderAct7();
+      renderAct8();
+    });
+  </script>
+</body>
+</html>
