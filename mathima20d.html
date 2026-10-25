@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 20: Παρουσιάζω τις Ιδέες μου με Διαφάνειες - Δ΄ Δημοτικού</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --secondary: #d97706;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --bg-gradient: linear-gradient(135deg, #ede9fe 0%, #e0f2fe 50%, #fef3c7 100%);
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 24px;
+      --border-radius-btn: 16px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 3px solid rgba(79, 70, 229, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.9rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.2rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.25s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .level-badge-container {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 0.55rem 1.3rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-pill.active {
+      background: #ede9fe;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .sub-activity-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .sub-card-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #312e81;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sub-card-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 1.5rem;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .opt-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .opt-btn:hover { border-color: var(--primary); background: #f5f3ff; }
+    .opt-btn.correct-choice { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .opt-btn.wrong-choice { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.95rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border-radius: var(--border-radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>📽️ Μάθημα 20: Παρουσιάζω τις Ιδέες μου</h1>
+        <p>8 Δραστηριότητες με 3 Εσωτερικά Επίπεδα η καθεμία (Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchMainTab(0)"><span>1️⃣</span> Διαφάνειες</button>
+    <button class="tab-btn" onclick="switchMainTab(1)"><span>2️⃣</span> Κείμενο & Κουκκίδες</button>
+    <button class="tab-btn" onclick="switchMainTab(2)"><span>3️⃣</span> Εικόνες</button>
+    <button class="tab-btn" onclick="switchMainTab(3)"><span>4️⃣</span> Χρώματα & Αντίθεση</button>
+    <button class="tab-btn" onclick="switchMainTab(4)"><span>5️⃣</span> Δομή Παρουσίασης</button>
+    <button class="tab-btn" onclick="switchMainTab(5)"><span>6️⃣</span> Προβολή (F5)</button>
+    <button class="tab-btn" onclick="switchMainTab(6)"><span>7️⃣</span> Ο Καλός Ομιλητής</button>
+    <button class="tab-btn" onclick="switchMainTab(7)"><span>8️⃣</span> Μέγα Κουίζ</button>
+  </nav>
+
+  <main>
+    <div id="activities-wrapper"></div>
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master των Παρουσιάσεων!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ολοκλήρωσες με επιτυχία και τα 24 επίπεδα των δραστηριοτήτων του Μαθήματος 20! Γνωρίζεις πλέον πώς να φτιάχνεις καταπληκτικές διαφάνειες με λίγα λόγια, σωστές εικόνες, κατάλληλα χρώματα και πώς να τις παρουσιάζεις με αυτοπεποίθηση μπροστά στην τάξη!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER (Web Audio API) */
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        if (type === 'correct') {
+          const osc1 = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc1.frequency.setValueAtTime(659.25, now + 0.1);
+          osc1.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc1.connect(gain); gain.connect(audioCtx.destination);
+          osc1.start(now); osc1.stop(now + 0.4);
+        } else if (type === 'wrong') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.setValueAtTime(110, now + 0.15);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.35);
+        } else if (type === 'click') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.08);
+        }
+      } catch (e) {
+        // Audio fallback
+      }
+    }
+
+    const allActivities = [
+  {
+    "title": "1️⃣ Τι είναι η Παρουσίαση και οι Διαφάνειες (Slides)",
+    "desc": "Μάθε πώς οργανώνουμε τις ιδέες μας σε ψηφιακές διαφάνειες για να τις δείξουμε στην τάξη.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Τι ονομάζουμε «Διαφάνεια» (Slide);",
+        "text": "Σε μια εφαρμογή παρουσιάσεων, κάθε ψηφιακή σελίδα που προβάλλεται στην οθόνη ονομάζεται:",
+        "options": [
+          {
+            "t": "Κελί υπολογιστικού φύλλου",
+            "c": false
+          },
+          {
+            "t": "Διαφάνεια (Slide)",
+            "c": true
+          },
+          {
+            "t": "Φάκελος αρχείων",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Κάθε σελίδα μιας παρουσίασης ονομάζεται διαφάνεια (slide)!",
+        "fbWrong": "⚠️ Σκέψου: πώς λέγεται η ψηφιακή καρτέλα που προβάλλεται στον προβολέα;"
+      },
+      {
+        "title": "Επίπεδο 2: Ποιος είναι ο σκοπός μιας παρουσίασης;",
+        "text": "Για ποιο λόγο δημιουργούμε μια παρουσίαση στο σχολείο;",
+        "options": [
+          {
+            "t": "Για να παρουσιάσουμε μια εργασία ή ένα θέμα στους συμμαθητές μας ευχάριστα και κατανοητά",
+            "c": true
+          },
+          {
+            "t": "Για να γράψουμε ένα μεγάλο βιβλίο 300 σελίδων",
+            "c": false
+          },
+          {
+            "t": "Για να σβήσουμε τα αρχεία του υπολογιστή",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Η παρουσίαση βοηθά να μοιραστούμε ιδέες με εικόνες και λίγα λόγια!",
+        "fbWrong": "⚠️ Η παρουσίαση απευθύνεται σε κοινό για να εξηγήσουμε ένα θέμα!"
+      },
+      {
+        "title": "Επίπεδο 3: Η σειρά των διαφανειών",
+        "text": "Πώς προβάλλονται οι διαφάνειες κατά τη διάρκεια της ομιλίας μας;",
+        "options": [
+          {
+            "t": "Εντελώς ανακατεμένες στην τύχη",
+            "c": false
+          },
+          {
+            "t": "Όλες ταυτόχρονα στριμωγμένες στην οθόνη",
+            "c": false
+          },
+          {
+            "t": "Με συγκεκριμένη σειρά (διαδοχικά), ξεκινώντας από τον τίτλο και προχωρώντας στο θέμα",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Οι διαφάνειες έχουν συγκεκριμένη ροή και λογική σειρά!",
+        "fbWrong": "⚠️ Μια καλή παρουσίαση έχει αρχή, μέση και τέλος!"
+      }
+    ]
+  },
+  {
+    "title": "2️⃣ Ο Χρυσός Κανόνας του Κειμένου",
+    "desc": "Μάθε πόσο και ποιο κείμενο πρέπει να γράφουμε σε κάθε διαφάνεια.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Πόσο κείμενο χωράει σε μια διαφάνεια;",
+        "text": "Ποιος είναι ο σημαντικότερος κανόνας για τα λόγια που γράφουμε σε μια διαφάνεια;",
+        "options": [
+          {
+            "t": "Αντιγράφουμε ολόκληρο το μάθημα λέξη προς λέξη από το βιβλίο",
+            "c": false
+          },
+          {
+            "t": "Γράφουμε λίγα λόγια, σύντομες προτάσεις και λέξεις-κλειδιά, όχι ολόκληρα κατεβατά!",
+            "c": true
+          },
+          {
+            "t": "Γράφουμε με τόσο μικρά γράμματα ώστε να μη διαβάζονται",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Στις διαφάνειες βάζουμε μόνο τα βασικά σημεία (λέξεις-κλειδιά)!",
+        "fbWrong": "⚠️ Αν γεμίσουμε τη διαφάνεια με ατελείωτο κείμενο, κανείς δεν θα μπορεί να το διαβάσει!"
+      },
+      {
+        "title": "Επίπεδο 2: Χρήση Κουκκίδων (Bullet Points)",
+        "text": "Γιατί συνηθίζουμε να οργανώνουμε τις προτάσεις με κουκκίδες (λίστα);",
+        "options": [
+          {
+            "t": "Επειδή δεν έχουμε άλλα πλήκτρα στο πληκτρολόγιο",
+            "c": false
+          },
+          {
+            "t": "Επειδή οι κουκκίδες ξεχωρίζουν καθαρά τις ιδέες και διαβάζονται εύκολα με μια ματιά",
+            "c": true
+          },
+          {
+            "t": "Για να κρύψουμε τα λάθη μας",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Οι κουκκίδες οργανώνουν τέλεια τα κύρια σημεία της ομιλίας μας!",
+        "fbWrong": "⚠️ Οι κουκκίδες κάνουν το κείμενο ευκολοδιάβαστο και τακτοποιημένο!"
+      },
+      {
+        "title": "Επίπεδο 3: Μέγεθος Γραμμάτων (Γραμματοσειρά)",
+        "text": "Πώς επιλέγουμε το μέγεθος των γραμμάτων σε μια παρουσίαση;",
+        "options": [
+          {
+            "t": "Μικροσκοπικά (μέγεθος 8) για να χωράνε πολλά",
+            "c": false
+          },
+          {
+            "t": "Τόσο τεράστια που να χωράει μόνο ένα γράμμα",
+            "c": false
+          },
+          {
+            "t": "Αρκετά μεγάλα και ευανάγνωστα, ώστε να τα βλέπουν άνετα και τα παιδιά στα πίσω θρανία",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Τα γράμματα πρέπει να φαίνονται καθαρά από κάθε γωνιά της τάξης!",
+        "fbWrong": "⚠️ Σκέψου: πρέπει να μπορούν να διαβάσουν και οι μαθητές που κάθονται πίσω!"
+      }
+    ]
+  },
+  {
+    "title": "3️⃣ Εικόνες & Οπτικά Στοιχεία",
+    "desc": "Μάθε πώς να διαλέγεις και να τοποθετείς εικόνες που ζωντανεύουν την παρουσίαση.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Γιατί βάζουμε εικόνες στις διαφάνειες;",
+        "text": "Τι προσφέρει μια κατάλληλη εικόνα δίπλα στο κείμενο;",
+        "options": [
+          {
+            "t": "Μπερδεύει όποιον κοιτάζει την οθόνη",
+            "c": false
+          },
+          {
+            "t": "Κάνει τη διαφάνεια ελκυστική και βοηθά το κοινό να καταλάβει αμέσως το θέμα",
+            "c": true
+          },
+          {
+            "t": "Τίποτα, είναι απλώς χάσιμο χρόνου",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Μια σωστή εικόνα ενισχύει το μήνυμα και κρατά ζωντανό το ενδιαφέρον!",
+        "fbWrong": "⚠️ Οι εικόνες βοηθούν στην κατανόηση και κάνουν την παρουσίαση ευχάριστη!"
+      },
+      {
+        "title": "Επίπεδο 2: Σχετικότητα της εικόνας με το θέμα",
+        "text": "Αν η παρουσίασή σου είναι για τα «Δελφίνια», ποια εικόνα είναι σωστό να βάλεις;",
+        "options": [
+          {
+            "t": "Μια φωτογραφία με μια πίτσα ή ένα γλυκό",
+            "c": false
+          },
+          {
+            "t": "Μια εικόνα από ένα διαστημόπλοιο",
+            "c": false
+          },
+          {
+            "t": "Μια καθαρή φωτογραφία δελφινιών στο φυσικό τους περιβάλλον",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Οι εικόνες πρέπει να ταιριάζουν απόλυτα με το περιεχόμενο της διαφάνειας!",
+        "fbWrong": "⚠️ Μην επιλέγεις άσχετες εικόνες, ακόμη κι αν σου αρέσουν!"
+      },
+      {
+        "title": "Επίπεδο 3: Στοίχιση Κειμένου και Εικόνας",
+        "text": "Όταν βάζεις εικόνα και κείμενο στην ίδια διαφάνεια, τι προσέχεις;",
+        "options": [
+          {
+            "t": "Να υπάρχει ισορροπία (π.χ. κείμενο αριστερά και εικόνα δεξιά) χωρίς να επικαλύπτονται",
+            "c": true
+          },
+          {
+            "t": "Να βάλεις την εικόνα ακριβώς πάνω στα γράμματα για να τα σκεπάσει",
+            "c": false
+          },
+          {
+            "t": "Να μη βάλεις καθόλου τίτλο",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Κείμενο και εικόνα στέκονται αρμονικά δίπλα-δίπλα!",
+        "fbWrong": "⚠️ Ποτέ δεν σκεπάζουμε το κείμενο με την εικόνα!"
+      }
+    ]
+  },
+  {
+    "title": "4️⃣ Χρώματα & Αντίθεση (Contrast)",
+    "desc": "Μάθε πώς να συνδυάζεις σωστά τα χρώματα για να είναι η οθόνη ξεκούραστη.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Τι είναι η καλή αντίθεση (contrast);",
+        "text": "Ποιος συνδυασμός χρωμάτων διαβάζεται πιο καθαρά σε μια αίθουσα με φως;",
+        "options": [
+          {
+            "t": "Κίτρινα γράμματα πάνω σε λευκό φόντο",
+            "c": false
+          },
+          {
+            "t": "Σκούρα γράμματα (π.χ. μπλε ή μαύρα) πάνω σε ανοιχτόχρωμο φόντο",
+            "c": true
+          },
+          {
+            "t": "Γκρι γράμματα πάνω σε ασημί φόντο",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Η έντονη αντίθεση κάνει τα γράμματα να ξεχωρίζουν πεντακάθαρα!",
+        "fbWrong": "⚠️ Ανοιχτά γράμματα σε ανοιχτό φόντο «εξαφανίζονται» στον προβολέα!"
+      },
+      {
+        "title": "Επίπεδο 2: Πόσα διαφορετικά χρώματα να χρησιμοποιούμε;",
+        "text": "Είναι καλή ιδέα να βάλουμε 10 διαφορετικά φωσφοριζέ χρώματα σε μια διαφάνεια;",
+        "options": [
+          {
+            "t": "Ναι, όσο περισσότερα χρώματα τόσο καλύτερα",
+            "c": false
+          },
+          {
+            "t": "Όχι! Χρησιμοποιούμε 2-3 ταιριαστά χρώματα για να μην κουράζονται τα μάτια των θεατών",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Η απλότητα και η αρμονία στα χρώματα είναι το μυστικό της επιτυχίας!",
+        "fbWrong": "⚠️ Τα πάρα πολλά και έντονα χρώματα κουράζουν και αποσπούν την προσοχή!"
+      },
+      {
+        "title": "Επίπεδο 3: Ομοιόμορφο θέμα (Template/Theme)",
+        "text": "Γιατί είναι καλό όλες οι διαφάνειες να έχουν παρόμοιο στιλ και χρώματα;",
+        "options": [
+          {
+            "t": "Επειδή απαγορεύεται να πατήσουμε άλλο κουμπί",
+            "c": false
+          },
+          {
+            "t": "Δεν έχει καμία σημασία",
+            "c": false
+          },
+          {
+            "t": "Για να φαίνεται η παρουσίαση ενιαία, σοβαρή και καλοδουλεμένη",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Ένα ενιαίο στιλ δίνει επαγγελματική και όμορφη όψη στην εργασία!",
+        "fbWrong": "⚠️ Όταν κάθε διαφάνεια έχει άλλο εντελώς στιλ, η παρουσίαση δείχνει ακατάστατη!"
+      }
+    ]
+  },
+  {
+    "title": "5️⃣ Η Δομή μιας Παρουσίασης (Αρχή, Μέση, Τέλος)",
+    "desc": "Μάθε πώς στήνεται σωστά μια παρουσίαση από την πρώτη μέχρι την τελευταία διαφάνεια.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Η Πρώτη Διαφάνεια (Διαφάνεια Τίτλου)",
+        "text": "Τι πρέπει οπωσδήποτε να περιλαμβάνει η πρώτη-πρώτη διαφάνεια;",
+        "options": [
+          {
+            "t": "Μόνο τη λέξη «Τέλος»",
+            "c": false
+          },
+          {
+            "t": "Τον τίτλο του θέματος και τα ονόματα των μαθητών της ομάδας",
+            "c": true
+          },
+          {
+            "t": "Όλες τις ασκήσεις του βιβλίου",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Η πρώτη διαφάνεια παρουσιάζει το θέμα και τους δημιουργούς!",
+        "fbWrong": "⚠️ Στην αρχή πρέπει όλοι να μάθουν ποιο είναι το θέμα και ποιοι μιλούν!"
+      },
+      {
+        "title": "Επίπεδο 2: Οι Ενδιάμεσες Διαφάνειες (Κύριο Μέρος)",
+        "text": "Πώς χωρίζουμε τις πληροφορίες στις ενδιάμεσες διαφάνειες;",
+        "options": [
+          {
+            "t": "Στριμώχνουμε 5 διαφορετικά θέματα στην ίδια διαφάνεια",
+            "c": false
+          },
+          {
+            "t": "Αφιερώνουμε κάθε διαφάνεια σε μία συγκεκριμένη υπο-ενότητα ή ιδέα",
+            "c": true
+          },
+          {
+            "t": "Αφήνουμε τις διαφάνειες εντελώς άδειες",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Κάθε διαφάνεια ασχολείται με μία ξεκάθαρη ιδέα!",
+        "fbWrong": "⚠️ Μην μπερδεύεις πολλά διαφορετικά θέματα μαζί!"
+      },
+      {
+        "title": "Επίπεδο 3: Η Τελευταία Διαφάνεια (Επίλογος)",
+        "text": "Τι γράφουμε συνήθως στην τελευταία διαφάνεια της παρουσίασης;",
+        "options": [
+          {
+            "t": "Ξεκινάμε να λέμε το μάθημα από την αρχή",
+            "c": false
+          },
+          {
+            "t": "«Ευχαριστούμε για την προσοχή σας!» και χώρο για τυχόν ερωτήσεις",
+            "c": true
+          },
+          {
+            "t": "Τίποτα, σβήνουμε τον υπολογιστή απότομα",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Ευχαριστούμε το κοινό και δίνουμε τον λόγο για ερωτήσεις!",
+        "fbWrong": "⚠️ Ένας ευγενικός επίλογος ολοκληρώνει όμορφα την παρουσίαση!"
+      }
+    ]
+  },
+  {
+    "title": "6️⃣ Προβολή Παρουσίασης (Slide Show)",
+    "desc": "Μάθε πώς λειτουργεί η προβολή σε πλήρη οθόνη και πώς ελέγχουμε τη ροή.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Πλήρης Οθόνη (Slide Show)",
+        "text": "Όταν θέλουμε να ξεκινήσουμε την προβολή ώστε να μην φαίνονται τα μενού του προγράμματος:",
+        "options": [
+          {
+            "t": "Βάζουμε χαρτόνι μπροστά από την οθόνη",
+            "c": false
+          },
+          {
+            "t": "Κλείνουμε το καπάκι του υπολογιστή",
+            "c": false
+          },
+          {
+            "t": "Πατάμε το κουμπί «Προβολή Παρουσίασης» (ή το πλήκτρο F5)",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Η Προβολή Παρουσίασης (F5) ανοίγει τις διαφάνειες σε όλη την οθόνη!",
+        "fbWrong": "⚠️ Το πλήκτρο F5 ή το κουμπί Slide Show ξεκινάει την προβολή!"
+      },
+      {
+        "title": "Επίπεδο 2: Πώς αλλάζουμε διαφάνεια κατά την ομιλία;",
+        "text": "Όταν τελειώσεις τα λόγια μιας διαφάνειας, πώς προχωράς στην επόμενη;",
+        "options": [
+          {
+            "t": "Πατάς το πλήκτρο Διαστήματος (Space), το δεξί βελάκι ή κάνεις κλικ με το ποντίκι",
+            "c": true
+          },
+          {
+            "t": "Φωνάζεις δυνατά στο μικρόφωνο",
+            "c": false
+          },
+          {
+            "t": "Κλείνεις το πρόγραμμα",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Με ένα απλό πάτημα στο πλήκτρο Space ή με κλικ προχωράμε στην επόμενη διαφάνεια!",
+        "fbWrong": "⚠️ Το Space, τα βελάκια και το ποντίκι ελέγχουν την αλλαγή διαφάνειας!"
+      },
+      {
+        "title": "Επίπεδο 3: Πώς διακόπτουμε την προβολή;",
+        "text": "Αν θέλεις να σταματήσεις την προβολή και να επιστρέψεις στην επεξεργασία, ποιο πλήκτρο πατάς;",
+        "options": [
+          {
+            "t": "Το πλήκτρο Caps Lock",
+            "c": false
+          },
+          {
+            "t": "Το πλήκτρο Esc (Escape) επάνω αριστερά στο πληκτρολόγιο",
+            "c": true
+          },
+          {
+            "t": "Το πλήκτρο Shift",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Το πλήκτρο Esc σταματά αμέσως την προβολή πλήρους οθόνης!",
+        "fbWrong": "⚠️ Το πλήκτρο Esc (διαφυγή) μας επιστρέφει στο περιβάλλον σχεδίασης!"
+      }
+    ]
+  },
+  {
+    "title": "7️⃣ Ο Καλός Ομιλητής / Παρουσιαστής",
+    "desc": "Μάθε πώς να στέκεσαι και πώς να μιλάς μπροστά στους συμμαθητές σου.",
+    "levels": [
+      {
+        "title": "Επίπεδο 1: Πού κοιτάμε όταν παρουσιάζουμε;",
+        "text": "Όταν μιλάς στην τάξη και δείχνεις τις διαφάνειες:",
+        "options": [
+          {
+            "t": "Γυρίζεις την πλάτη στα παιδιά και διαβάζεις απλώς την οθόνη συλλαβιστά",
+            "c": false
+          },
+          {
+            "t": "Κοιτάζεις το πάτωμα",
+            "c": false
+          },
+          {
+            "t": "Κοιτάζεις τους συμμαθητές σου στα μάτια και ρίχνεις μόνο γρήγορες ματιές στην οθόνη ως υπενθύμιση",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Ο καλός ομιλητής κοιτάζει το κοινό του και επικοινωνεί μαζί του!",
+        "fbWrong": "⚠️ Μην γυρίζεις ποτέ την πλάτη στο κοινό σου!"
+      },
+      {
+        "title": "Επίπεδο 2: Φωνή και Ρυθμός Ομιλίας",
+        "text": "Πώς πρέπει να είναι η φωνή σου κατά την παρουσίαση;",
+        "options": [
+          {
+            "t": "Καθαρή, με σταθερό ρυθμό, ούτε πολύ γρήγορα ούτε πολύ αργά",
+            "c": true
+          },
+          {
+            "t": "Τόσο ψιθυριστή που να μην ακούγεται ούτε στο πρώτο θρανίο",
+            "c": false
+          },
+          {
+            "t": "Να τρέχεις σαν αγωνιστικό αυτοκίνητο για να τελειώσεις σε 10 δευτερόλεπτα",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Σταθερή φωνή και ήρεμος ρυθμός βοηθούν όλους να σε παρακολουθήσουν!",
+        "fbWrong": "⚠️ Μίλα καθαρά και με ηρεμία για να σε καταλαβαίνουν όλοι!"
+      },
+      {
+        "title": "Επίπεδο 3: Συνεργασία στην Ομάδα",
+        "text": "Αν η εργασία έγινε από ομάδα 3 μαθητών, πώς γίνεται η παρουσίαση;",
+        "options": [
+          {
+            "t": "Μιλάει μόνο ένα παιδί και οι άλλοι δύο κάθονται αμίλητοι",
+            "c": false
+          },
+          {
+            "t": "Τσακώνονται μπροστά στον πίνακα για το ποιος θα πιάσει το ποντίκι",
+            "c": false
+          },
+          {
+            "t": "Μοιράζονται οι ρόλοι ισότιμα και κάθε μέλος παρουσιάζει τις δικές του διαφάνειες",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🏆 Άριστα! Η καλή ομάδα μοιράζει τους ρόλους και όλοι συμμετέχουν περήφανα!",
+        "fbWrong": "⚠️ Η ομαδικότητα φαίνεται όταν όλοι έχουν τον ρόλο τους στην παρουσίαση!"
+      }
+    ]
+  },
+  {
+    "title": "8️⃣ Το Μεγάλο Κουίζ των Παρουσιάσεων",
+    "desc": "Τελική αναμέτρηση γνώσεων για να κερδίσεις και το 8ο αστέρι και το κύπελλο!",
+    "levels": [
+      {
+        "title": "Ερώτηση 1: Λογισμικό Παρουσιάσεων",
+        "text": "Ποιο από τα παρακάτω είναι πρόγραμμα ειδικά φτιαγμένο για δημιουργία διαφανειών;",
+        "options": [
+          {
+            "t": "Αριθμομηχανή των Windows",
+            "c": false
+          },
+          {
+            "t": "Εφαρμογή Παρουσιάσεων (όπως LibreOffice Impress ή MS PowerPoint)",
+            "c": true
+          },
+          {
+            "t": "Ένα πρόγραμμα ζωγραφικής μόνο",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🎉 Μπράβο! Το Impress και το PowerPoint είναι κλασικές εφαρμογές παρουσιάσεων!",
+        "fbWrong": "⚠️ Χρησιμοποιούμε ειδικό λογισμικό παρουσιάσεων για διαφάνειες!"
+      },
+      {
+        "title": "Ερώτηση 2: Σύνδεση με Εννοιολογικό Χάρτη",
+        "text": "Μπορούμε να βάλουμε τον εννοιολογικό χάρτη που φτιάξαμε στο προηγούμενο μάθημα μέσα σε μια διαφάνεια;",
+        "options": [
+          {
+            "t": "Όχι, απαγορεύεται αυστηρά",
+            "c": false
+          },
+          {
+            "t": "Μόνο αν τον ζωγραφίσουμε με μαρκαδόρο πάνω στην οθόνη",
+            "c": false
+          },
+          {
+            "t": "Ναι, μπορούμε να τον αποθηκεύσουμε ως εικόνα και να τον εισαγάγουμε στη διαφάνεια!",
+            "c": true
+          }
+        ],
+        "fbCorrect": "🎉 Σωστά! Οι εννοιολογικοί χάρτες ταιριάζουν καταπληκτικά μέσα στις διαφάνειες!",
+        "fbWrong": "⚠️ Μπορούμε πανεύκολα να εισαγάγουμε τον χάρτη ως εικόνα!"
+      },
+      {
+        "title": "Ερώτηση 3: Το μυστικό μιας αξέχαστης παρουσίασης",
+        "text": "Ποιο είναι το τρίπτυχο μιας επιτυχημένης σχολικής παρουσίασης;",
+        "options": [
+          {
+            "t": "Καθαρή δομή, όμορφες σχετικές εικόνες και ζωντανή επικοινωνία με τους συμμαθητές!",
+            "c": true
+          },
+          {
+            "t": "Πάρα πολλές λέξεις, σκοτεινά χρώματα και καθόλου εικόνες",
+            "c": false
+          },
+          {
+            "t": "Να διαβάζουμε γρήγορα και να φεύγουμε τρέχοντας",
+            "c": false
+          }
+        ],
+        "fbCorrect": "🏆 ΑΡΙΣΤΑ! Ολοκλήρωσες και τα 24 επίπεδα! Είσαι πλέον Master των Παρουσιάσεων! (8/8 ⭐)",
+        "fbWrong": "⚠️ Μια επιτυχημένη παρουσίαση έχει μέτρο, ομορφιά και ζωντάνια!"
+      }
+    ]
+  }
+];
+
+    /* ΚΑΤΑΣΤΑΣΗ ΠΡΟΟΔΟΥ */
+    const completedStars = new Set();
+    const currentSubLevels = [0, 0, 0, 0, 0, 0, 0, 0];
+    let currentMainTab = 0;
+    const greekLetters = ['Α) ', 'Β) ', 'Γ) ', 'Δ) '];
+
+    function buildUI() {
+      const wrapper = document.getElementById('activities-wrapper');
+      if (!wrapper) return;
+      wrapper.innerHTML = '';
+
+      allActivities.forEach((act, actIdx) => {
+        const sec = document.createElement('section');
+        sec.className = `activity-section ${actIdx === 0 ? 'active' : ''}`;
+        sec.id = `act-sec-${actIdx}`;
+
+        let html = `
+          <div class="activity-header">
+            <h2>${act.title}</h2>
+            <p>${act.desc}</p>
+          </div>
+          <div class="level-badge-container">
+            <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+            <button class="level-pill active" id="pill-${actIdx}-0" onclick="switchSubLevel(${actIdx}, 0)">1: ${act.levels[0].title.split(':')[1] || 'Επίπεδο 1'}</button>
+            <button class="level-pill" id="pill-${actIdx}-1" onclick="switchSubLevel(${actIdx}, 1)">2: ${act.levels[1].title.split(':')[1] || 'Επίπεδο 2'}</button>
+            <button class="level-pill" id="pill-${actIdx}-2" onclick="switchSubLevel(${actIdx}, 2)">3: ${act.levels[2].title.split(':')[1] || 'Επίπεδο 3'}</button>
+          </div>
+          <div id="sub-card-container-${actIdx}"></div>
+          <div class="feedback-box" id="fb-${actIdx}"></div>
+        `;
+        sec.innerHTML = html;
+        wrapper.appendChild(sec);
+      });
+
+      renderCurrentSubLevel(0);
+    }
+
+    function switchMainTab(idx) {
+      playSound('click');
+      currentMainTab = idx;
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      document.querySelectorAll('.activity-section').forEach((s, i) => s.classList.toggle('active', i === idx));
+      renderCurrentSubLevel(idx);
+    }
+
+    function switchSubLevel(actIdx, lvlIdx) {
+      playSound('click');
+      currentSubLevels[actIdx] = lvlIdx;
+      for (let i = 0; i < 3; i++) {
+        const pill = document.getElementById(`pill-${actIdx}-${i}`);
+        if (pill) pill.classList.toggle('active', i === lvlIdx);
+      }
+      renderCurrentSubLevel(actIdx);
+    }
+
+    function renderCurrentSubLevel(actIdx) {
+      const container = document.getElementById(`sub-card-container-${actIdx}`);
+      const fb = document.getElementById(`fb-${actIdx}`);
+      if (!container) return;
+      fb.style.display = 'none';
+
+      const lvlIdx = currentSubLevels[actIdx];
+      const data = allActivities[actIdx].levels[lvlIdx];
+
+      container.innerHTML = `
+        <div class="sub-activity-card">
+          <div class="sub-card-title">🎯 ${data.title}</div>
+          <div class="sub-card-text">${data.text}</div>
+          <div class="options-grid">
+            ${data.options.map((opt, oIdx) => `
+              <button class="opt-btn" onclick="checkOption(${actIdx}, ${lvlIdx}, ${oIdx}, this)">
+                <strong>${greekLetters[oIdx]}</strong>${opt.t}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function checkOption(actIdx, lvlIdx, optIdx, btn) {
+      const data = allActivities[actIdx].levels[lvlIdx];
+      const fb = document.getElementById(`fb-${actIdx}`);
+      fb.style.display = 'flex';
+
+      const allBtns = btn.closest('.options-grid').querySelectorAll('.opt-btn');
+      allBtns.forEach(b => b.classList.remove('correct-choice', 'wrong-choice'));
+
+      if (data.options[optIdx].c) {
+        playSound('correct');
+        btn.classList.add('correct-choice');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = data.fbCorrect;
+
+        if (lvlIdx === 2) {
+          markStarDone(actIdx);
+        }
+      } else {
+        playSound('wrong');
+        btn.classList.add('wrong-choice');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = data.fbWrong;
+      }
+    }
+
+    function markStarDone(actIdx) {
+      if (!completedStars.has(actIdx)) {
+        completedStars.add(actIdx);
+        document.getElementById('global-stars').textContent = completedStars.size;
+        if (completedStars.size === 8) {
+          setTimeout(() => {
+            document.getElementById('victory-modal').classList.add('active');
+          }, 600);
+        }
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('victory-modal').classList.remove('active');
+    }
+
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima20_Parousiasi_Ideon_D_Dimotikou.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildUI);
+    } else {
+      buildUI();
+    }
+  </script>
+</body>
+</html>
