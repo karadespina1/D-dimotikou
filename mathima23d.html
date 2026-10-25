@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 23: Χρήση Ηλεκτρονικού Ταχυδρομείου - Δ΄ Δημοτικού</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --secondary: #0d9488;
+      --accent-green: #059669;
+      --accent-yellow: #f59e0b;
+      --accent-red: #dc2626;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 50%, #fef3c7 100%);
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --text-main: #1e293b;
+      --text-light: #475569;
+      --border-radius-card: 24px;
+      --border-radius-btn: 16px;
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 3px solid rgba(2, 132, 199, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area p {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .score-badge {
+      background: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 3px solid var(--accent-yellow);
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-download-top {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-download-top:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .tabs-nav {
+      max-width: 1400px;
+      margin: 1.5rem auto 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid transparent;
+      padding: 0.85rem 1.2rem;
+      border-radius: 18px;
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: white; color: var(--primary); }
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-3px);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .activity-section {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius-card);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      animation: fadeIn 0.25s ease;
+    }
+    .activity-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.2rem;
+    }
+    .activity-header h2 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 1.85rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .activity-header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .level-badge-container {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 0.55rem 1.3rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-pill.active {
+      background: #e0f2fe;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .sub-activity-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .sub-card-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #0369a1;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sub-card-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Options Buttons */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .opt-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .opt-btn:hover { border-color: var(--primary); background: #f0f9ff; }
+    .correct-choice { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .wrong-choice { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+    /* Interactive Email Mock View */
+    .webmail-box {
+      border: 3px solid #cbd5e1;
+      border-radius: 20px;
+      background: white;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 1.5rem;
+    }
+    .webmail-bar {
+      background: #f1f5f9;
+      padding: 0.8rem 1.4rem;
+      border-bottom: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+      color: #475569;
+    }
+    .email-item-row {
+      display: flex;
+      align-items: center;
+      padding: 1.1rem 1.4rem;
+      border-bottom: 1px solid #e2e8f0;
+      cursor: pointer;
+      transition: all 0.2s;
+      gap: 1.5rem;
+      font-size: 1.2rem;
+    }
+    .email-item-row:hover { background: #f0f9ff; }
+    .email-item-row.unread { font-weight: 900; background: #f8fafc; }
+    .email-sender { width: 220px; color: #0369a1; }
+    .email-subject { flex: 1; color: #1e293b; }
+    .email-time { color: #64748b; font-size: 1.05rem; }
+
+    .email-detail-view {
+      padding: 2rem;
+      background: white;
+      display: none;
+      border-top: 2px solid #cbd5e1;
+    }
+
+    .feedback-box {
+      padding: 1.3rem 1.8rem;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .feedback-box.correct { background: #d1fae5; color: #065f46; border: 3px solid #34d399; display: flex; }
+    .feedback-box.wrong { background: #fee2e2; color: #991b1b; border: 3px solid #f87171; display: flex; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: white; border-radius: 28px; padding: 2.8rem; max-width: 550px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="title-area">
+        <h1>✉️ Μάθημα 23: Χρήση Ηλεκτρονικού Ταχυδρομείου</h1>
+        <p>Εισερχόμενα, Σύνταξη, Απάντηση, Προώθηση & Netiquette (Δ΄ Δημοτικού)</p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="score-badge">⭐ Αστέρια: <span id="global-stars">0</span> / 8</div>
+        <button class="btn-download-top" onclick="downloadCurrentHtml()" title="Κατέβασε το αρχείο HTML στον υπολογιστή σου">
+          💾 Λήψη HTML
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchMainTab(0)"><span>1️⃣</span> Εισερχόμενα (Inbox)</button>
+    <button class="tab-btn" onclick="switchMainTab(1)"><span>2️⃣</span> Ανάγνωση Μηνύματος</button>
+    <button class="tab-btn" onclick="switchMainTab(2)"><span>3️⃣</span> Σύνταξη Νέου (Compose)</button>
+    <button class="tab-btn" onclick="switchMainTab(3)"><span>4️⃣</span> Απάντηση (Reply)</button>
+    <button class="tab-btn" onclick="switchMainTab(4)"><span>5️⃣</span> Προώθηση (Forward)</button>
+    <button class="tab-btn" onclick="switchMainTab(5)"><span>6️⃣</span> Επισύναψη Αρχείου (📎)</button>
+    <button class="tab-btn" onclick="switchMainTab(6)"><span>7️⃣</span> Ευγένεια (Netiquette)</button>
+    <button class="tab-btn" onclick="switchMainTab(7)"><span>8️⃣</span> Μέγα Κουίζ Χρήσης</button>
+  </nav>
+
+  <main>
+    <div id="activities-wrapper"></div>
+  </main>
+
+  <!-- MODAL ΕΠΑΙΝΟΥ -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div style="font-size: 5rem; margin-bottom: 0.6rem;">🏆</div>
+      <h3 style="font-size: 2rem; color: var(--primary); font-family: 'Comfortaa', cursive; margin-bottom: 1rem;">
+        Συγχαρητήρια, Master του Webmail!
+      </h3>
+      <p style="font-size: 1.35rem; font-weight: 700; color: #334155; margin-bottom: 2rem;">
+        Ολοκλήρωσες με επιτυχία και τα 24 επίπεδα του Μαθήματος 23! Έμαθες πώς να διαχειρίζεσαι τα εισερχόμενα, να συντάσσεις νέα μηνύματα, να απαντάς, να προωθείς και να επικοινωνείς με ευγένεια και ασφάλεια!
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()">🚀 Επιστροφή στις Δραστηριότητες</button>
+    </div>
+  </div>
+
+  <script>
+    /* AUDIO SYNTHESIZER */
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        if (type === 'correct') {
+          const osc1 = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc1.frequency.setValueAtTime(659.25, now + 0.1);
+          osc1.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc1.connect(gain); gain.connect(audioCtx.destination);
+          osc1.start(now); osc1.stop(now + 0.4);
+        } else if (type === 'wrong') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.setValueAtTime(110, now + 0.15);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.35);
+        } else if (type === 'click') {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.08);
+        }
+      } catch (e) {}
+    }
+
+    /* ΟΛΑ ΤΑ ΔΕΔΟΜΕΝΑ ΤΩΝ 8 ΔΡΑΣΤΗΡΙΟΤΗΤΩΝ (ΙΣΟΡΡΟΠΗΜΕΝΕΣ ΘΕΣΕΙΣ ΑΠΑΝΤΗΣΕΩΝ) */
+    const allActivities = [
+      {
+        title: "1️⃣ Τα Εισερχόμενα Μηνύματα (Inbox)",
+        desc: "Σύμφωνα με το βιβλίο: «Επίλεξε από το αριστερό μενού 'Εισερχόμενα' για να δεις τα μηνύματά σου».",
+        levels: [
+          {
+            title: "Επίπεδο 1: Πού βρίσκονται τα νέα μηνύματα;",
+            text: "Μόλις συνδεθείς στο ηλεκτρονικό σου ταχυδρομείο, σε ποιον φάκελο καταφθάνουν τα γράμματα που σου έστειλαν;",
+            options: [
+              { t: "Στον Κάδο Απορριμμάτων", c: false },
+              { t: "Στα Εισερχόμενα (Inbox)", c: true },
+              { t: "Στα Απεσταλμένα", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Όλα τα νέα μηνύματα που λαμβάνουμε συγκεντρώνονται στα Εισερχόμενα!",
+            fbWrong: "⚠️ Στα Εισερχόμενα (Inbox) μπαίνουν τα μηνύματα που έρχονται σε εμάς!"
+          },
+          {
+            title: "Επίπεδο 2: Έντονα Γράμματα στα Εισερχόμενα",
+            text: "Όταν ένα μήνυμα εμφανίζεται στη λίστα με έντονα μαύρα γράμματα (bold), τι σημαίνει;",
+            options: [
+              { t: "Ότι είναι αδιάβαστο (νέο μήνυμα που δεν το έχουμε ανοίξει ακόμα)", c: true },
+              { t: "Ότι έχει διαγραφεί από τον υπολογιστή", c: false },
+              { t: "Ότι είναι χαλασμένο", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Τα αδιάβαστα μηνύματα ξεχωρίζουν με έντονη γραφή για να τα προσέξουμε!",
+            fbWrong: "⚠️ Η έντονη γραφή δείχνει ότι το μήνυμα περιμένει να το διαβάσουμε!"
+          },
+          {
+            title: "Επίπεδο 3: Πληροφορίες στη Γραμμή Μηνύματος",
+            text: "Ποιες τρεις βασικές πληροφορίες βλέπουμε σε κάθε γραμμή στα Εισερχόμενα πριν καν το ανοίξουμε;",
+            options: [
+              { t: "Μόνο τη φωτογραφία του σχολείου", c: false },
+              { t: "Τον κωδικό πρόσβασης του άλλου παιδιού", c: false },
+              { t: "Τον Αποστολέα (ποιος το έστειλε), το Θέμα (τίτλος) και την Ημερομηνία/Ώρα", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Με μια ματιά βλέπουμε ποιος μας έγραψε, τι θέμα έχει και πότε έφτασε!",
+            fbWrong: "⚠️ Βλέπουμε τον αποστολέα, το θέμα και την ώρα παραλαβής!"
+          }
+        ]
+      },
+      {
+        title: "2️⃣ Ανάγνωση Ηλεκτρονικού Μηνύματος",
+        desc: "«Για να διαβάσεις ένα μήνυμα, κάνε αριστερό κλικ οπουδήποτε στη γραμμή του».",
+        levels: [
+          {
+            title: "Επίπεδο 1: Πώς ανοίγουμε ένα μήνυμα;",
+            text: "Βλέπεις ένα νέο μήνυμα στα Εισερχόμενα. Πώς θα διαβάσεις το πλήρες περιεχόμενό του;",
+            options: [
+              { t: "Κάνουμε αριστερό κλικ πάνω στη γραμμή του μηνύματος για να ανοίξει", c: true },
+              { t: "Κουνάμε το ποντίκι στον αέρα", c: false },
+              { t: "Κλείνουμε την οθόνη του υπολογιστή", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Κάνοντας κλικ στη γραμμή, το μήνυμα ανοίγει και εμφανίζει όλο το κείμενο!",
+            fbWrong: "⚠️ Κάνουμε κλικ πάνω στη γραμμή του μηνύματος!"
+          },
+          {
+            title: "Επίπεδο 2: Συνημμένο Αρχείο στο Μήνυμα",
+            text: "Ανοίγεις το μήνυμα και βλέπεις στο κάτω μέρος μια εικόνα με κουμπί «Λήψη / Αποθήκευση». Πώς έφτασε εκεί;",
+            options: [
+              { t: "Μπήκε κατά λάθος από τον καιρό", c: false },
+              { t: "Ο αποστολέας την επισύναψε μαζί με το κείμενό του ως συνημμένο αρχείο", c: true },
+              { t: "Την είχαμε ζωγραφίσει εμείς χθες", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Ήταν συνημμένο αρχείο που μας έστειλε ο φίλος μας!",
+            fbWrong: "⚠️ Πρόκειται για συνημμένο αρχείο που ταξίδεψε μαζί με το email!"
+          },
+          {
+            title: "Επίπεδο 3: Επιστροφή στα Εισερχόμενα",
+            text: "Αφού διαβάσεις το μήνυμα, πώς γυρίζεις πίσω στη λίστα όλων των μηνυμάτων σου;",
+            options: [
+              { t: "Πατάμε ξανά στο αριστερό μενού την επιλογή «Εισερχόμενα»", c: true },
+              { t: "Σβήνουμε τον λογαριασμό μας", c: false },
+              { t: "Πετάμε το ποντίκι", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Πατάμε πάλι «Εισερχόμενα» και επιστρέφουμε στη λίστα!",
+            fbWrong: "⚠️ Αρκεί να πατήσουμε ξανά στα «Εισερχόμενα» από το μενού!"
+          }
+        ]
+      },
+      {
+        title: "3️⃣ Σύνταξη Νέου Μηνύματος (Compose)",
+        desc: "Μάθε τα σωστά βήματα για να γράψεις και να στείλεις ένα δικό σου ηλεκτρονικό μήνυμα.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Ποιο κουμπί ξεκινά νέο μήνυμα;",
+            text: "Ποιο κουμπί πατάμε στο webmail όταν θέλουμε να γράψουμε ένα καινούργιο email;",
+            options: [
+              { t: "«Αποσύνδεση»", c: false },
+              { t: "«Διαγραφή όλων»", c: false },
+              { t: "«Νέο Μήνυμα» ή «Σύνταξη» (Compose)", c: true }
+            ],
+            fbCorrect: "🎉 Μπράβο! Το κουμπί «Νέο Μήνυμα» (ή Σύνταξη) ανοίγει τη φόρμα γραφής!",
+            fbWrong: "⚠️ Πατάμε «Σύνταξη» / «Νέο Μήνυμα»!"
+          },
+          {
+            title: "Επίπεδο 2: Έλεγχος της Διεύθυνσης του Παραλήπτη",
+            text: "Αν στο πεδίο «Προς» (To) γράψεις κατά λάθος λάθος έστω και ένα γράμμα στη διεύθυνση, τι θα συμβεί;",
+            options: [
+              { t: "Το μήνυμα θα παραδοθεί κανονικά", c: false },
+              { t: "Το μήνυμα δεν θα φτάσει ποτέ και θα λάβεις ειδοποίηση αποτυχίας αποστολής", c: true },
+              { t: "Ο υπολογιστής θα διορθώσει το λάθος μόνος του μαγικά", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Οι διευθύνσεις email πρέπει να γράφονται με απόλυτη ακρίβεια!",
+            fbWrong: "⚠️ Αν λείπει έστω κι ένα γράμμα, το μήνυμα δεν παραδίδεται!"
+          },
+          {
+            title: "Επίπεδο 3: Το Τελικό Βήμα",
+            text: "Αφού γράψεις τον παραλήπτη, το θέμα και το κείμενό σου, ποιο κουμπί ολοκληρώνει τη διαδικασία;",
+            options: [
+              { t: "Πατάμε «Αποστολή» (Send)", c: true },
+              { t: "Πατάμε «Ακύρωση»", c: false },
+              { t: "Κλείνουμε το παράθυρο χωρίς να πατήσουμε τίποτα", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Πατάμε «Αποστολή» και το μήνυμα πετάει στον παραλήπτη!",
+            fbWrong: "⚠️ Πρέπει οπωσδήποτε να πατήσουμε «Αποστολή»!"
+          }
+        ]
+      },
+      {
+        title: "4️⃣ Απάντηση σε Μήνυμα (Reply)",
+        desc: "«Όταν διαβάζεις ένα μήνυμα και θέλεις να απαντήσεις σε αυτόν που σου το έστειλε, επιλέγεις Απάντηση».",
+        levels: [
+          {
+            title: "Επίπεδο 1: Τι κάνει το κουμπί «Απάντηση» (Reply);",
+            text: "Ποιο είναι το μεγάλο πλεονέκτημα όταν πατάμε «Απάντηση»;",
+            options: [
+              { t: "Διαγράφει το μήνυμα του άλλου", c: false },
+              { t: "Συμπληρώνει αυτόματα τη διεύθυνση του αποστολέα στο πεδίο 'Προς', χωρίς να χρειάζεται να την ξαναπληκτρολογήσουμε!", c: true },
+              { t: "Μας κλείνει τον υπολογιστή", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Η Απάντηση βάζει αυτόματα τον παραλήπτη και μας γλιτώνει χρόνο!",
+            fbWrong: "⚠️ Με την Απάντηση δεν χρειάζεται να ξαναγράφεις τη διεύθυνση του άλλου!"
+          },
+          {
+            title: "Επίπεδο 2: Τι σημαίνει το «Re:» στο Θέμα;",
+            text: "Όταν απαντάς σε ένα email με θέμα «Πάρτι», το θέμα γίνεται αυτόματα «Re: Πάρτι». Τι σημαίνει το Re:;",
+            options: [
+              { t: "Σημαίνει «Απάντηση» (από τη λατινική λέξη Res/Regarding) σχετικά με το αρχικό θέμα", c: true },
+              { t: "Είναι λάθος του πληκτρολογίου", c: false },
+              { t: "Σημαίνει ότι το μήνυμα είναι επικίνδυνο", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Το Re: δείχνει ότι το μήνυμα είναι απάντηση σε προηγούμενη συζήτηση!",
+            fbWrong: "⚠️ Το Re: δηλώνει απάντηση στο συγκεκριμένο θέμα!"
+          },
+          {
+            title: "Επίπεδο 3: «Απάντηση σε όλους» (Reply All)",
+            text: "Αν ένα μήνυμα έχει σταλεί σε 5 συμμαθητές σου, πότε πατάμε «Απάντηση σε όλους»;",
+            options: [
+              { t: "Μόνο όταν θέλουμε να διαβάσουν την απάντησή μας και τα 5 παιδιά της ομάδας", c: true },
+              { t: "Πάντα, ακόμα κι όταν θέλουμε να πούμε ένα μυστικό μόνο στον έναν", c: false },
+              { t: "Ποτέ", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Χρησιμοποιούμε το Reply All μόνο όταν η απάντηση αφορά ολόκληρη την ομάδα!",
+            fbWrong: "⚠️ Προσοχή! Αν το μήνυμα είναι προσωπικό, πατάμε απλή 'Απάντηση', όχι 'Σε όλους'!"
+          }
+        ]
+      },
+      {
+        title: "5️⃣ Προώθηση Μηνύματος (Forward)",
+        desc: "«Όταν θέλεις να στείλεις ένα μήνυμα που έλαβες σε κάποιον άλλον φίλο σου, επιλέγεις Προώθηση».",
+        levels: [
+          {
+            title: "Επίπεδο 1: Ποια είναι η διαφορά Απάντησης και Προώθησης;",
+            text: "Πότε επιλέγουμε «Προώθηση» (Forward) αντί για «Απάντηση»;",
+            options: [
+              { t: "Όταν θέλουμε να στείλουμε το γράμμα που λάβαμε σε ένα ΤΡΙΤΟ πρόσωπο που δεν συμμετείχε πριν στη συζήτηση!", c: true },
+              { t: "Όταν θέλουμε να το στείλουμε πίσω στον ίδιο άνθρωπο", c: false },
+              { t: "Είναι ακριβώς το ίδιο κουμπί", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Προώθηση = στέλνω το μήνυμα σε νέο παραλήπτη!",
+            fbWrong: "⚠️ Με την προώθηση στέλνουμε το email σε κάποιον τρίτο!"
+          },
+          {
+            title: "Επίπεδο 2: Τι σημαίνει το «Fwd:» στο Θέμα;",
+            text: "Όταν προωθείς ένα μήνυμα, μπροστά από τον τίτλο εμφανίζεται το «Fwd:». Τι φανερώνει;",
+            options: [
+              { t: "Ότι το μήνυμα είναι χαλασμένο", c: false },
+              { t: "Ότι πρόκειται για Προωθημένο μήνυμα (Forward)", c: true },
+              { t: "Ότι το μήνυμα γράφτηκε στα γαλλικά", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Fwd είναι η συντομογραφία του Forward (Προώθηση)!",
+            fbWrong: "⚠️ Το Fwd: σημαίνει Forward (Προώθηση)!"
+          },
+          {
+            title: "Επίπεδο 3: Προσοχή στα Προσωπικά Δεδομένα στην Προώθηση",
+            text: "Πριν προωθήσεις ένα μήνυμα που σου έστειλε ένας φίλος σε άλλους, τι πρέπει να σκεφτείς;",
+            options: [
+              { t: "Αν το μήνυμα περιέχει προσωπικά του μυστικά ή φωτογραφίες που δεν θα ήθελε να δουν άλλοι!", c: true },
+              { t: "Πόση μπαταρία έχει ο υπολογιστής", c: false },
+              { t: "Τίποτα, προωθούμε τα πάντα σε όλους", c: false }
+            ],
+            fbCorrect: "🏆 Άριστα! Σεβόμαστε πάντα την ιδιωτικότητα των φίλων μας πριν προωθήσουμε κάτι!",
+            fbWrong: "⚠️ Ποτέ δεν προωθούμε προσωπικά δεδομένα άλλων χωρίς την άδειά τους!"
+          }
+        ]
+      },
+      {
+        title: "6️⃣ Επισύναψη Αρχείου (Attachment 📎)",
+        desc: "Μάθε πώς στέλνουμε φωτογραφίες, ζωγραφιές και εργασίες μαζί με το email μας.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Το σύμβολο του Συνδετήρα",
+            text: "Ποιο είναι το παγκόσμιο σύμβολο που πατάμε για να επισυνάψουμε ένα αρχείο;",
+            options: [
+              { t: "Ένα ψαλίδι ✂️", c: false },
+              { t: "Ένας συνδετήρας 📎", c: true },
+              { t: "Μια γόμα 🧹", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Ο συνδετήρας 📎 είναι το κουμπί της επισύναψης σε όλα τα email!",
+            fbWrong: "⚠️ Ο συνδετήρας συμβολίζει το «πιάσιμο» ενός αρχείου πάνω στο γράμμα!"
+          },
+          {
+            title: "Επίπεδο 2: Τι είδους αρχεία μπορούμε να επισυνάψουμε;",
+            text: "Ποια από τα παρακάτω αρχεία μπορούμε να στείλουμε μέσω ηλεκτρονικού ταχυδρομείου;",
+            options: [
+              { t: "Έγγραφα κειμένου, παρουσιάσεις, εικόνες και ηχογραφήσεις της τάξης μας", c: true },
+              { t: "Ένα αληθινό μήλο και μια μπάλα ποδοσφαίρου", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Επισυνάπτουμε κάθε είδους ψηφιακό αρχείο!",
+            fbWrong: "⚠️ Μόνο ψηφιακά αρχεία του υπολογιστή μπορούν να ταξιδέψουν με email!"
+          },
+          {
+            title: "Επίπεδο 3: Όριο Μεγέθους Συνημμένων",
+            text: "Μπορούμε να επισυνάψουμε ένα αρχείο βίντεο τεράστιου μεγέθους (π.χ. 50 Gigabytes);",
+            options: [
+              { t: "Ναι, χωράει ό,τι μέγεθος θέλουμε", c: false },
+              { t: "Όχι! Τα προγράμματα email έχουν όριο μεγέθους (συνήθως μέχρι 20-25 MB) στα συνημμένα", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Για πολύ μεγάλα αρχεία χρησιμοποιούμε cloud ή συμπίεση, γιατί το email έχει όριο!",
+            fbWrong: "⚠️ Το email έχει συγκεκριμένο όριο μεγέθους στα συνημμένα αρχεία!"
+          }
+        ]
+      },
+      {
+        title: "7️⃣ Κανόνες Ευγένειας στο Διαδίκτυο (Netiquette)",
+        desc: "Πώς γράφουμε σωστά και ευγενικά ηλεκτρονικά μηνύματα προς δασκάλους και φίλους.",
+        levels: [
+          {
+            title: "Επίπεδο 1: Γράψιμο με ΚΕΦΑΛΑΙΑ ΓΡΑΜΜΑΤΑ",
+            text: "Στο διαδίκτυο και στα email, όταν γράφεις ολόκληρες προτάσεις με ΚΕΦΑΛΑΙΑ, τι νομίζει ο άλλος;",
+            options: [
+              { t: "Ότι του ΦΩΝΑΖΕΙΣ με θυμό!", c: true },
+              { t: "Ότι του ψιθυρίζεις γλυκά", c: false },
+              { t: "Ότι έχεις γενέθλια", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Τα ΚΕΦΑΛΑΙΑ στο διαδίκτυο σημαίνουν ότι φωνάζουμε, γι' αυτό γράφουμε με πεζά!",
+            fbWrong: "⚠️ Ποτέ δεν γράφουμε ολόκληρα κείμενα με κεφαλαία, γιατί δείχνει ότι φωνάζουμε!"
+          },
+          {
+            title: "Επίπεδο 2: Χαιρετισμός και Υπογραφή",
+            text: "Πώς ξεκινάμε και πώς τελειώνουμε ένα σωστό ηλεκτρονικό μήνυμα;",
+            options: [
+              { t: "Μπαίνουμε απότομα χωρίς να πούμε ούτε γεια", c: false },
+              { t: "Ξεκινάμε με ευγενικό χαιρετισμό (π.χ. «Αγαπητή κυρία/Γεια σου Νίκο») και κλείνουμε με ευχές και το όνομά μας!", c: true },
+              { t: "Γράφουμε μόνο αριθμούς", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Ένα ευγενικό email έχει πάντα προσφώνηση και υπογραφή!",
+            fbWrong: "⚠️ Η ευγένεια είναι απαραίτητη στην ηλεκτρονική επικοινωνία!"
+          },
+          {
+            title: "Επίπεδο 3: Ευγενικό Ύφος και Σεβασμός",
+            text: "Αν διαφωνείς με κάποιον συμμαθητή σου σε ένα email, πώς απαντάς;",
+            options: [
+              { t: "Του στέλνεις προσβολές και άσχημα λόγια", c: false },
+              { t: "Εξηγείς τη γνώμη σου με ηρεμία, σεβασμό και ευγένεια, όπως ακριβώς θα έκανες πρόσωπο με πρόσωπο", c: true }
+            ],
+            fbCorrect: "🏆 Άριστα! Ο κανόνας Netiquette λέει: συμπεριφερόμαστε στο ίντερνετ όπως και στην πραγματική ζωή!",
+            fbWrong: "⚠️ Ο σεβασμός και η ευγένεια ισχύουν πάντα, ακόμα και πίσω από την οθόνη!"
+          }
+        ]
+      },
+      {
+        title: "8️⃣ Το Μεγάλο Κουίζ της Ηλεκτρονικής Αλληλογραφίας",
+        desc: "Τελική δοκιμασία για να αποδείξεις ότι ξέρεις να χρησιμοποιείς το email σαν επαγγελματίας!",
+        levels: [
+          {
+            title: "Ερώτηση 1: Ο Φάκελος «Απεσταλμένα» (Sent)",
+            text: "Πού αποθηκεύονται αυτόματα όλα τα μηνύματα που έχεις στείλει εσύ σε άλλους;",
+            options: [
+              { t: "Στα Εισερχόμενα", c: false },
+              { t: "Στα Απεσταλμένα (Sent)", c: true },
+              { t: "Στον Κάδο", c: false }
+            ],
+            fbCorrect: "🎉 Μπράβο! Στα Απεσταλμένα κρατιέται αντίγραφο όλων των email που έστειλες εσύ!",
+            fbWrong: "⚠️ Στα Απεσταλμένα φυλάσσονται τα μηνύματα που έφυγαν από εσένα!"
+          },
+          {
+            title: "Ερώτηση 2: Διαγραφή και Ανάκτηση από τον Κάδο",
+            text: "Αν διαγράψεις κατά λάθος ένα email, χάνεται για πάντα αμέσως;",
+            options: [
+              { t: "Όχι! Πηγαίνει πρώτα στον Κάδο Απορριμμάτων (Trash), απ' όπου μπορούμε να το επαναφέρουμε!", c: true },
+              { t: "Ναι, εξαφανίζεται σε ένα χιλιοστό του δευτερολέπτου", c: false }
+            ],
+            fbCorrect: "🎉 Σωστά! Ο Κάδος κρατάει τα διαγραμμένα email μέχρι να επιλέξουμε οριστικό άδειασμα!",
+            fbWrong: "⚠️ Ο Κάδος Απορριμμάτων σώζει τα μηνύματα που σβήσαμε κατά λάθος!"
+          },
+          {
+            title: "Ερώτηση 3: Το Μυστικό της Επιτυχίας στο Email",
+            text: "Ποια είναι τα 3 βασικά βήματα πριν πατήσεις το τελικό κουμπί «Αποστολή»;",
+            options: [
+              { t: "Κλείνεις τα μάτια και πατάς γρήγορα", c: false },
+              { t: "Ελέγχεις ότι έγραψες σωστά τη διεύθυνση, έβαλες Θέμα και διάβασες άλλη μια φορά το κείμενό σου για ορθογραφία και ευγένεια!", c: true },
+              { t: "Σβήνεις όλα τα φώτα στο δωμάτιο", c: false }
+            ],
+            fbCorrect: "🏆 ΑΡΙΣΤΑ! Ολοκλήρωσες και τα 24 επίπεδα! Είσαι πλέον ο απόλυτος Master του Ηλεκτρονικού Ταχυδρομείου! (8/8 ⭐)",
+            fbWrong: "⚠️ Ένας γρήγορος έλεγχος πριν την αποστολή προλαμβάνει όλα τα λάθη!"
+          }
+        ]
+      }
+    ];
+
+    /* ΚΑΤΑΣΤΑΣΗ ΠΡΟΟΔΟΥ */
+    const completedStars = new Set();
+    const currentSubLevels = [0, 0, 0, 0, 0, 0, 0, 0];
+    let currentMainTab = 0;
+    const greekLetters = ['Α) ', 'Β) ', 'Γ) ', 'Δ) '];
+
+    function buildUI() {
+      const wrapper = document.getElementById('activities-wrapper');
+      if (!wrapper) return;
+      wrapper.innerHTML = '';
+
+      allActivities.forEach((act, actIdx) => {
+        const sec = document.createElement('section');
+        sec.className = `activity-section ${actIdx === 0 ? 'active' : ''}`;
+        sec.id = `act-sec-${actIdx}`;
+
+        let html = `
+          <div class="activity-header">
+            <h2>${act.title}</h2>
+            <p>${act.desc}</p>
+          </div>
+          <div class="level-badge-container">
+            <span style="font-weight: 800; color: #475569;">Εσωτερικό Επίπεδο:</span>
+            <button class="level-pill active" id="pill-${actIdx}-0" onclick="switchSubLevel(${actIdx}, 0)">1: ${act.levels[0].title.split(':')[1] || 'Επίπεδο 1'}</button>
+            <button class="level-pill" id="pill-${actIdx}-1" onclick="switchSubLevel(${actIdx}, 1)">2: ${act.levels[1].title.split(':')[1] || 'Επίπεδο 2'}</button>
+            <button class="level-pill" id="pill-${actIdx}-2" onclick="switchSubLevel(${actIdx}, 2)">3: ${act.levels[2].title.split(':')[1] || 'Επίπεδο 3'}</button>
+          </div>
+          <div id="sub-card-container-${actIdx}"></div>
+          <div class="feedback-box" id="fb-${actIdx}"></div>
+        `;
+        sec.innerHTML = html;
+        wrapper.appendChild(sec);
+      });
+
+      renderCurrentSubLevel(0);
+    }
+
+    function switchMainTab(idx) {
+      playSound('click');
+      currentMainTab = idx;
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      document.querySelectorAll('.activity-section').forEach((s, i) => s.classList.toggle('active', i === idx));
+      renderCurrentSubLevel(idx);
+    }
+
+    function switchSubLevel(actIdx, lvlIdx) {
+      playSound('click');
+      currentSubLevels[actIdx] = lvlIdx;
+      for (let i = 0; i < 3; i++) {
+        const pill = document.getElementById(`pill-${actIdx}-${i}`);
+        if (pill) pill.classList.toggle('active', i === lvlIdx);
+      }
+      renderCurrentSubLevel(actIdx);
+    }
+
+    function renderCurrentSubLevel(actIdx) {
+      const container = document.getElementById(`sub-card-container-${actIdx}`);
+      const fb = document.getElementById(`fb-${actIdx}`);
+      if (!container) return;
+      fb.style.display = 'none';
+
+      const lvlIdx = currentSubLevels[actIdx];
+      const data = allActivities[actIdx].levels[lvlIdx];
+
+      // Αν είναι η 1η δραστηριότητα, προσθέτουμε και ένα μίνι mockup γραφικό
+      let extraVisual = "";
+      if (actIdx === 0 && lvlIdx === 0) {
+        extraVisual = `
+          <div class="webmail-box">
+            <div class="webmail-bar">
+              <span>📥 Εισερχόμενα (1 νέο μήνυμα)</span>
+              <span>sch.gr Webmail</span>
+            </div>
+            <div class="email-item-row unread">
+              <span class="email-sender">👤 Δασκάλα Πληροφορικής</span>
+              <span class="email-subject">✉️ Εργασία: Ηλεκτρονικό Ταχυδρομείο</span>
+              <span class="email-time">10:30 π.μ.</span>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="sub-activity-card">
+          <div class="sub-card-title">🎯 ${data.title}</div>
+          ${extraVisual}
+          <div class="sub-card-text">${data.text}</div>
+          <div class="options-grid">
+            ${data.options.map((opt, oIdx) => `
+              <button class="opt-btn" onclick="checkOption(${actIdx}, ${lvlIdx}, ${oIdx}, this)">
+                <strong>${greekLetters[oIdx]}</strong>${opt.t}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function checkOption(actIdx, lvlIdx, optIdx, btn) {
+      const data = allActivities[actIdx].levels[lvlIdx];
+      const fb = document.getElementById(`fb-${actIdx}`);
+      fb.style.display = 'flex';
+
+      const allBtns = btn.closest('.options-grid').querySelectorAll('.opt-btn');
+      allBtns.forEach(b => b.classList.remove('correct-choice', 'wrong-choice'));
+
+      if (data.options[optIdx].c) {
+        playSound('correct');
+        btn.classList.add('correct-choice');
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = data.fbCorrect;
+
+        if (lvlIdx === 2) {
+          markStarDone(actIdx);
+        }
+      } else {
+        playSound('wrong');
+        btn.classList.add('wrong-choice');
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = data.fbWrong;
+      }
+    }
+
+    function markStarDone(actIdx) {
+      if (!completedStars.has(actIdx)) {
+        completedStars.add(actIdx);
+        document.getElementById('global-stars').textContent = completedStars.size;
+        if (completedStars.size === 8) {
+          setTimeout(() => {
+            document.getElementById('victory-modal').classList.add('active');
+          }, 600);
+        }
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('victory-modal').classList.remove('active');
+    }
+
+    function downloadCurrentHtml() {
+      playSound('click');
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Mathima23_Xrisi_Email_D_Dimotikou.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildUI);
+    } else {
+      buildUI();
+    }
+  </script>
+</body>
+</html>
