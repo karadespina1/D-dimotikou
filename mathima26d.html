@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 26: e-me Διαχείριση Επαφών & Επικοινωνία - Δ' Δημοτικού</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka & Comic Neue για παιδικό, φιλικό στυλ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+            comic: ['"Comic Neue"', 'cursive', 'sans-serif'],
+          },
+          colors: {
+            eme: {
+              yellow: '#F59E0B',
+              amber: '#D97706',
+              teal: '#0D9488',
+              sky: '#0284C7',
+              purple: '#7C3AED',
+              coral: '#F43F5E',
+              mint: '#10B981',
+              dark: '#1E293B',
+              bg: '#F0FDF4'
+            }
+          },
+          keyframes: {
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-4deg)' },
+              '50%': { transform: 'rotate(4deg)' },
+            },
+            pop: {
+              '0%': { transform: 'scale(0.9)' },
+              '50%': { transform: 'scale(1.05)' },
+              '100%': { transform: 'scale(1)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' }
+            }
+          },
+          animation: {
+            wiggle: 'wiggle 0.35s ease-in-out infinite',
+            pop: 'pop 0.3s ease-out forwards',
+            float: 'float 3s ease-in-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Fredoka', 'Comic Neue', sans-serif;
+      user-select: none;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    .badge-bounce:hover {
+      transform: translateY(-3px) scale(1.03);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-amber-50 via-teal-50 to-sky-50 min-h-screen text-slate-800 flex flex-col">
+
+  <!-- ================= TOP NAVBAR ================= -->
+  <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b-4 border-amber-400 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Lesson Info -->
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-amber-400 flex items-center justify-center text-2xl shadow-md border-2 border-amber-500 animate-float">
+          🐝
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="bg-teal-600 text-white text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Πληροφορικη Δ'</span>
+            <span class="text-xs text-amber-700 font-bold">Μάθημα 26</span>
+          </div>
+          <h1 class="text-lg md:text-xl font-bold text-slate-800 leading-tight">
+            Διαχείριση Επαφών & Επικοινωνία στην <span class="text-teal-600">e-me</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Stats Bar & Sound Control -->
+      <div class="flex items-center gap-4 bg-amber-100/80 px-4 py-2 rounded-2xl border-2 border-amber-300">
+        <div class="flex items-center gap-1.5" title="Συνολικά Αστέρια">
+          <span class="text-2xl animate-spin-slow">⭐</span>
+          <span id="starCounter" class="text-xl font-bold text-amber-800">0 / 24</span>
+        </div>
+        <div class="h-6 w-0.5 bg-amber-300"></div>
+        <button id="soundToggleBtn" onclick="toggleMute()" class="text-xl hover:scale-110 active:scale-95 transition" title="Ενεργοποίηση/Σίγαση Ήχων">
+          🔊
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="max-w-6xl w-full mx-auto px-3 sm:px-4 py-6 flex-grow flex flex-col gap-6">
+
+    <!-- Hero / Progress Banner -->
+    <section class="bg-white rounded-3xl p-5 md:p-6 shadow-md border-3 border-teal-200 relative overflow-hidden">
+      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="space-y-1 text-center md:text-left">
+          <div class="inline-block bg-teal-100 text-teal-800 text-xs px-3 py-1 rounded-full font-bold">
+            🎮 8 Μεγάλες Αποστολές (με 3 επίπεδα η καθεμία)
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold text-slate-800">
+            Γίνε ο Πρωταθλητής των Ψηφιακών Επαφών!
+          </h2>
+          <p class="text-sm md:text-base text-slate-600 max-w-2xl">
+            Μάθε πώς βρίσκουμε τους φίλους μας στην <strong>e-me</strong> με ασφάλεια, πώς διαχειριζόμαστε τα αιτήματα στο καμπανάκι και πώς συνομιλούμε ευγενικά!
+          </p>
+        </div>
+
+        <!-- Visual Progress Ring -->
+        <div class="flex flex-col items-center gap-1 bg-teal-50 px-5 py-3 rounded-2xl border-2 border-teal-200">
+          <span class="text-xs font-bold text-teal-700">Συνολική Πρόοδος</span>
+          <div class="w-36 bg-slate-200 rounded-full h-4 overflow-hidden border border-teal-300">
+            <div id="overallProgressBar" class="bg-gradient-to-r from-amber-400 to-teal-500 h-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <span id="progressPercent" class="text-xs font-bold text-slate-600">0% Ολοκλήρωση</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Hub (Tabs for the 8 Activities) -->
+    <nav class="flex gap-2 overflow-x-auto pb-2 custom-scroll" id="activityTabsContainer" aria-label="Επιλογή Δραστηριότητας">
+      <!-- Generated via JS for clean sync -->
+    </nav>
+
+    <!-- Main Interactive Activity Box -->
+    <div id="activityHost" class="bg-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl border-4 border-amber-300 relative transition-all min-h-[460px] flex flex-col">
+      <!-- Injected dynamically by renderCurrentActivity() -->
+    </div>
+
+    <!-- Live Toast Message -->
+    <div id="feedbackToast" class="fixed bottom-6 right-6 max-w-sm bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border-2 border-amber-400 transform translate-y-32 opacity-0 transition-all duration-300 z-50">
+      <span id="toastIcon" class="text-2xl">🎉</span>
+      <p id="toastMessage" class="text-sm font-bold">Μπράβο! Προχωράμε!</p>
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t-2 border-slate-200 py-4 text-center text-xs text-slate-500">
+    <p>Πληροφορική Δ' Δημοτικού • Μάθημα 26: «Διαχείριση επαφών και επικοινωνία μέσω εκπαιδευτικής πλατφόρμας»</p>
+    <p class="mt-1 text-slate-400">Σχεδιασμένο για σχολική & αυτόνομη εξάσκηση • Πανελλήνιο Σχολικό Δίκτυο & e-me</p>
+  </footer>
+
+  <!-- ================= MODAL CERTIFICATE ================= -->
+  <div id="certModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 border-4 border-amber-400 shadow-2xl relative text-center">
+      <button onclick="closeCertificate()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold">✕</button>
+      
+      <div id="printableCertificate" class="p-6 border-4 border-dashed border-teal-400 rounded-2xl bg-amber-50 relative">
+        <div class="text-4xl mb-2">🏆 🐝 🎓</div>
+        <h3 class="text-xs uppercase tracking-widest font-bold text-teal-700">ΕΠΙΣΗΜΟ ΔΙΠΛΩΜΑ ΨΗΦΙΑΚΩΝ ΔΕΞΙΟΤΗΤΩΝ</h3>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-amber-900 my-2">Ειδικός Επαφών & Επικοινωνίας e-me</h2>
+        <p class="text-slate-600 text-sm">Απονέμεται με έπαινο στον/στην μαθητή/τρια της Δ' Δημοτικού:</p>
+        <p id="certStudentNameDisplay" class="text-2xl font-bold text-teal-800 underline my-3">Σούπερ Μαθητής</p>
+        <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+          Για την επιτυχή ολοκλήρωση και των 8 διαδραστικών αποστολών του Μαθήματος 26, επιδεικνύοντας υπευθυνότητα, ψηφιακή ασφάλεια και ευγένεια στις επαφές του Πανελλήνιου Σχολικού Δικτύου!
+        </p>
+        <div class="mt-6 pt-4 border-t border-amber-200 flex justify-between items-center text-xs text-slate-400 px-4">
+          <span>Ημερομηνία: <strong id="certDateDisplay">--/--/----</strong></span>
+          <span>Βαθμός: <strong>Άριστα 24/24 ⭐</strong></span>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap justify-center gap-3 no-print">
+        <button onclick="window.print()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-2xl shadow-lg transition flex items-center gap-2">
+          🖨️ Εκτύπωση / Αποθήκευση PDF
+        </button>
+        <button onclick="closeCertificate()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-6 py-2.5 rounded-2xl transition">
+          Κλείσιμο
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOGIC & GAME ENGINE ================= -->
+  <script>
+    /* -------------------------------------------------------------
+       AUDIO FX (Synthesized with Web Audio API - Safe & Lightweight)
+       ------------------------------------------------------------- */
+    let audioCtx = null;
+    let isSoundMuted = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSound(type) {
+      if (isSoundMuted) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'bell') {
+          // Bell chime
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(1760, now + 0.1);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+          osc.start(now);
+          osc.stop(now + 0.8);
+        } else if (type === 'success') {
+          // Happy chime
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+          osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === 'error') {
+          // Low "oops" tone
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(130, now + 0.25);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'click') {
+          // Short snap
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+      } catch (e) {
+        // Audio context may require user gesture
+      }
+    }
+
+    function toggleMute() {
+      isSoundMuted = !isSoundMuted;
+      document.getElementById('soundToggleBtn').innerText = isSoundMuted ? '🔇' : '🔊';
+      showToast(isSoundMuted ? 'Ήχοι απενεργοποιήθηκαν' : 'Ήχοι ενεργοποιήθηκαν!', '🎵');
+    }
+
+    /* -------------------------------------------------------------
+       STATE MANAGEMENT
+       8 Activities, each with 3 sub-activities (0, 1, 2)
+       Total stars = 24
+       ------------------------------------------------------------- */
+    const activitiesData = [
+      {
+        id: 1,
+        title: "Ο Μαγικός Φακός της e-me",
+        shortTitle: "1. Ο Φακός",
+        icon: "🔍",
+        desc: "Εύρεση συμμαθητών & αποστολή αιτημάτων σύνδεσης",
+        color: "amber",
+        subTasks: [
+          { name: "Αναζήτηση στο Tablet", completed: false },
+          { name: "Αποστολή Αιτήματος", completed: false },
+          { name: "Ποιον μπορώ να βρω;", completed: false }
+        ]
+      },
+      {
+        id: 2,
+        title: "Το Κουδούνι των Ειδοποιήσεων",
+        shortTitle: "2. Καμπανάκι",
+        icon: "🔔",
+        desc: "Διαχείριση εισερχόμενων αιτημάτων (Αποδοχή, Απόρριψη, Αποκλεισμός)",
+        color: "teal",
+        subTasks: [
+          { name: "Χτύπημα Ειδοποίησης", completed: false },
+          { name: "Διαλογή Εισερχομένων", completed: false },
+          { name: "Συνέπειες Ενεργειών", completed: false }
+        ]
+      },
+      {
+        id: 3,
+        title: "Εργαστήριο Κωδικών & Ταυτότητας",
+        shortTitle: "3. Προφίλ & Κωδικοί",
+        icon: "🛡️",
+        desc: "Ασφαλή ψευδώνυμα, δυνατά συνθηματικά και ταυτότητα μαθητή",
+        color: "purple",
+        subTasks: [
+          { name: "Ντετέκτιβ Ονομάτων", completed: false },
+          { name: "Το Παζλ του Κωδικού", completed: false },
+          { name: "Ταυτότητα Μαθητή e-me", completed: false }
+        ]
+      },
+      {
+        id: 4,
+        title: "Chat Room: Το Ταχυδρομείο της Τάξης",
+        shortTitle: "4. Μηνύματα Chat",
+        icon: "💬",
+        desc: "Γραπτή επικοινωνία, Netiquette και ρυθμίσεις συνομιλίας",
+        color: "sky",
+        subTasks: [
+          { name: "Σύνθεση Μηνύματος", completed: false },
+          { name: "Διόρθωση Κεφαλαίων (Netiquette)", completed: false },
+          { name: "Κουμπιά Διαχείρισης Chat", completed: false }
+        ]
+      },
+      {
+        id: 5,
+        title: "Ομαδική Συζήτηση (Group Chat)",
+        shortTitle: "5. Ομαδική",
+        icon: "👥",
+        desc: "Συνεργασία σε ομάδες, ένας προς πολλούς & κανόνες",
+        color: "emerald",
+        subTasks: [
+          { name: "Φτιάξε την Ομάδα σου", completed: false },
+          { name: "Ένας προς Πολλούς", completed: false },
+          { name: "Κανόνες Ομάδας (Like / Stop)", completed: false }
+        ]
+      },
+      {
+        id: 6,
+        title: "Ο Φύλακας των Επαφών",
+        shortTitle: "6. Ασφάλεια & SOS",
+        icon: "🚨",
+        desc: "Αντιμετώπιση αγνώστων, ψεύτικα προφίλ & βήματα προστασίας",
+        color: "rose",
+        subTasks: [
+          { name: "Το Τείχος Προστασίας", completed: false },
+          { name: "Αναγνώριση Ύποπτου Προφίλ", completed: false },
+          { name: "Βήματα SOS", completed: false }
+        ]
+      },
+      {
+        id: 7,
+        title: "Το Ταξίδι της Σύνδεσης",
+        shortTitle: "7. Δίκτυο & Σύνδεση",
+        icon: "🌐",
+        desc: "Πώς ταξιδεύει το αίτημα στο δίκτυο και ποιος είναι online",
+        color: "indigo",
+        subTasks: [
+          { name: "Ο Λαβύρινθος του Αιτήματος", completed: false },
+          { name: "Διλήμματα στη Διαδρομή", completed: false },
+          { name: "Πράσινο Φως (Online Status)", completed: false }
+        ]
+      },
+      {
+        id: 8,
+        title: "Το Μεγάλο Τρόπαιο e-me Master",
+        shortTitle: "8. Τρόπαιο & Δίπλωμα",
+        icon: "🏆",
+        desc: "Ανασκόπηση, υπογραφή συμβολαίου & λήψη διπλώματος",
+        color: "amber",
+        subTasks: [
+          { name: "Memory Match Εικονιδίων", completed: false },
+          { name: "Συμβόλαιο Καλής Επαφής", completed: false },
+          { name: "Απονομή Διπλώματος", completed: false }
+        ]
+      }
+    ];
+
+    let currentActIndex = 0;   // 0 to 7
+    let currentSubIndex = 0;   // 0 to 2
+    let studentName = "Μαθητής Δ' Δημοτικού";
+
+    /* -------------------------------------------------------------
+       INITIALIZATION
+       ------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderActivityTabs();
+      renderCurrentActivity();
+      updateStats();
+    });
+
+    /* -------------------------------------------------------------
+       RENDER TABS
+       ------------------------------------------------------------- */
+    function renderActivityTabs() {
+      const tabsCont = document.getElementById('activityTabsContainer');
+      tabsCont.innerHTML = '';
+
+      activitiesData.forEach((act, idx) => {
+        const isCurrent = idx === currentActIndex;
+        const completedCount = act.subTasks.filter(t => t.completed).length;
+        const allDone = completedCount === 3;
+
+        const btn = document.createElement('button');
+        btn.onclick = () => {
+          playSound('click');
+          currentActIndex = idx;
+          currentSubIndex = 0;
+          renderActivityTabs();
+          renderCurrentActivity();
+        };
+
+        btn.className = `flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-sm ${
+          isCurrent 
+            ? 'bg-amber-500 text-white shadow-md scale-105 border-2 border-amber-600'
+            : allDone 
+              ? 'bg-emerald-100 text-emerald-800 border-2 border-emerald-300 hover:bg-emerald-200' 
+              : 'bg-white text-slate-700 border-2 border-slate-200 hover:border-amber-300'
+        }`;
+
+        btn.innerHTML = `
+          <span class="text-lg">${act.icon}</span>
+          <span>${act.shortTitle}</span>
+          <span class="text-xs px-2 py-0.5 rounded-full ${
+            allDone ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700'
+          }">${completedCount}/3 ⭐</span>
+        `;
+
+        tabsCont.appendChild(btn);
+      });
+    }
+
+    /* -------------------------------------------------------------
+       RENDER CURRENT SUB-TASK
+       ------------------------------------------------------------- */
+    function renderCurrentActivity() {
+      const host = document.getElementById('activityHost');
+      const act = activitiesData[currentActIndex];
+      const task = act.subTasks[currentSubIndex];
+
+      // Breadcrumb & Subnav Header
+      let html = `
+        <div class="flex flex-wrap items-center justify-between pb-4 border-b-2 border-slate-100 gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-600">Δραστηριότητα ${act.id} από 8</span>
+              <span class="text-xs px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold">Επίπεδο ${currentSubIndex + 1} / 3</span>
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold text-slate-800 mt-0.5 flex items-center gap-2">
+              <span>${act.icon}</span> ${act.title}
+            </h3>
+            <p class="text-sm text-slate-500">${act.desc}</p>
+          </div>
+
+          <!-- 3-Step Pill Selector -->
+          <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+            ${act.subTasks.map((st, i) => `
+              <button onclick="switchSubTask(${i})" class="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                currentSubIndex === i 
+                  ? 'bg-white shadow text-slate-900 border border-slate-300' 
+                  : st.completed 
+                    ? 'text-emerald-700 hover:bg-emerald-50' 
+                    : 'text-slate-500 hover:bg-slate-200'
+              }">
+                <span>${st.completed ? '⭐' : (i + 1)}</span>
+                <span class="hidden sm:inline">${st.name}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="py-6 flex-grow flex flex-col justify-center">
+          <div id="subTaskContainer" class="animate-pop">
+            <!-- Specific Game View Injected Here -->
+          </div>
+        </div>
+      `;
+
+      host.innerHTML = html;
+      loadSubTaskGame();
+    }
+
+    function switchSubTask(idx) {
+      playSound('click');
+      currentSubIndex = idx;
+      renderCurrentActivity();
+    }
+
+    function completeCurrentSubTask() {
+      const act = activitiesData[currentActIndex];
+      if (!act.subTasks[currentSubIndex].completed) {
+        act.subTasks[currentSubIndex].completed = true;
+        playSound('success');
+        confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
+        showToast('Μπράβο! Κέρδισες 1 Αστέρι! ⭐', '🌟');
+      } else {
+        playSound('success');
+        showToast('Τέλεια επανάληψη!', '👍');
+      }
+
+      updateStats();
+      renderActivityTabs();
+
+      // Check if all subtasks in this activity are done
+      const allDone = act.subTasks.every(t => t.completed);
+      
+      // Auto move to next sub-task or activity
+      setTimeout(() => {
+        if (currentSubIndex < 2) {
+          currentSubIndex++;
+          renderCurrentActivity();
+        } else if (currentActIndex < 7) {
+          currentActIndex++;
+          currentSubIndex = 0;
+          renderActivityTabs();
+          renderCurrentActivity();
+          showToast(`Επόμενη Αποστολή: ${activitiesData[currentActIndex].title}!`, '🚀');
+        } else {
+          // Finished everything!
+          openCertificate();
+        }
+      }, 1300);
+    }
+
+    function updateStats() {
+      let earned = 0;
+      activitiesData.forEach(a => a.subTasks.forEach(t => { if (t.completed) earned++; }));
+      document.getElementById('starCounter').innerText = `${earned} / 24`;
+      const pct = Math.round((earned / 24) * 100);
+      document.getElementById('overallProgressBar').style.width = `${pct}%`;
+      document.getElementById('progressPercent').innerText = `${pct}% Ολοκλήρωση`;
+    }
+
+    function showToast(msg, icon = '🎉') {
+      const toast = document.getElementById('feedbackToast');
+      document.getElementById('toastMessage').innerText = msg;
+      document.getElementById('toastIcon').innerText = icon;
+      toast.classList.remove('translate-y-32', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-32', 'opacity-0');
+      }, 2600);
+    }
+
+    /* =============================================================
+       THE 8 ACTIVITIES & THEIR 3 SUBTASKS
+       ============================================================= */
+    function loadSubTaskGame() {
+      const container = document.getElementById('subTaskContainer');
+      const act = currentActIndex + 1;
+      const sub = currentSubIndex + 1;
+
+      // Routing to the exact micro-activity
+      if (act === 1) renderAct1(container, sub);
+      else if (act === 2) renderAct2(container, sub);
+      else if (act === 3) renderAct3(container, sub);
+      else if (act === 4) renderAct4(container, sub);
+      else if (act === 5) renderAct5(container, sub);
+      else if (act === 6) renderAct6(container, sub);
+      else if (act === 7) renderAct7(container, sub);
+      else if (act === 8) renderAct8(container, sub);
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 1: «Ο Μαγικός Φακός της e-me»
+       ------------------------------------------------------------- */
+    function renderAct1(c, sub) {
+      if (sub === 1) {
+        // 1.1: Virtual Tablet Search
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto bg-slate-900 p-6 rounded-3xl shadow-xl text-white border-4 border-slate-700">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-700 text-xs text-slate-400">
+              <span>📱 e-me Tablet Edition</span>
+              <span class="text-emerald-400">● Συνδεδεμένος στο ΠΣΔ</span>
+            </div>
+            
+            <div class="my-4 text-center">
+              <span class="text-3xl">🔍</span>
+              <h4 class="text-lg font-bold mt-1 text-amber-300">Αναζήτηση Συμμαθητή</h4>
+              <p class="text-xs text-slate-300 mt-1">
+                Πληκτρολόγησε ή κάνε κλικ στο όνομα της συμμαθήτριάς σου <strong>«Μαρία Παπαδοπούλου»</strong> για να τη βρεις στις επαφές:
+              </p>
+            </div>
+
+            <!-- Search input box -->
+            <div class="relative my-4">
+              <span class="absolute left-3 top-3 text-slate-400 text-lg">🔍</span>
+              <input id="act1SearchInput" type="text" placeholder="Πληκτρολόγησε ονοματεπώνυμο..." 
+                class="w-full bg-slate-800 text-amber-200 pl-10 pr-4 py-2.5 rounded-2xl border-2 border-slate-600 focus:outline-none focus:border-amber-400 text-sm font-bold">
+            </div>
+
+            <!-- Fast click suggestions -->
+            <div class="flex flex-wrap gap-2 justify-center text-xs mb-4">
+              <button onclick="fillAct1Input('Μαρία Παπαδοπούλου')" class="bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-1.5 rounded-xl border border-slate-600 transition">
+                👧 Μαρία Παπαδοπούλου
+              </button>
+              <button onclick="fillAct1Input('Νίκος Γεωργίου')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-600 transition">
+                👦 Νίκος Γεωργίου
+              </button>
+              <button onclick="fillAct1Input('Άγνωστος Χ')" class="bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-xl border border-slate-600 transition">
+                👤 Άγνωστος Χ
+              </button>
+            </div>
+
+            <div id="act1ResultBox" class="hidden bg-slate-800 p-3 rounded-2xl border border-teal-500 flex items-center justify-between mb-4 animate-pop">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-xl">👧</div>
+                <div>
+                  <h5 class="text-sm font-bold text-white">Μαρία Παπαδοπούλου</h5>
+                  <p class="text-xs text-slate-400">Τάξη Δ1 • Δημοτικό Σχολείο</p>
+                </div>
+              </div>
+              <button onclick="completeCurrentSubTask()" class="bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold text-xs px-3 py-2 rounded-xl transition shadow">
+                + Προσθήκη στις Επαφές
+              </button>
+            </div>
+
+            <button onclick="checkAct1Search()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2.5 rounded-2xl transition shadow-lg text-sm">
+              Έλεγχος Αναζήτησης 🔎
+            </button>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 1.2: Send Friend Request (Interactive target drop / click)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto text-center space-y-4">
+            <div class="bg-teal-50 p-4 rounded-2xl border-2 border-teal-300">
+              <h4 class="text-lg font-bold text-teal-900">📨 Αποστολή «Αιτήματος Σύνδεσης»</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                Βρήκες τον συμμαθητή σου τον <strong>Νίκο</strong>! Κάνε κλικ στον φάκελο με το αίτημα για να σταλεί με ασφάλεια στο προφίλ του.
+              </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-8 py-4">
+              <!-- Sender Button Envelope -->
+              <button id="requestEnvelope" onclick="sendAct1Request()" class="group flex flex-col items-center gap-2 p-5 bg-amber-100 hover:bg-amber-200 rounded-3xl border-3 border-dashed border-amber-400 transition transform hover:scale-105 active:scale-95 shadow-md">
+                <span class="text-5xl group-hover:animate-bounce">💌</span>
+                <span class="text-xs font-bold text-amber-900">Αίτημα Σύνδεσης e-me<br><span class="text-amber-600 font-normal">(Πάτα με για αποστολή!)</span></span>
+              </button>
+
+              <div class="text-2xl font-bold text-slate-400 hidden sm:block">➔ ➔ ➔</div>
+
+              <!-- Recipient Card -->
+              <div id="targetStudentCard" class="flex flex-col items-center gap-2 p-5 bg-white rounded-3xl border-3 border-teal-300 shadow-md w-44">
+                <div class="w-16 h-16 rounded-full bg-teal-100 border-2 border-teal-400 flex items-center justify-center text-3xl">
+                  👦
+                </div>
+                <div class="text-center">
+                  <h5 class="text-sm font-bold text-slate-800">Νίκος Γεωργίου</h5>
+                  <span id="targetStatusBadge" class="inline-block mt-1 text-[11px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+                    Αναμονή Αιτήματος
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <p id="act1StatusText" class="text-xs text-slate-500 font-bold min-h-[20px]"></p>
+          </div>
+        `;
+      } else {
+        // 1.3: «Έχει συνδεθεί;»
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-300 text-center">
+              <span class="text-3xl">💡</span>
+              <h4 class="text-lg font-bold text-amber-900">Ο Χρυσός Κανόνας της e-me!</h4>
+              <p class="text-sm text-slate-700 mt-1">
+                <strong>Θυμάσαι από το βιβλίο;</strong> Για να μπορείς να βρεις έναν συμμαθητή σου στην e-me, πρέπει <em>να έχει συνδεθεί τουλάχιστον μία φορά</em> στην πλατφόρμα!
+              </p>
+            </div>
+
+            <p class="text-center font-bold text-sm text-slate-700">
+              Ποιο παιδί μπορείς να βρεις ΑΜΕΣΩΣ στον μεγεθυντικό φακό; (Κάνε κλικ στη σωστή κάρτα):
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="checkAct1LoginRule(false)" class="p-4 bg-white hover:bg-rose-50 rounded-2xl border-2 border-slate-200 hover:border-rose-300 text-left transition badge-bounce">
+                <div class="text-2xl mb-1">💤</div>
+                <h5 class="font-bold text-slate-800 text-sm">Ο Κώστας</h5>
+                <p class="text-xs text-slate-500 mt-1">Έχει λογαριασμό ΠΣΔ, αλλά δεν έχει μπει <strong>ποτέ</strong> στην e-me.</p>
+              </button>
+
+              <button onclick="checkAct1LoginRule(true)" class="p-4 bg-white hover:bg-emerald-50 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 text-left transition badge-bounce">
+                <div class="text-2xl mb-1">🚀</div>
+                <h5 class="font-bold text-slate-800 text-sm">Η Ελένη</h5>
+                <p class="text-xs text-slate-500 mt-1">Έχει συνδεθεί ήδη 2 φορές με το όνομα χρήστη και τον κωδικό της!</p>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Helpers for Act 1
+    function fillAct1Input(val) {
+      playSound('click');
+      const input = document.getElementById('act1SearchInput');
+      input.value = val;
+      checkAct1Search();
+    }
+    function checkAct1Search() {
+      const input = document.getElementById('act1SearchInput');
+      const res = document.getElementById('act1ResultBox');
+      if (input.value.trim().toLowerCase().includes('μαρία')) {
+        playSound('success');
+        res.classList.remove('hidden');
+        showToast('Βρέθηκε η Μαρία! Πάτα προσθήκη!', '🎉');
+      } else {
+        playSound('error');
+        res.classList.add('hidden');
+        showToast('Δοκίμασε να γράψεις «Μαρία Παπαδοπούλου»!', '⚠️');
+      }
+    }
+    function sendAct1Request() {
+      playSound('bell');
+      const badge = document.getElementById('targetStatusBadge');
+      const card = document.getElementById('targetStudentCard');
+      badge.innerText = '✅ Εστάλη Αίτημα!';
+      badge.className = 'inline-block mt-1 text-[11px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold animate-pulse';
+      card.classList.add('border-emerald-400', 'bg-emerald-50');
+      document.getElementById('act1StatusText').innerText = 'Τέλεια! Μόλις ο Νίκος κάνει αποδοχή, θα είστε ψηφιακοί φίλοι!';
+      setTimeout(() => completeCurrentSubTask(), 900);
+    }
+    function checkAct1LoginRule(isCorrect) {
+      if (isCorrect) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Προσοχή! Χωρίς πρώτη είσοδο, το σύστημα δεν εμφανίζει το προφίλ!', '❌');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 2: «Το Κουδούνι των Ειδοποιήσεων»
+       ------------------------------------------------------------- */
+    function renderAct2(c, sub) {
+      if (sub === 1) {
+        // 2.1: Chime animation
+        c.innerHTML = `
+          <div class="max-w-md mx-auto text-center space-y-4">
+            <div class="bg-amber-100 p-4 rounded-3xl border-2 border-amber-300">
+              <h4 class="text-lg font-bold text-amber-900">Έχεις 1 Νέα Ειδοποίηση!</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Στην e-me, όταν κάποιος σου στέλνει αίτημα, χτυπάει το <strong>Καμπανάκι 🔔</strong>! Κάνε κλικ στο καμπανάκι για να δεις τι συμβαίνει:
+              </p>
+            </div>
+
+            <div class="py-6">
+              <button id="bellButton" onclick="ringBellSubTask()" class="w-32 h-32 rounded-full bg-amber-400 hover:bg-amber-300 border-4 border-amber-500 shadow-xl flex items-center justify-center text-6xl mx-auto transition transform hover:scale-110 active:scale-90 relative">
+                🔔
+                <span class="absolute top-2 right-2 w-8 h-8 bg-rose-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce border-2 border-white">
+                  1
+                </span>
+              </button>
+            </div>
+
+            <p id="bellActionText" class="text-sm font-bold text-slate-700 min-h-[24px]">
+              Πάτησε το καμπανάκι!
+            </p>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 2.2: Triage incoming requests (3 requests)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-teal-50 p-3 rounded-2xl border-2 border-teal-300 text-center">
+              <h4 class="text-base font-bold text-teal-900">Διαλογή Εισερχομένων Αιτημάτων</h4>
+              <p class="text-xs text-slate-600">
+                Επίλεξε τη σωστή ενέργεια για κάθε αίτημα που έφτασε στο καμπανάκι σου:
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <!-- Item 1 -->
+              <div class="p-3 bg-white rounded-2xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">👩‍🏫</span>
+                  <div>
+                    <h5 class="text-xs font-bold text-slate-800">Κα Μαρία (Η δασκάλα σου)</h5>
+                    <span class="text-[10px] text-slate-500">Σου έστειλε αίτημα σύνδεσης</span>
+                  </div>
+                </div>
+                <div class="flex gap-1.5" id="btnGroup2_1">
+                  <button onclick="handleTriage(1, 'accept')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Αποδοχή ✅</button>
+                  <button onclick="handleTriage(1, 'reject')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Απόρριψη</button>
+                  <button onclick="handleTriage(1, 'block')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Αποκλεισμός</button>
+                </div>
+              </div>
+
+              <!-- Item 2 -->
+              <div class="p-3 bg-white rounded-2xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">🦹</span>
+                  <div>
+                    <h5 class="text-xs font-bold text-slate-800">DarkShadow_99 (Άγνωστος)</h5>
+                    <span class="text-[10px] text-rose-500 font-bold">Δεν τον ξέρεις καθόλου!</span>
+                  </div>
+                </div>
+                <div class="flex gap-1.5" id="btnGroup2_2">
+                  <button onclick="handleTriage(2, 'accept')" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Αποδοχή</button>
+                  <button onclick="handleTriage(2, 'reject')" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Απόρριψη ❌</button>
+                  <button onclick="handleTriage(2, 'block')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Αποκλεισμός ⛔</button>
+                </div>
+              </div>
+
+              <!-- Item 3 -->
+              <div class="p-3 bg-white rounded-2xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">👦</span>
+                  <div>
+                    <h5 class="text-xs font-bold text-slate-800">Γιώργος (Ο διπλανός σου)</h5>
+                    <span class="text-[10px] text-teal-600 font-bold">Συμμαθητής στην τάξη</span>
+                  </div>
+                </div>
+                <div class="flex gap-1.5" id="btnGroup2_3">
+                  <button onclick="handleTriage(3, 'accept')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Αποδοχή ✅</button>
+                  <button onclick="handleTriage(3, 'reject')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Απόρριψη</button>
+                  <button onclick="handleTriage(3, 'block')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition">Αποκλεισμός</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        // 2.3: Guess the consequence (Cards)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-purple-50 p-4 rounded-2xl border-2 border-purple-300 text-center">
+              <h4 class="text-base font-bold text-purple-900">Τι σημαίνει κάθε επιλογή στο Καμπανάκι;</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Σύνδεσε με κλικ την ενέργεια <strong>«Αποκλεισμός»</strong> με το σωστό αποτέλεσμά της:
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <button onclick="checkAct2Meaning(false)" class="w-full p-4 bg-white hover:bg-slate-50 rounded-2xl border-2 border-slate-200 text-left transition badge-bounce flex items-center gap-3">
+                <span class="text-2xl">📬</span>
+                <div>
+                  <h5 class="text-sm font-bold text-slate-800">Απλώς σβήνω το αίτημα</h5>
+                  <p class="text-xs text-slate-500">Μπορεί στο μέλλον να μου ξαναστείλει αίτημα αν αλλάξω γνώμη.</p>
+                </div>
+              </button>
+
+              <button onclick="checkAct2Meaning(true)" class="w-full p-4 bg-white hover:bg-rose-50 rounded-2xl border-2 border-slate-200 hover:border-rose-400 text-left transition badge-bounce flex items-center gap-3">
+                <span class="text-2xl">🚫</span>
+                <div>
+                  <h5 class="text-sm font-bold text-rose-800">Σταματάω ΟΡΙΣΤΙΚΑ να δέχομαι μηνύματα & κλήσεις</h5>
+                  <p class="text-xs text-slate-500">Το άτομο αυτό δεν μπορεί να με ενοχλήσει ξανά ποτέ στην e-me!</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    let triageProgress = { 1: false, 2: false, 3: false };
+    function ringBellSubTask() {
+      playSound('bell');
+      const btn = document.getElementById('bellButton');
+      btn.classList.add('animate-wiggle');
+      document.getElementById('bellActionText').innerText = '🔔 Ντιν-ντον! Άνοιξες τις ειδοποιήσεις σου!';
+      setTimeout(() => {
+        btn.classList.remove('animate-wiggle');
+        completeCurrentSubTask();
+      }, 900);
+    }
+    function handleTriage(item, choice) {
+      if (item === 1 && choice === 'accept') {
+        playSound('success');
+        triageProgress[1] = true;
+        document.getElementById('btnGroup2_1').innerHTML = '<span class="text-xs text-emerald-600 font-bold">✅ Αποδοχή δασκάλας!</span>';
+      } else if (item === 2 && (choice === 'reject' || choice === 'block')) {
+        playSound('success');
+        triageProgress[2] = true;
+        document.getElementById('btnGroup2_2').innerHTML = '<span class="text-xs text-rose-600 font-bold">🛡️ Αποκρούστηκε ο άγνωστος!</span>';
+      } else if (item === 3 && choice === 'accept') {
+        playSound('success');
+        triageProgress[3] = true;
+        document.getElementById('btnGroup2_3').innerHTML = '<span class="text-xs text-emerald-600 font-bold">✅ Φίλος με τον Γιώργο!</span>';
+      } else {
+        playSound('error');
+        showToast('Σκέψου ξανά! Τους φίλους/δασκάλους τους αποδεχόμαστε, τους αγνώστους όχι!', '🤔');
+        return;
+      }
+
+      if (triageProgress[1] && triageProgress[2] && triageProgress[3]) {
+        setTimeout(() => completeCurrentSubTask(), 800);
+      }
+    }
+    function checkAct2Meaning(isCorrect) {
+      if (isCorrect) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Αυτό είναι η «Απόρριψη». Ο Αποκλεισμός σταματά οριστικά κάθε επικοινωνία!', '💡');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 3: «Το Εργαστήριο των Μυστικών Κωδικών & Ταυτότητας»
+       ------------------------------------------------------------- */
+    function renderAct3(c, sub) {
+      if (sub === 1) {
+        // 3.1: Detective Username
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-purple-100 p-4 rounded-2xl border-2 border-purple-300 text-center">
+              <span class="text-3xl">🕵️‍♂️</span>
+              <h4 class="text-base font-bold text-purple-900">Ντετέκτιβ Ονομάτων Χρήστη (Username)</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                <strong>Κανόνας ασφαλείας:</strong> Το όνομα χρήστη <em>δεν πρέπει</em> να περιλαμβάνει το πλήρες ονοματεπώνυμο, τη διεύθυνση ή το τηλέφωνό μας!
+              </p>
+            </div>
+
+            <p class="text-center font-bold text-xs text-slate-700">
+              Ποιο είναι το πιο ΑΣΦΑΛΕΣ και σωστό ψευδώνυμο για τον μικρό Γιάννη;
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="checkAct3Username(false)" class="p-3 bg-white hover:bg-rose-50 rounded-2xl border-2 border-slate-200 hover:border-rose-400 text-left transition badge-bounce">
+                <span class="text-xl">❌</span>
+                <span class="font-bold text-sm text-slate-800 ml-2">giannis_papadakis_2014_athina</span>
+                <p class="text-[11px] text-slate-500 mt-1">Φανερώνει ονοματεπώνυμο, έτος γέννησης και πόλη!</p>
+              </button>
+
+              <button onclick="checkAct3Username(true)" class="p-3 bg-white hover:bg-emerald-50 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 text-left transition badge-bounce">
+                <span class="text-xl">🌟</span>
+                <span class="font-bold text-sm text-slate-800 ml-2">Space_Explorer_28</span>
+                <p class="text-[11px] text-slate-500 mt-1">Έξυπνο, διασκεδαστικό και προστατεύει την ταυτότητα!</p>
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 3.2: Password puzzle
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4 text-center">
+            <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-300">
+              <h4 class="text-base font-bold text-amber-900">🔐 Συναρμολόγησε τον Ισχυρό Κωδικό!</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Ένας δυνατός κωδικός χρειάζεται <strong>Γράμματα</strong>, <strong>Αριθμούς</strong> και <strong>Σύμβολα (!$#@)</strong>!
+              </p>
+            </div>
+
+            <!-- Puzzle Pieces -->
+            <div class="flex flex-wrap justify-center gap-2" id="pwdPuzzleContainer">
+              <button onclick="addPwdPart('Star')" class="bg-slate-100 hover:bg-amber-100 px-3 py-2 rounded-xl border border-slate-300 font-bold text-sm">
+                🔤 "Star" (Γράμματα)
+              </button>
+              <button onclick="addPwdPart('2026')" class="bg-slate-100 hover:bg-amber-100 px-3 py-2 rounded-xl border border-slate-300 font-bold text-sm">
+                🔢 "2026" (Αριθμοί)
+              </button>
+              <button onclick="addPwdPart('!#')" class="bg-slate-100 hover:bg-amber-100 px-3 py-2 rounded-xl border border-slate-300 font-bold text-sm">
+                ✨ "!#" (Σύμβολα)
+              </button>
+            </div>
+
+            <!-- Build screen -->
+            <div class="bg-slate-900 p-4 rounded-2xl border-2 border-slate-700 text-amber-400 font-mono text-xl tracking-widest min-h-[56px] flex items-center justify-center">
+              <span id="currentBuiltPwd">_ _ _ _ _ _ _ _</span>
+            </div>
+
+            <div class="flex justify-center gap-3">
+              <button onclick="resetPwdBuild()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs px-4 py-2 rounded-xl transition">
+                Εκκαθάριση 🔄
+              </button>
+              <button onclick="validatePwdBuild()" class="bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs px-5 py-2 rounded-xl transition shadow">
+                Κλείδωμα Κωδικού 🔒
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // 3.3: Interactive Identity / Avatar Builder
+        c.innerHTML = `
+          <div class="max-w-md mx-auto space-y-4 text-center">
+            <div class="bg-emerald-50 p-3 rounded-2xl border-2 border-emerald-300">
+              <h4 class="text-base font-bold text-emerald-900">🎨 Φτιάξε το Μαθητικό σου Avatar!</h4>
+              <p class="text-xs text-slate-600">Διάλεξε το εικονίδιο που σε εκφράζει για το προφίλ σου στην e-me:</p>
+            </div>
+
+            <!-- Avatar Choices -->
+            <div class="flex justify-center gap-3">
+              <button onclick="selectAvatar('🚀', 'Διαστημικός Εξερευνητής')" class="w-16 h-16 rounded-2xl bg-slate-100 hover:bg-teal-100 border-2 border-slate-300 hover:border-teal-400 text-3xl flex items-center justify-center transition transform hover:scale-110">
+                🚀
+              </button>
+              <button onclick="selectAvatar('🎨', 'Καλλιτέχνης της e-me')" class="w-16 h-16 rounded-2xl bg-slate-100 hover:bg-teal-100 border-2 border-slate-300 hover:border-teal-400 text-3xl flex items-center justify-center transition transform hover:scale-110">
+                🎨
+              </button>
+              <button onclick="selectAvatar('🦁', 'Γενναίο Λιονταράκι')" class="w-16 h-16 rounded-2xl bg-slate-100 hover:bg-teal-100 border-2 border-slate-300 hover:border-teal-400 text-3xl flex items-center justify-center transition transform hover:scale-110">
+                🦁
+              </button>
+              <button onclick="selectAvatar('🤖', 'Ρομποτικός Φίλος')" class="w-16 h-16 rounded-2xl bg-slate-100 hover:bg-teal-100 border-2 border-slate-300 hover:border-teal-400 text-3xl flex items-center justify-center transition transform hover:scale-110">
+                🤖
+              </button>
+            </div>
+
+            <!-- Identity Preview Card -->
+            <div class="bg-white p-4 rounded-3xl border-3 border-teal-300 shadow-lg flex items-center gap-4 text-left">
+              <div id="previewAvatarBox" class="w-16 h-16 rounded-2xl bg-amber-200 border-2 border-amber-400 flex items-center justify-center text-4xl">
+                🐝
+              </div>
+              <div>
+                <span class="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold">Πανελλήνιο Σχολικό Δίκτυο</span>
+                <h5 id="previewStudentTitle" class="text-sm font-bold text-slate-800 mt-1">Έτοιμος για Σύνδεση!</h5>
+                <p class="text-xs text-slate-500">Πλατφόρμα e-me • Δ' Δημοτικού</p>
+              </div>
+            </div>
+
+            <button onclick="completeCurrentSubTask()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-2.5 rounded-2xl transition shadow text-sm">
+              Αποθήκευση Ταυτότητας ✅
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function checkAct3Username(isSafe) {
+      if (isSafe) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Επικίνδυνο! Μην αποκαλύπτεις ποτέ προσωπικά στοιχεία στο username!', '⚠️');
+      }
+    }
+
+    let builtPwd = [];
+    function addPwdPart(part) {
+      playSound('click');
+      if (!builtPwd.includes(part)) builtPwd.push(part);
+      document.getElementById('currentBuiltPwd').innerText = builtPwd.join('');
+    }
+    function resetPwdBuild() {
+      playSound('click');
+      builtPwd = [];
+      document.getElementById('currentBuiltPwd').innerText = '_ _ _ _ _ _ _ _';
+    }
+    function validatePwdBuild() {
+      if (builtPwd.length === 3) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Πρόσθεσε και τα 3 στοιχεία: Γράμματα + Αριθμούς + Σύμβολα!', '💡');
+      }
+    }
+
+    function selectAvatar(icon, title) {
+      playSound('click');
+      document.getElementById('previewAvatarBox').innerText = icon;
+      document.getElementById('previewStudentTitle').innerText = title;
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 4: «Chat Room: Το Ταχυδρομείο της Τάξης»
+       ------------------------------------------------------------- */
+    function renderAct4(c, sub) {
+      if (sub === 1) {
+        // 4.1: Bubble Chat Simulator (Friendly message builder)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-sky-50 p-3 rounded-2xl border-2 border-sky-300 text-center">
+              <h4 class="text-base font-bold text-sky-900">💬 Στείλε Μήνυμα για τη Σχολική Εργασία!</h4>
+              <p class="text-xs text-slate-600">
+                Διάλεξε τα κατάλληλα ευγενικά κομμάτια για να συνθέσεις το μήνυμα στον συμμαθητή σου:
+              </p>
+            </div>
+
+            <!-- Virtual Chat Screen -->
+            <div class="bg-slate-100 p-4 rounded-3xl border-2 border-slate-300 space-y-3 min-h-[160px] flex flex-col justify-end">
+              <div class="flex items-start gap-2 max-w-[85%]">
+                <span class="text-xl">👦</span>
+                <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-slate-800 border border-slate-200">
+                  Γεια σου! Πότε θα ξεκινήσουμε την εργασία για τα δάση; 🌲
+                </div>
+              </div>
+
+              <!-- Our reply bubble -->
+              <div id="ourReplyBubble" class="hidden self-end flex items-start gap-2 max-w-[85%] flex-row-reverse animate-pop">
+                <span class="text-xl">👧</span>
+                <div id="replyTextDisplay" class="bg-teal-600 text-white p-3 rounded-2xl rounded-tr-none shadow-sm text-xs font-bold">
+                  ...
+                </div>
+              </div>
+            </div>
+
+            <!-- Sentence parts -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <button onclick="pickChatMessage('Καλησπέρα! Μπορούμε σήμερα στις 5 το απόγευμα στην e-me!')" class="p-3 bg-white hover:bg-teal-50 border-2 border-slate-200 hover:border-teal-400 rounded-xl font-bold text-slate-800 text-left transition">
+                🌟 «Καλησπέρα! Μπορούμε σήμερα στις 5 το απόγευμα στην e-me!»
+              </button>
+              <button onclick="pickChatMessage('ΔΕΝ ΘΕΛΩ ΝΑ ΚΑΝΩ ΤΙΠΟΤΑ!')" class="p-3 bg-white hover:bg-rose-50 border-2 border-slate-200 hover:border-rose-400 rounded-xl font-bold text-rose-700 text-left transition">
+                ❌ «ΔΕΝ ΘΕΛΩ ΝΑ ΚΑΝΩ ΤΙΠΟΤΑ!»
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 4.2: Netiquette (Stop All Caps)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-amber-100 p-4 rounded-2xl border-2 border-amber-300 text-center">
+              <span class="text-3xl">📢 ➔ 🤫</span>
+              <h4 class="text-base font-bold text-amber-900">Κανόνας Netiquette: ΟΧΙ ΚΕΦΑΛΑΙΑ!</h4>
+              <p class="text-xs text-slate-700 mt-1">
+                <strong>Ήξερες ότι;</strong> Όταν γράφουμε με <strong>ΚΕΦΑΛΑΙΑ</strong> στο διαδίκτυο, είναι σαν να <em>φωνάζουμε δυνατά</em> και μπορεί να τρομάξουμε ή να προσβάλουμε τους άλλους!
+              </p>
+            </div>
+
+            <div class="bg-rose-50 p-4 rounded-2xl border-2 border-rose-300 text-center">
+              <span class="text-xs uppercase font-bold text-rose-600">Θυμωμένο Μήνυμα:</span>
+              <p class="text-base font-extrabold text-rose-800 tracking-wide mt-1">
+                «ΣΤΕΙΛΕ ΜΟΥ ΤΩΡΑ ΤΗΝ ΑΣΚΗΣΗ ΓΙΑΤΙ ΒΙΑΖΟΜΑΙ!!!»
+              </p>
+            </div>
+
+            <p class="text-center font-bold text-xs text-slate-600">
+              Πώς πρέπει να διορθωθεί το παραπάνω μήνυμα ώστε να είναι ήρεμο και ευγενικό;
+            </p>
+
+            <div class="space-y-2">
+              <button onclick="checkAct4Caps(true)" class="w-full p-3 bg-white hover:bg-emerald-50 rounded-xl border-2 border-slate-200 hover:border-emerald-400 text-left transition badge-bounce flex items-center gap-2">
+                <span class="text-xl">✅</span>
+                <span class="text-xs font-bold text-slate-800">«Γεια σου! Μήπως μπορείς να μου στείλεις την άσκηση όταν ευκαιρήσεις; Ευχαριστώ!»</span>
+              </button>
+              <button onclick="checkAct4Caps(false)" class="w-full p-3 bg-white hover:bg-rose-50 rounded-xl border-2 border-slate-200 hover:border-rose-400 text-left transition badge-bounce flex items-center gap-2">
+                <span class="text-xl">❌</span>
+                <span class="text-xs font-bold text-slate-800">«ΣΤΕΙΛΕ ΤΗΝ ΕΙΠΑ ΓΡΗΓΟΡΑΑΑΑΑ!»</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // 4.3: Chat controls
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-teal-50 p-3 rounded-2xl border-2 border-teal-300 text-center">
+              <h4 class="text-base font-bold text-teal-900">Διαχείριση Συνομιλίας e-me</h4>
+              <p class="text-xs text-slate-600">
+                Βρες και κάνε κλικ στο κουμπί <strong>«Παύση ειδοποιήσεων» (Σίγαση)</strong> για να μη διακόπτεται το διάβασμά σου:
+              </p>
+            </div>
+
+            <!-- Fake Chat Header Menu -->
+            <div class="bg-white p-4 rounded-3xl border-2 border-slate-300 shadow-md">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">👥</span>
+                  <div>
+                    <h5 class="text-xs font-bold text-slate-800">Ομάδα Μελέτης Δ' Τάξης</h5>
+                    <span class="text-[10px] text-emerald-600 font-bold">5 μέλη online</span>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-400">Ρυθμίσεις ⚙️</span>
+              </div>
+
+              <!-- Options -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 text-xs font-bold">
+                <button onclick="handleChatControl('mute')" class="p-3 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl border border-amber-300 transition flex items-center justify-center gap-1.5">
+                  🔕 Παύση Ειδοποιήσεων
+                </button>
+                <button onclick="handleChatControl('clear')" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-300 transition flex items-center justify-center gap-1.5">
+                  🗑️ Διαγραφή Ιστορικού
+                </button>
+                <button onclick="handleChatControl('leave')" class="p-3 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-xl border border-rose-300 transition flex items-center justify-center gap-1.5">
+                  🚪 Αποχώρηση
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function pickChatMessage(txt) {
+      if (txt.includes('Καλησπέρα')) {
+        playSound('success');
+        const bubble = document.getElementById('ourReplyBubble');
+        document.getElementById('replyTextDisplay').innerText = txt;
+        bubble.classList.remove('hidden');
+        setTimeout(() => completeCurrentSubTask(), 900);
+      } else {
+        playSound('error');
+        showToast('Αυτό το μήνυμα είναι απότομο! Διάλεξε το ευγενικό!', '⚠️');
+      }
+    }
+    function checkAct4Caps(isPolite) {
+      if (isPolite) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Όχι! Αυτό είναι ακόμα πιο θυμωμένο! Προτίμησε τα μικρά και ήρεμα λόγια.', '❌');
+      }
+    }
+    function handleChatControl(type) {
+      if (type === 'mute') {
+        playSound('bell');
+        showToast('Μπράβο! Τώρα οι ειδοποιήσεις είναι σε σίγαση!', '🔕');
+        completeCurrentSubTask();
+      } else {
+        playSound('click');
+        showToast('Χρήσιμο κουμπί, αλλά για ησυχία διαλέγουμε «Παύση ειδοποιήσεων»!', '💡');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 5: «Ομαδική Συζήτηση (Group Chat) για το Project»
+       ------------------------------------------------------------- */
+    function renderAct5(c, sub) {
+      if (sub === 1) {
+        // 5.1: Create Group
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-emerald-50 p-3 rounded-2xl border-2 border-emerald-300 text-center">
+              <h4 class="text-base font-bold text-emerald-900">Δημιουργία Ομάδας Εργασίας</h4>
+              <p class="text-xs text-slate-600">
+                Επίλεξε τουλάχιστον <strong>3 συμμαθητές</strong> σου για να ξεκινήσετε τη σχολική ομαδική συνομιλία:
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+              <button id="grpMember1" onclick="toggleGroupMember(1, 'Αλέξανδρος')" class="p-3 bg-white rounded-2xl border-2 border-slate-200 font-bold transition">
+                <span class="text-3xl block mb-1">👦</span>
+                Αλέξανδρος
+              </button>
+              <button id="grpMember2" onclick="toggleGroupMember(2, 'Δήμητρα')" class="p-3 bg-white rounded-2xl border-2 border-slate-200 font-bold transition">
+                <span class="text-3xl block mb-1">👧</span>
+                Δήμητρα
+              </button>
+              <button id="grpMember3" onclick="toggleGroupMember(3, 'Κώστας')" class="p-3 bg-white rounded-2xl border-2 border-slate-200 font-bold transition">
+                <span class="text-3xl block mb-1">👦</span>
+                Κώστας
+              </button>
+              <button id="grpMember4" onclick="toggleGroupMember(4, 'Σοφία')" class="p-3 bg-white rounded-2xl border-2 border-slate-200 font-bold transition">
+                <span class="text-3xl block mb-1">👧</span>
+                Σοφία
+              </button>
+            </div>
+
+            <div class="text-center">
+              <button onclick="confirmGroupCreation()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-2.5 rounded-2xl transition shadow">
+                Δημιουργία Ομάδας 🚀
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 5.2: One-to-one vs One-to-many interactive diagram
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4 text-center">
+            <div class="bg-sky-50 p-3 rounded-2xl border-2 border-sky-300">
+              <h4 class="text-base font-bold text-sky-900">«Ένας προς Έναν» ή «Ένας προς Πολλούς»;</h4>
+              <p class="text-xs text-slate-600">
+                Πάτησε το κουμπί <strong>«Αποστολή σε Όλους»</strong> για να δεις πώς ένα μήνυμα στην ομάδα πηγαίνει ταυτόχρονα σε όλα τα μέλη!
+              </p>
+            </div>
+
+            <div class="py-4 flex items-center justify-center gap-6">
+              <div class="flex flex-col items-center">
+                <div class="w-14 h-14 rounded-full bg-amber-400 flex items-center justify-center text-2xl shadow">
+                  👦
+                </div>
+                <span class="text-xs font-bold text-slate-700 mt-1">Εσύ</span>
+              </div>
+
+              <div id="flowWires" class="text-2xl text-slate-300 font-bold transition-all duration-500">
+                ──────➔
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <span class="text-xs bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">👧 Μαρία</span>
+                <span class="text-xs bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">👦 Νίκος</span>
+                <span class="text-xs bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">👩‍🏫 Δασκάλα</span>
+              </div>
+            </div>
+
+            <button onclick="triggerBroadcastAnimation()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-6 py-2.5 rounded-2xl transition shadow">
+              📡 Αποστολή σε Όλους (Ένας προς Πολλούς)
+            </button>
+          </div>
+        `;
+      } else {
+        // 5.3: Like or Stop Reaction
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-amber-50 p-3 rounded-2xl border-2 border-amber-300 text-center">
+              <h4 class="text-base font-bold text-amber-900">Σωστή Συμπεριφορά στην Ομαδική</h4>
+              <p class="text-xs text-slate-600">
+                Κάποιος στην ομαδική έγραψε: <em>«Παιδιά, ας μοιράσουμε τις εργασίες ισότιμα ώστε να βοηθήσουμε όλοι!»</em>
+              </p>
+            </div>
+
+            <p class="text-center font-bold text-xs text-slate-700">Τι αντίδραση θα έβαζες σε αυτή τη στάση;</p>
+
+            <div class="flex justify-center gap-4">
+              <button onclick="reactToGroup(true)" class="p-4 bg-white hover:bg-emerald-50 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 flex flex-col items-center gap-1 transition badge-bounce w-36">
+                <span class="text-4xl">👍</span>
+                <span class="text-xs font-bold text-emerald-700">Μπράβο! (Like)</span>
+              </button>
+              <button onclick="reactToGroup(false)" class="p-4 bg-white hover:bg-rose-50 rounded-2xl border-2 border-slate-200 hover:border-rose-400 flex flex-col items-center gap-1 transition badge-bounce w-36">
+                <span class="text-4xl">🛑</span>
+                <span class="text-xs font-bold text-rose-700">Διαφωνώ (Stop)</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    let selectedGroupMembers = [];
+    function toggleGroupMember(id, name) {
+      playSound('click');
+      const btn = document.getElementById(`grpMember${id}`);
+      if (selectedGroupMembers.includes(name)) {
+        selectedGroupMembers = selectedGroupMembers.filter(n => n !== name);
+        btn.classList.remove('bg-emerald-100', 'border-emerald-400');
+      } else {
+        selectedGroupMembers.push(name);
+        btn.classList.add('bg-emerald-100', 'border-emerald-400');
+      }
+    }
+    function confirmGroupCreation() {
+      if (selectedGroupMembers.length >= 3) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Διάλεξε τουλάχιστον 3 συμμαθητές για την ομάδα!', '👥');
+      }
+    }
+    function triggerBroadcastAnimation() {
+      playSound('success');
+      const wires = document.getElementById('flowWires');
+      wires.innerText = '⚡⚡⚡➔';
+      wires.className = 'text-2xl text-amber-500 font-bold animate-pulse';
+      showToast('Το μήνυμα έφτασε ταυτόχρονα σε όλους!', '🚀');
+      setTimeout(() => completeCurrentSubTask(), 900);
+    }
+    function reactToGroup(isPositive) {
+      if (isPositive) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Η συνεργασία και η ισότιμη βοήθεια είναι πάντα σωστή!', '🤝');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 6: «Ο Φύλακας των Επαφών»
+       ------------------------------------------------------------- */
+    function renderAct6(c, sub) {
+      if (sub === 1) {
+        // 6.1: Reflex button against unknown
+        c.innerHTML = `
+          <div class="max-w-md mx-auto text-center space-y-4">
+            <div class="bg-rose-50 p-4 rounded-3xl border-2 border-rose-300">
+              <span class="text-4xl">🚨</span>
+              <h4 class="text-lg font-bold text-rose-900 mt-1">Συναγερμός Επαφής!</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Ένας άγνωστος χρήστης με το όνομα <strong>«Free_Gamer_Pass»</strong> σου έστειλε αίτημα. Πάτα γρήγορα <strong>«Απόρριψη»</strong> για να προστατεύσεις το προφίλ σου!
+              </p>
+            </div>
+
+            <div class="py-4">
+              <button onclick="completeCurrentSubTask()" class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm px-8 py-4 rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95 border-3 border-rose-700 animate-wiggle">
+                ⛔ ΑΠΟΡΡΙΨΗ ΑΓΝΩΣΤΟΥ!
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 6.2: Fake Profile Detector (Click suspicious points)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-3">
+            <div class="bg-amber-100 p-3 rounded-2xl border-2 border-amber-300 text-center">
+              <h4 class="text-base font-bold text-amber-900">🔍 Εντόπισε το Ύποπτο Σημείο!</h4>
+              <p class="text-xs text-slate-700">
+                Κάνε κλικ στο στοιχείο που αποδεικνύει ότι αυτό το προφίλ είναι <strong>αναξιόπιστο / ψεύτικο</strong>:
+              </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl border-3 border-slate-300 shadow-md space-y-2">
+              <button onclick="checkFakeClue(false)" class="w-full p-2.5 rounded-xl border border-slate-200 text-left text-xs font-bold hover:bg-slate-50 transition">
+                📛 Όνομα: <em>RoboMaster_999</em>
+              </button>
+              <button onclick="checkFakeClue(true)" class="w-full p-3 rounded-xl border-2 border-rose-300 bg-rose-50 text-left text-xs font-bold hover:bg-rose-100 transition text-rose-900">
+                ⚠️ Μήνυμα Προφίλ: <em>«Στείλε μου τον κωδικό σου στο ΠΣΔ για να σου δώσω δωρεάν παιχνίδι!»</em>
+              </button>
+              <button onclick="checkFakeClue(false)" class="w-full p-2.5 rounded-xl border border-slate-200 text-left text-xs font-bold hover:bg-slate-50 transition">
+                🖼️ Εικόνα: Ένα καρτούν ρομποτάκι
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // 6.3: SOS Protocol
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-indigo-50 p-4 rounded-2xl border-2 border-indigo-300 text-center">
+              <span class="text-3xl">🆘</span>
+              <h4 class="text-base font-bold text-indigo-900">Τι κάνω αν κάποιος με ενοχλεί στην e-me;</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Βάλε τα βήματα στη σωστή σειρά πατώντας το σωστό <strong>«Βήμα 1 & Βήμα 2»</strong>:
+              </p>
+            </div>
+
+            <div class="space-y-2">
+              <button onclick="checkSOS(true)" class="w-full p-3 bg-white hover:bg-emerald-50 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 text-left transition badge-bounce flex items-center gap-3">
+                <span class="text-2xl">🛡️</span>
+                <div>
+                  <h5 class="text-xs font-bold text-slate-800">1. Μπλοκάρω / Αποκλείω τον χρήστη & 2. Ενημερώνω ΑΜΕΣΩΣ τον δάσκαλο ή τους γονείς μου!</h5>
+                  <span class="text-[10px] text-emerald-600 font-bold">Ασφαλής & υπεύθυνη συμπεριφορά</span>
+                </div>
+              </button>
+
+              <button onclick="checkSOS(false)" class="w-full p-3 bg-white hover:bg-rose-50 rounded-2xl border-2 border-slate-200 hover:border-rose-400 text-left transition badge-bounce flex items-center gap-3">
+                <span class="text-2xl">🤐</span>
+                <div>
+                  <h5 class="text-xs font-bold text-slate-800">Το κρατάω μυστικό και αρχίζω να τσακώνομαι μαζί του</h5>
+                  <span class="text-[10px] text-rose-500 font-bold">Λανθασμένη και επικίνδυνη στάση</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function checkFakeClue(isClue) {
+      if (isClue) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Αυτό είναι φυσιολογικό. Πρόσεξε ποιος σου ζητάει τους μυστικούς σου κωδικούς!', '🔍');
+      }
+    }
+    function checkSOS(isCorrect) {
+      if (isCorrect) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Ποτέ δεν κρατάμε μυστικά που μας στενοχωρούν! Μιλάμε πάντα σε μεγάλο!', '👨‍🏫');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 7: «Το Ταξίδι της Σύνδεσης»
+       ------------------------------------------------------------- */
+    function renderAct7(c, sub) {
+      if (sub === 1) {
+        // 7.1: Network Router Maze / Step
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4 text-center">
+            <div class="bg-indigo-50 p-3 rounded-2xl border-2 border-indigo-300">
+              <h4 class="text-base font-bold text-indigo-900">🌐 Πώς ταξιδεύει το Αίτημα στο Δίκτυο;</h4>
+              <p class="text-xs text-slate-600">
+                Πάτησε το βήμα <strong>«Δρομολογητής (Router)»</strong> για να προωθήσει τα δεδομένα στον υπολογιστή του φίλου σου:
+              </p>
+            </div>
+
+            <!-- Flow Stepper -->
+            <div class="flex flex-wrap items-center justify-center gap-3 py-4 text-xs font-bold">
+              <div class="p-3 bg-amber-100 rounded-2xl border border-amber-300">
+                💻 Ο Υπολογιστής σου
+              </div>
+              <span>➔</span>
+              <button onclick="handleAct7Router()" id="routerStepBtn" class="p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl border-2 border-indigo-700 shadow-lg animate-wiggle transition">
+                📡 Δρομολογητής (Router) ΠΣΔ
+              </button>
+              <span>➔</span>
+              <div id="targetFriendPc" class="p-3 bg-slate-100 rounded-2xl border border-slate-300 text-slate-400">
+                🖥️ Υπολογιστής Φίλου
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (sub === 2) {
+        // 7.2: Ethical Dilemma
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4">
+            <div class="bg-teal-50 p-3 rounded-2xl border-2 border-teal-300 text-center">
+              <h4 class="text-base font-bold text-teal-900">Δίλημμα στο Δίκτυο</h4>
+              <p class="text-xs text-slate-600">
+                Ένας φίλος σου σου ζήτησε να του δώσεις τον κωδικό σου στην e-me για να μπει να δει κάτι. Τι απαντάς;
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <button onclick="checkAct7Dilemma(false)" class="p-4 bg-white hover:bg-rose-50 rounded-2xl border-2 border-slate-200 hover:border-rose-400 text-left transition badge-bounce">
+                <span class="text-xl">🤝</span>
+                <span class="font-bold text-slate-800 block mt-1">«Εντάξει, αφού είμαστε φίλοι θα σου τον δώσω.»</span>
+                <p class="text-slate-500 text-[11px] mt-1">Λάθος: Ο κωδικός είναι αυστηρά προσωπικός!</p>
+              </button>
+
+              <button onclick="checkAct7Dilemma(true)" class="p-4 bg-white hover:bg-emerald-50 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 text-left transition badge-bounce">
+                <span class="text-xl">🛡️</span>
+                <span class="font-bold text-emerald-800 block mt-1">«Όχι, ο καθένας μπαίνει μόνο με τον δικό του λογαριασμό ΠΣΔ!»</span>
+                <p class="text-slate-500 text-[11px] mt-1">Σωστό: Προστατεύουμε πάντα τον λογαριασμό μας.</p>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // 7.3: Green Light (Online/Offline Status)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-4 text-center">
+            <div class="bg-amber-50 p-3 rounded-2xl border-2 border-amber-300">
+              <h4 class="text-base font-bold text-amber-900">🟢 Πράσινο Φως: Ποιος είναι συνδεδεμένος;</h4>
+              <p class="text-xs text-slate-600">
+                Κάνε κλικ στην επαφή που έχει την ένδειξη <strong>Online (Συνδεδεμένος)</strong> για να της στείλεις μήνυμα:
+              </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 py-2">
+              <button onclick="checkAct7Online(false)" class="p-4 bg-white rounded-2xl border-2 border-slate-200 hover:border-slate-300 flex items-center justify-between gap-3 text-left transition w-56 mx-auto">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">👦</span>
+                  <span class="text-xs font-bold text-slate-700">Μιχάλης</span>
+                </div>
+                <span class="w-3 h-3 rounded-full bg-slate-300" title="Offline"></span>
+              </button>
+
+              <button onclick="checkAct7Online(true)" class="p-4 bg-white rounded-2xl border-2 border-emerald-300 hover:border-emerald-500 flex items-center justify-between gap-3 text-left transition badge-bounce w-56 mx-auto shadow-sm">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">👧</span>
+                  <span class="text-xs font-bold text-slate-800">Ειρήνη</span>
+                </div>
+                <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping" title="Online!"></span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function handleAct7Router() {
+      playSound('success');
+      const target = document.getElementById('targetFriendPc');
+      target.className = 'p-3 bg-emerald-100 rounded-2xl border-2 border-emerald-400 text-emerald-900 font-bold animate-pop';
+      showToast('Τα δεδομένα έφτασαν με ασφάλεια μέσω του δικτύου!', '🚀');
+      setTimeout(() => completeCurrentSubTask(), 900);
+    }
+    function checkAct7Dilemma(isSafe) {
+      if (isSafe) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Ποτέ δεν μοιραζόμαστε τον κωδικό μας, ούτε με τους καλύτερους φίλους!', '🔐');
+      }
+    }
+    function checkAct7Online(isOnline) {
+      if (isOnline) {
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Ο Μιχάλης είναι αποσυνδεδεμένος (γκρι κύκλος). Διάλεξε το πράσινο φως!', '💡');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       ACTIVITY 8: «Το Μεγάλο Τρόπαιο e-me Master»
+       ------------------------------------------------------------- */
+    function renderAct8(c, sub) {
+      if (sub === 1) {
+        // 8.1: Mini Memory Card Match (6 cards = 3 pairs)
+        c.innerHTML = `
+          <div class="max-w-xl mx-auto space-y-3 text-center">
+            <div class="bg-purple-50 p-3 rounded-2xl border-2 border-purple-300">
+              <h4 class="text-base font-bold text-purple-900">🧠 Παιχνίδι Μνήμης: Εικονίδια της e-me</h4>
+              <p class="text-xs text-slate-600">
+                Βρες τα 3 ζευγάρια εικονιδίων για να ξεκλειδώσεις το τελικό συμβόλαιο!
+              </p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 max-w-sm mx-auto" id="memoryGrid">
+              <!-- Memory cards rendered by script -->
+            </div>
+          </div>
+        `;
+        initMemoryGame();
+      } else if (sub === 2) {
+        // 8.2: Contract of Good Conduct
+        c.innerHTML = `
+          <div class="max-w-md mx-auto space-y-4 text-center">
+            <div class="bg-amber-100 p-4 rounded-3xl border-2 border-amber-300">
+              <span class="text-4xl">📜</span>
+              <h4 class="text-lg font-bold text-amber-900 mt-1">Συμβόλαιο Καλής & Ασφαλούς Επαφής</h4>
+              <p class="text-xs text-slate-700 leading-relaxed mt-2 text-left bg-white p-3 rounded-2xl border border-amber-200">
+                «Υπόσχομαι να είμαι ευγενικός/ή στις συνομιλίες της e-me, να μην προσβάλλω κανέναν, να μην αποδέχομαι αγνώστους και να κρατώ τον κωδικό μου πάντα μυστικό!»
+              </p>
+            </div>
+
+            <div class="flex flex-col items-center gap-2">
+              <input id="studentContractName" type="text" placeholder="Γράψε το μικρό σου όνομα..." 
+                class="w-full max-w-xs text-center px-4 py-2 rounded-xl border-2 border-amber-400 font-bold text-sm focus:outline-none focus:border-amber-600">
+              
+              <button onclick="signContract()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-xs px-6 py-2.5 rounded-2xl shadow-lg transition">
+                ✍️ Υπογραφή & Σφραγίδα!
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // 8.3: Certificate Launch
+        c.innerHTML = `
+          <div class="max-w-md mx-auto text-center space-y-4">
+            <div class="bg-gradient-to-br from-amber-400 to-teal-400 p-6 rounded-3xl text-white shadow-xl">
+              <span class="text-6xl block mb-2">🏆</span>
+              <h3 class="text-2xl font-extrabold">ΣΥΓΧΑΡΗΤΗΡΙΑ!</h3>
+              <p class="text-sm font-bold opacity-90 mt-1">
+                Ολοκλήρωσες και τις 8 αποστολές του Μαθήματος 26!
+              </p>
+            </div>
+
+            <p class="text-sm text-slate-600">
+              Το επίσημο Ψηφιακό σου Δίπλωμα είναι έτοιμο να τυπωθεί ή να το δείξεις στον δάσκαλο και στους γονείς σου!
+            </p>
+
+            <button onclick="openCertificate()" class="bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-sm px-8 py-3 rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95">
+              🎓 Προβολή του Διπλώματός μου!
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Memory Game Implementation
+    let memCards = [
+      { id: 1, sym: '🔍', name: 'Φακός' },
+      { id: 2, sym: '🔔', name: 'Καμπανάκι' },
+      { id: 3, sym: '💬', name: 'Chat' },
+      { id: 4, sym: '🔍', name: 'Φακός' },
+      { id: 5, sym: '🔔', name: 'Καμπανάκι' },
+      { id: 6, sym: '💬', name: 'Chat' }
+    ];
+    let flippedCards = [];
+    let matchedPairs = 0;
+
+    function initMemoryGame() {
+      // Shuffle
+      memCards.sort(() => 0.5 - Math.random());
+      flippedCards = [];
+      matchedPairs = 0;
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memCards.forEach((c, idx) => {
+        const btn = document.createElement('button');
+        btn.id = `memCard_${idx}`;
+        btn.onclick = () => flipMemoryCard(idx);
+        btn.className = 'h-20 bg-amber-200 hover:bg-amber-300 rounded-2xl border-2 border-amber-400 text-2xl font-bold flex items-center justify-center transition shadow';
+        btn.innerText = '❓';
+        grid.appendChild(btn);
+      });
+    }
+
+    function flipMemoryCard(idx) {
+      if (flippedCards.length === 2) return;
+      const btn = document.getElementById(`memCard_${idx}`);
+      if (btn.innerText !== '❓') return;
+
+      playSound('click');
+      btn.innerText = memCards[idx].sym;
+      btn.classList.add('bg-white');
+      flippedCards.push({ idx, card: memCards[idx] });
+
+      if (flippedCards.length === 2) {
+        if (flippedCards[0].card.sym === flippedCards[1].card.sym) {
+          playSound('success');
+          matchedPairs++;
+          flippedCards = [];
+          if (matchedPairs === 3) {
+            setTimeout(() => completeCurrentSubTask(), 800);
+          }
+        } else {
+          playSound('error');
+          setTimeout(() => {
+            document.getElementById(`memCard_${flippedCards[0].idx}`).innerText = '❓';
+            document.getElementById(`memCard_${flippedCards[1].idx}`).innerText = '❓';
+            document.getElementById(`memCard_${flippedCards[0].idx}`).classList.remove('bg-white');
+            document.getElementById(`memCard_${flippedCards[1].idx}`).classList.remove('bg-white');
+            flippedCards = [];
+          }, 800);
+        }
+      }
+    }
+
+    function signContract() {
+      const input = document.getElementById('studentContractName');
+      if (input.value.trim().length > 1) {
+        studentName = input.value.trim();
+        playSound('success');
+        showToast(`Υπογράφηκε επιτυχώς από: ${studentName}!`, '🖋️');
+        completeCurrentSubTask();
+      } else {
+        playSound('error');
+        showToast('Γράψε πρώτα το όνομά σου στο πλαίσιο!', '✏️');
+      }
+    }
+
+    function openCertificate() {
+      document.getElementById('certStudentNameDisplay').innerText = studentName;
+      const today = new Date();
+      document.getElementById('certDateDisplay').innerText = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+      document.getElementById('certModal').classList.remove('hidden');
+      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+      playSound('success');
+    }
+
+    function closeCertificate() {
+      document.getElementById('certModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
