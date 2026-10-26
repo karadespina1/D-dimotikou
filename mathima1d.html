@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μάθημα 1: Οι Αλγόριθμοι - Πληροφορική Δ' Δημοτικού</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', cursive, sans-serif;
+      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fef3c7 100%);
+    }
+    .title-font {
+      font-family: 'Comfortaa', cursive, sans-serif;
+    }
+    .bounce-hover:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- HEADER -->
+  <header class="bg-white/90 backdrop-blur shadow-md sticky top-0 z-50 px-4 py-3 border-b-4 border-emerald-400">
+    <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🤖</span>
+        <div>
+          <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold">ΠΛΗΡΟΦΟΡΙΚΗ Δ' ΔΗΜΟΤΙΚΟΥ</span>
+          <h1 class="text-lg md:text-xl font-bold text-slate-800 title-font">Μάθημα 1: Οι Αλγόριθμοι</h1>
+        </div>
+      </div>
+      <!-- Score & Stars -->
+      <div class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-1.5 rounded-2xl shadow-sm">
+        <span class="text-2xl">⭐</span>
+        <div class="text-right">
+          <div class="text-xs text-amber-700 font-bold">ΑΣΤΕΡΙΑ</div>
+          <div class="text-lg font-black text-amber-600 leading-none"><span id="stars-count">0</span> / 24</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-3xl mx-auto w-full px-4 py-6 flex-grow">
+    
+    <!-- NAVIGATION TABS (8 Αποστολές) -->
+    <div class="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-thin">
+      <template id="tab-template">
+        <button class="nav-tab px-4 py-2 rounded-2xl font-bold text-sm whitespace-nowrap transition-all shadow-sm flex items-center gap-2 border-2"></button>
+      </template>
+      <div id="tabs-bar" class="flex gap-2"></div>
+    </div>
+
+    <!-- MISSION CARD -->
+    <div class="bg-white rounded-3xl shadow-xl border-4 border-slate-100 overflow-hidden transition-all">
+      
+      <!-- Mission Header -->
+      <div id="mission-header" class="p-5 bg-gradient-to-r from-emerald-400 to-teal-500 text-white flex items-center justify-between">
+        <div>
+          <span id="mission-badge" class="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">ΑΠΟΣΤΟΛΗ 1</span>
+          <h2 id="mission-title" class="text-xl md:text-2xl font-bold mt-1 title-font">Τι είναι ο Αλγόριθμος;</h2>
+        </div>
+        <div id="mission-icon" class="text-4xl">📜</div>
+      </div>
+
+      <!-- Inner Step Indicator (1, 2, 3) -->
+      <div class="bg-slate-50 px-6 py-3 border-b flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500 uppercase">ΒΗΜΑ:</span>
+          <div class="flex gap-1.5">
+            <button onclick="setSubStep(0)" id="step-btn-0" class="w-8 h-8 rounded-full font-bold text-sm flex items-center justify-center transition-all bg-emerald-500 text-white shadow">1</button>
+            <button onclick="setSubStep(1)" id="step-btn-1" class="w-8 h-8 rounded-full font-bold text-sm flex items-center justify-center transition-all bg-slate-200 text-slate-600">2</button>
+            <button onclick="setSubStep(2)" id="step-btn-2" class="w-8 h-8 rounded-full font-bold text-sm flex items-center justify-center transition-all bg-slate-200 text-slate-600">3</button>
+          </div>
+        </div>
+        <div id="step-status" class="text-xs font-bold text-slate-400">Εκκρεμεί</div>
+      </div>
+
+      <!-- Activity Body -->
+      <div class="p-6">
+        
+        <!-- Question prompt -->
+        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 mb-5 flex items-start gap-3">
+          <span class="text-2xl mt-0.5" id="act-emoji">💡</span>
+          <div>
+            <div class="text-xs font-bold text-amber-600 uppercase mb-0.5">Οδηγία:</div>
+            <p id="act-prompt" class="text-base md:text-lg font-bold text-slate-800 leading-snug">Ερώτηση εδώ...</p>
+          </div>
+        </div>
+
+        <!-- Dynamic Content Area -->
+        <div id="act-content" class="min-h-[180px] flex flex-col justify-center">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Feedback Area -->
+        <div id="feedback-box" class="hidden mt-4 p-4 rounded-2xl text-center font-bold text-base transition-all"></div>
+
+        <!-- Next Button -->
+        <div class="mt-6 flex justify-end">
+          <button id="btn-next" onclick="nextAction()" class="hidden px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-200 transition-all flex items-center gap-2">
+            <span>Επόμενο</span>
+            <span>➡️</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DIPLOMA MODAL -->
+    <div id="diploma-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-xl w-full p-6 md:p-8 text-center shadow-2xl border-4 border-amber-400 relative">
+        <button onclick="closeDiploma()" class="absolute top-4 right-4 text-2xl font-bold text-slate-400 hover:text-slate-600">✕</button>
+        <div class="text-5xl mb-2">🏆</div>
+        <h3 class="text-2xl font-black text-amber-600 title-font">ΣΥΓΧΑΡΗΤΗΡΙΑ!</h3>
+        <p class="text-sm text-slate-600 mb-4 font-bold">Ολοκλήρωσες όλες τις δραστηριότητες στο Μάθημα 1!</p>
+        
+        <div class="border-4 border-dashed border-amber-300 rounded-2xl p-4 bg-amber-50/60 mb-5">
+          <p class="text-xs uppercase font-bold text-amber-700 tracking-wider">ΕΠΙΣΗΜΟ ΔΙΠΛΩΜΑ</p>
+          <h4 class="text-xl font-bold text-slate-800 my-1">MASTER ΤΩΝ ΑΛΓΟΡΙΘΜΩΝ</h4>
+          <p class="text-xs text-slate-500 mb-3">Απονέμεται στον/στη μαθητή/τρια:</p>
+          <input type="text" id="student-name" placeholder="Γράψε το όνομά σου εδώ..." class="w-full max-w-xs px-4 py-2 text-center font-bold text-slate-800 bg-white border-2 border-amber-300 rounded-xl focus:outline-none focus:border-amber-500 mb-2">
+          <div class="text-xs text-slate-400 font-semibold">Πληροφορική Δ' Δημοτικού • Μάθημα 1</div>
+        </div>
+
+        <div class="flex justify-center gap-3">
+          <button onclick="window.print()" class="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold shadow-md">🖨️ Εκτύπωση</button>
+          <button onclick="closeDiploma()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold shadow-md">Τέλεια! 👍</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-4 text-xs text-slate-500 font-bold border-t bg-white/60">
+    Βασισμένο στο σχολικό βιβλίο Πληροφορικής Δ' Δημοτικού (Σελίδες 10 - 14)
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- Ήχοι με Web Audio API (χωρίς εξωτερικά αρχεία) ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+      if (type === 'correct') {
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(150, now + 0.25);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === 'click') {
+        osc.frequency.setValueAtTime(400, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+    }
+
+    // --- ΔΕΔΟΜΕΝΑ 8 ΑΠΟΣΤΟΛΩΝ (ΚΑΘΕΜΙΑ ΜΕ 3 ΑΠΛΕΣ ΔΡΑΣΤΗΡΙΟΤΗΤΕΣ) ---
+    // Οι σωστές απάντησεις ΔΕΝ είναι πάντα στην 1η θέση.
+    const missions = [
+      {
+        id: 1,
+        title: "Τι είναι ο Αλγόριθμος;",
+        badge: "ΑΠΟΣΤΟΛΗ 1",
+        icon: "📜",
+        theme: "from-emerald-400 to-teal-500",
+        steps: [
+          {
+            type: "tf",
+            prompt: "Ο αλγόριθμος είναι μια σειρά από απλά βήματα που τα βάζουμε στη σωστή σειρά για να λύσουμε ένα πρόβλημα.",
+            correct: true,
+            hint: "Σκέψου: όπως ακολουθούμε βήματα για να φτιάξουμε ένα τοστ!"
+          },
+          {
+            type: "choice",
+            prompt: "Από ποιον πήρε το όνομά της η λέξη «αλγόριθμος»;",
+            options: [
+              { text: "Από έναν Έλληνα ποδοσφαιριστή", correct: false },
+              { text: "Από τον Πέρση μαθηματικό Αλ-Χουαρίζμι", correct: true },
+              { text: "Από τον κατασκευαστή του πρώτου ρομπότ", correct: false }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Μόνο οι υπολογιστές μπορούν να εκτελούν αλγόριθμους. Οι άνθρωποι δεν τους χρειάζονται ποτέ στην καθημερινή τους ζωή.",
+            correct: false,
+            hint: "Και οι άνθρωποι ακολουθούν οδηγίες, συνταγές και κανόνες καθημερινά!"
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "Το πρωινό ξύπνημα",
+        badge: "ΑΠΟΣΤΟΛΗ 2",
+        icon: "⏰",
+        theme: "from-amber-400 to-orange-500",
+        steps: [
+          {
+            type: "choice",
+            prompt: "Στον αλγόριθμο του πρωινού, ποιο είναι το ΣΥΜΒΑΝ που μας ξυπνάει;",
+            options: [
+              { text: "Όταν φάμε το πρωινό", correct: false },
+              { text: "Όταν βάλουμε τα παπούτσια μας", correct: false },
+              { text: "Όταν χτυπήσει το ξυπνητήρι", correct: true }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Αν το ξυπνητήρι λέει: «Επανάλαβε 3 φορές: Αγνόησε το ξυπνητήρι», αυτό σημαίνει ότι θα πατήσουμε 'αναβολή' ακριβώς 3 φορές.",
+            correct: true,
+            hint: "Είναι μια εντολή επανάληψης με γνωστό αριθμό (3)!"
+          },
+          {
+            type: "order3",
+            prompt: "Πάτα τα βήματα με τη ΣΩΣΤΗ σειρά για το πρωινό σου:",
+            items: [
+              { id: "a", text: "1. Σήκω από το κρεβάτι", correctPos: 0 },
+              { id: "b", text: "2. Ντύσου & φάε πρωινό", correctPos: 1 },
+              { id: "c", text: "3. Ξεκίνα για το σχολείο", correctPos: 2 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "Η εντολή: «Αν... τότε»",
+        badge: "ΑΠΟΣΤΟΛΗ 3",
+        icon: "☔",
+        theme: "from-sky-400 to-blue-500",
+        steps: [
+          {
+            type: "choice",
+            prompt: "Διάβασε την εντολή: «Αν βρέχει, τότε πάρε ομπρέλα». Τι θα κάνεις αν έχει λαμπερό ήλιο;",
+            options: [
+              { text: "Δεν θα πάρω ομπρέλα", correct: true },
+              { text: "Θα πάρω οπωσδήποτε ομπρέλα", correct: false },
+              { text: "Θα ανοίξω την ομπρέλα μέσα στο σπίτι", correct: false }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Η εντολή «Αν... τότε» εξετάζει μια συνθήκη (ένα ενδεχόμενο) για να αποφασίσει τι θα κάνει.",
+            correct: true,
+            hint: "Π.χ. Αν το φανάρι είναι πράσινο, τότε πέρνα."
+          },
+          {
+            type: "choice",
+            prompt: "Ποια από τις παρακάτω είναι μια σωστή εντολή επιλογής («Αν... τότε»);",
+            options: [
+              { text: "Τρέξε 5 γύρους στο γήπεδο", correct: false },
+              { text: "Αν πεινάς, τότε φάε ένα φρούτο", correct: true },
+              { text: "Κοιμήσου 8 ώρες", correct: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "Τα φωτάκια της Υπατίας",
+        badge: "ΑΠΟΣΤΟΛΗ 4",
+        icon: "🎄",
+        theme: "from-purple-400 to-indigo-500",
+        steps: [
+          {
+            type: "choice",
+            prompt: "Η γιρλάντα της Υπατίας έχει 100 φωτάκια. Πόσες φορές θα επαναληφθεί ο έλεγχος;",
+            options: [
+              { text: "Μόνο 1 φορά", correct: false },
+              { text: "Για πάντα χωρίς να σταματήσει", correct: false },
+              { text: "Ακριβώς 100 φορές", correct: true }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Η εντολή: «Αν δεν ανάβει το φωτάκι, τότε επιδιόρθωσέ το» εκτελείται ΜΟΝΟ όταν ένα φωτάκι είναι χαλασμένο.",
+            correct: true,
+            hint: "Αν το φωτάκι ανάβει κανονικά, δεν χρειάζεται επιδιόρθωση!"
+          },
+          {
+            type: "choice",
+            prompt: "Πώς ονομάζεται η επανάληψη όταν ξέρουμε από την αρχή πόσες φορές θα γίνει (π.χ. 100);",
+            options: [
+              { text: "Επανάληψη με γνωστό αριθμό επαναλήψεων", correct: true },
+              { text: "Άγνωστη και τυχαία επανάληψη", correct: false },
+              { text: "Εντολή χωρίς επανάληψη", correct: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "Ο Γρίφος του Βαρκάρη",
+        badge: "ΑΠΟΣΤΟΛΗ 5",
+        icon: "🚣",
+        theme: "from-cyan-500 to-blue-600",
+        steps: [
+          {
+            type: "choice",
+            prompt: "Ποιο ζωάκι ΔΕΝ πρέπει να μείνει ποτέ μόνο του με το λάχανο;",
+            options: [
+              { text: "Ο λύκος (γιατί τρώει λάχανα)", correct: false },
+              { text: "Η κατσίκα (γιατί τρώει το λάχανο)", correct: true },
+              { text: "Κανένα ζωάκι δεν τρώει λάχανο", correct: false }
+            ]
+          },
+          {
+            type: "choice",
+            prompt: "Ποιον μεταφέρει ΠΡΩΤΟ στην απέναντι όχθη ο βαρκάρης για να είναι όλοι ασφαλείς;",
+            options: [
+              { text: "Το λάχανο", correct: false },
+              { text: "Τον λύκο", correct: false },
+              { text: "Την κατσίκα", correct: true }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Ο βαρκάρης έχει χώρο στη βάρκα του για να πάρει μαζί του και τον λύκο και την κατσίκα ταυτόχρονα.",
+            correct: false,
+            hint: "Η βάρκα έχει ΜΟΝΟ ΜΙΑ θέση για επιβάτη ή πράγμα κάθε φορά!"
+          }
+        ]
+      },
+      {
+        id: 6,
+        title: "Η Σειρά των Βημάτων",
+        badge: "ΑΠΟΣΤΟΛΗ 6",
+        icon: "🔢",
+        theme: "from-rose-400 to-red-500",
+        steps: [
+          {
+            type: "tf",
+            prompt: "Σε έναν αλγόριθμο δεν έχει σημασία η σειρά των βημάτων. Μπορούμε να τα αλλάξουμε όπως θέλουμε.",
+            correct: false,
+            hint: "Αν αλλάξουμε τη σειρά, ο αλγόριθμος δεν θα δουλέψει σωστά!"
+          },
+          {
+            type: "choice",
+            prompt: "Τι θα συμβεί αν βάλουμε πρώτα τα παπούτσια και μετά προσπαθήσουμε να βάλουμε τις κάλτσες;",
+            options: [
+              { text: "Θα είναι όλα μια χαρά", correct: false },
+              { text: "Είναι λάθος, γιατί οι κάλτσες μπαίνουν πριν τα παπούτσια", correct: true },
+              { text: "Τα παπούτσια θα γίνουν μεγαλύτερα", correct: false }
+            ]
+          },
+          {
+            type: "order3",
+            prompt: "Πάτα τα βήματα με τη σωστή σειρά για να φτιάξεις ένα τοστ:",
+            items: [
+              { id: "1", text: "1. Πάρε δύο φέτες ψωμί", correctPos: 0 },
+              { id: "2", text: "2. Βάλε ανάμεσα τυρί και γαλοπούλα", correctPos: 1 },
+              { id: "3", text: "3. Ψήσε το τοστ στην τοστιέρα", correctPos: 2 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: "Εντοπισμός Λαθών (Bug)",
+        badge: "ΑΠΟΣΤΟΛΗ 7",
+        icon: "🔍",
+        theme: "from-amber-500 to-yellow-600",
+        steps: [
+          {
+            type: "choice",
+            prompt: "Δες τον αλγόριθμο: 1. Πλύνε τα δόντια -> 2. Βάλε οδοντόκρεμα στο βουρτσάκι. Ποιο είναι το λάθος;",
+            options: [
+              { text: "Δεν υπάρχει κανένα λάθος", correct: false },
+              { text: "Έπρεπε πρώτα να βάλουμε οδοντόκρεμα και μετά να πλύνουμε τα δόντια", correct: true },
+              { text: "Πρέπει να πλένουμε τα δόντια χωρίς νερό", correct: false }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Όταν βρίσκουμε και διορθώνουμε ένα λάθος σε έναν αλγόριθμο, αυτό βοηθάει τον υπολογιστή να δουλέψει σωστά.",
+            correct: true,
+            hint: "Αυτό οι προγραμματιστές το λένε 'διόρθωση σφαλμάτων'!"
+          },
+          {
+            type: "choice",
+            prompt: "Ποια εντολή λείπει από τον αλγόριθμο: «1. Μπες στη μπανιέρα -> 2. Σκουπίσου με την πετσέτα»;",
+            options: [
+              { text: "Πλύνσου με νερό και σαπούνι", correct: true },
+              { text: "Βάλε τα παπούτσια σου", correct: false },
+              { text: "Πάρε την τσάντα για το σχολείο", correct: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 8,
+        title: "Τελικός Έλεγχος & Δίπλωμα",
+        badge: "ΑΠΟΣΤΟΛΗ 8",
+        icon: "🎓",
+        theme: "from-emerald-500 to-green-600",
+        steps: [
+          {
+            type: "choice",
+            prompt: "Πώς γράφουν οι άνθρωποι έναν αλγόριθμο πριν τον βάλουν στον υπολογιστή;",
+            options: [
+              { text: "Μόνο με μυστικούς αριθμούς", correct: false },
+              { text: "Σε φυσική γλώσσα (όπως μιλάμε εμείς με απλά λόγια)", correct: true },
+              { text: "Χωρίς λόγια, μόνο με σχέδια", correct: false }
+            ]
+          },
+          {
+            type: "tf",
+            prompt: "Έμαθα τι είναι ο αλγόριθμος και πώς να βάζω τα βήματα στη σωστή σειρά!",
+            correct: true,
+            hint: "Πάτα ΣΩΣΤΟ για να πάρεις το αστέρι σου!"
+          },
+          {
+            type: "choice",
+            prompt: "Ποια από τις παρακάτω λέξεις ΔΕΝ ταιριάζει σε έναν αλγόριθμο;",
+            options: [
+              { text: "Βήματα με σειρά", correct: false },
+              { text: "Επανάληψη", correct: false },
+              { text: "Μπέρδεμα χωρίς καμία σειρά", correct: true }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // --- STATE MANAGEMENT ---
+    let currentMissionIdx = 0;
+    let currentStepIdx = 0;
+    let starsEarned = 0;
+    // Πίνακας για αποθήκευση κατάστασης: [8 missions x 3 steps]
+    const completed = Array.from({ length: 8 }, () => [false, false, false]);
+
+    // Προσωρινή κατάσταση για τα παιχνίδια σειράς (order3)
+    let userOrderPicks = [];
+
+    // --- INITIALIZATION ---
+    function init() {
+      renderTabs();
+      loadMission(0, 0);
+    }
+
+    // Render Navigation Tabs
+    function renderTabs() {
+      const container = document.getElementById("tabs-bar");
+      container.innerHTML = "";
+      missions.forEach((m, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `px-3.5 py-2 rounded-2xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-1.5 border-2 ${
+          idx === currentMissionIdx
+            ? "bg-emerald-500 text-white border-emerald-600 shadow-md"
+            : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+        }`;
+        
+        // Έλεγχος αν ολοκληρώθηκε όλη η αποστολή (και τα 3 βήματα)
+        const isDone = completed[idx].every(v => v === true);
+        btn.innerHTML = `<span>${m.icon}</span> <span>${idx + 1}. ${m.title}</span> ${isDone ? "⭐" : ""}`;
+        btn.onclick = () => {
+          playSound('click');
+          loadMission(idx, 0);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    // Load Mission & Step
+    function loadMission(mIdx, sIdx) {
+      currentMissionIdx = mIdx;
+      currentStepIdx = sIdx;
+      renderTabs();
+
+      const m = missions[mIdx];
+      const s = m.steps[sIdx];
+
+      // Update Header
+      document.getElementById("mission-header").className = `p-5 bg-gradient-to-r ${m.theme} text-white flex items-center justify-between`;
+      document.getElementById("mission-badge").innerText = m.badge;
+      document.getElementById("mission-title").innerText = m.title;
+      document.getElementById("mission-icon").innerText = m.icon;
+
+      // Update Step buttons
+      for (let i = 0; i < 3; i++) {
+        const b = document.getElementById(`step-btn-${i}`);
+        if (i === sIdx) {
+          b.className = "w-8 h-8 rounded-full font-bold text-sm flex items-center justify-center transition-all bg-emerald-500 text-white shadow-md ring-2 ring-emerald-300";
+        } else if (completed[mIdx][i]) {
+          b.className = "w-8 h-8 rounded-full font-bold text-sm flex items-center justify-center transition-all bg-amber-400 text-amber-950 font-black";
+          b.innerHTML = "✓";
+        } else {
+          b.className = "w-8 h-8 rounded-full font-bold text-sm flex items-center justify-center transition-all bg-slate-200 text-slate-600";
+          b.innerHTML = (i + 1).toString();
+        }
+      }
+
+      // Status label
+      const isStepDone = completed[mIdx][sIdx];
+      const statusLbl = document.getElementById("step-status");
+      if (isStepDone) {
+        statusLbl.innerText = "⭐ Ολοκληρώθηκε!";
+        statusLbl.className = "text-xs font-bold text-emerald-600";
+      } else {
+        statusLbl.innerText = "Εκκρεμεί";
+        statusLbl.className = "text-xs font-bold text-slate-400";
+      }
+
+      // Prompt
+      document.getElementById("act-prompt").innerText = s.prompt;
+      document.getElementById("feedback-box").className = "hidden mt-4 p-4 rounded-2xl text-center font-bold text-base transition-all";
+      document.getElementById("btn-next").className = "hidden px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-200 transition-all flex items-center gap-2";
+
+      // Render Activity Content based on Type
+      const content = document.getElementById("act-content");
+      content.innerHTML = "";
+
+      if (s.type === "tf") {
+        renderTrueFalse(s, content, isStepDone);
+      } else if (s.type === "choice") {
+        renderChoice(s, content, isStepDone);
+      } else if (s.type === "order3") {
+        renderOrder3(s, content, isStepDone);
+      }
+    }
+
+    function setSubStep(idx) {
+      playSound('click');
+      loadMission(currentMissionIdx, idx);
+    }
+
+    // --- ACTIVITY 1: ΣΩΣΤΟ / ΛΑΘΟΣ (T/F) ---
+    function renderTrueFalse(step, container, isDone) {
+      const box = document.createElement("div");
+      box.className = "grid grid-cols-2 gap-4 max-w-md mx-auto w-full";
+
+      const btnTrue = document.createElement("button");
+      btnTrue.className = "p-5 rounded-2xl border-4 border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-black text-xl flex flex-col items-center gap-2 bounce-hover transition-all shadow-sm";
+      btnTrue.innerHTML = `<span class="text-4xl">👍</span><span>ΣΩΣΤΟ</span>`;
+      btnTrue.onclick = () => handleAnswer(true, step.correct, step.hint);
+
+      const btnFalse = document.createElement("button");
+      btnFalse.className = "p-5 rounded-2xl border-4 border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-800 font-black text-xl flex flex-col items-center gap-2 bounce-hover transition-all shadow-sm";
+      btnFalse.innerHTML = `<span class="text-4xl">👎</span><span>ΛΑΘΟΣ</span>`;
+      btnFalse.onclick = () => handleAnswer(false, step.correct, step.hint);
+
+      if (isDone) {
+        btnTrue.disabled = true;
+        btnFalse.disabled = true;
+        btnTrue.classList.add("opacity-50");
+        btnFalse.classList.add("opacity-50");
+      }
+
+      box.appendChild(btnTrue);
+      box.appendChild(btnFalse);
+      container.appendChild(box);
+    }
+
+    // --- ACTIVITY 2: ΠΟΛΛΑΠΛΗ ΕΠΙΛΟΓΗ (CHOICE) ---
+    function renderChoice(step, container, isDone) {
+      const list = document.createElement("div");
+      list.className = "flex flex-col gap-3 max-w-lg mx-auto w-full";
+
+      step.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "p-4 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left font-bold text-slate-700 flex items-center gap-3 transition-all bounce-hover shadow-sm";
+        
+        // Γράμματα Α, Β, Γ
+        const letters = ["Α", "Β", "Γ"];
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 font-black flex items-center justify-center shrink-0 border border-slate-300">${letters[idx]}</span>
+          <span class="text-sm md:text-base">${opt.text}</span>
+        `;
+        btn.onclick = () => {
+          if (opt.correct) {
+            btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left font-bold text-emerald-900 flex items-center gap-3 transition-all shadow-md";
+            handleAnswer(true, true);
+          } else {
+            btn.className = "p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 text-left font-bold text-rose-800 flex items-center gap-3 transition-all";
+            handleAnswer(false, true, "Ξανασκέψου το! Δοκίμασε άλλη απάντηση.");
+          }
+        };
+
+        if (isDone) {
+          btn.disabled = true;
+          if (opt.correct) {
+            btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left font-bold text-emerald-900 flex items-center gap-3";
+          }
+        }
+
+        list.appendChild(btn);
+      });
+
+      container.appendChild(list);
+    }
+
+    // --- ACTIVITY 3: ΣΕΙΡΑ 3 ΒΗΜΑΤΩΝ (ORDER 3) ---
+    function renderOrder3(step, container, isDone) {
+      userOrderPicks = [];
+
+      const info = document.createElement("p");
+      info.className = "text-center text-xs font-bold text-slate-500 mb-3";
+      info.innerText = "Κάνε κλικ στα κουμπιά με τη σειρά που πρέπει να γίνουν:";
+      container.appendChild(info);
+
+      const itemsBox = document.createElement("div");
+      itemsBox.className = "flex flex-col gap-2 max-w-md mx-auto w-full";
+
+      // Ανακάτεμα για να μην είναι ήδη έτοιμα
+      const shuffled = [...step.items].sort(() => 0.5 - Math.random());
+
+      shuffled.forEach(item => {
+        const btn = document.createElement("button");
+        btn.id = `order-btn-${item.id}`;
+        btn.className = "p-3.5 rounded-xl border-2 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-bold text-sm text-left flex items-center justify-between transition-all bounce-hover";
+        btn.innerHTML = `<span>${item.text.replace(/^[0-9]\.\s*/, '')}</span> <span id="badge-${item.id}" class="text-xs font-black bg-white px-2 py-1 rounded-md text-indigo-500 border border-indigo-200">Πάτησε</span>`;
+
+        btn.onclick = () => {
+          if (userOrderPicks.includes(item.id)) return; // Ήδη επιλέχθηκε
+          playSound('click');
+          userOrderPicks.push(item.id);
+
+          const pickIndex = userOrderPicks.length - 1;
+          const badge = document.getElementById(`badge-${item.id}`);
+          badge.innerText = `Βήμα ${pickIndex + 1}`;
+          badge.className = "text-xs font-black bg-indigo-600 text-white px-2 py-1 rounded-md";
+          btn.className = "p-3.5 rounded-xl border-2 border-indigo-400 bg-indigo-100 text-indigo-900 font-bold text-sm text-left flex items-center justify-between opacity-80 cursor-default";
+
+          // Όταν πατηθούν και τα 3, κάνε έλεγχο
+          if (userOrderPicks.length === 3) {
+            checkOrder(step);
+          }
+        };
+
+        if (isDone) {
+          btn.disabled = true;
+          btn.className = "p-3.5 rounded-xl border-2 border-emerald-300 bg-emerald-50 text-emerald-900 font-bold text-sm text-left flex items-center justify-between";
+        }
+
+        itemsBox.appendChild(btn);
+      });
+
+      container.appendChild(itemsBox);
+
+      // Κουμπί επαναφοράς αν μπερδευτεί
+      if (!isDone) {
+        const resetBtn = document.createElement("button");
+        resetBtn.className = "mt-3 text-xs font-bold text-slate-400 hover:text-slate-600 underline mx-auto block";
+        resetBtn.innerText = "🔄 Καθάρισε τη σειρά & ξεκίνα ξανά";
+        resetBtn.onclick = () => {
+          playSound('click');
+          loadMission(currentMissionIdx, currentStepIdx);
+        };
+        container.appendChild(resetBtn);
+      }
+    }
+
+    function checkOrder(step) {
+      // Τα IDs κατάταξης πρέπει να ταιριάζουν με correctPos 0, 1, 2
+      let isAllCorrect = true;
+      userOrderPicks.forEach((pickedId, orderIdx) => {
+        const itemObj = step.items.find(it => it.id === pickedId);
+        if (itemObj.correctPos !== orderIdx) {
+          isAllCorrect = false;
+        }
+      });
+
+      if (isAllCorrect) {
+        handleAnswer(true, true);
+      } else {
+        handleAnswer(false, true, "Η σειρά δεν ήταν σωστή! Πάτα 'ξεκίνα ξανά' για να δοκιμάσεις πάλι.");
+      }
+    }
+
+    // --- HANDLE ANSWER (FEEDBACK & STARS) ---
+    function handleAnswer(userVal, correctVal, hint) {
+      const fBox = document.getElementById("feedback-box");
+      const nextBtn = document.getElementById("btn-next");
+
+      if (userVal === correctVal) {
+        playSound('correct');
+        fBox.className = "mt-4 p-4 rounded-2xl text-center font-bold text-base bg-emerald-100 border-2 border-emerald-300 text-emerald-800 block shadow-sm animate-bounce";
+        fBox.innerHTML = `🎉 Μπράβο! Πολύ σωστά! Κέρδισες 1 αστέρι! ⭐`;
+
+        // Αποθήκευση επιτυχίας αν δεν είχε ξαναγίνει
+        if (!completed[currentMissionIdx][currentStepIdx]) {
+          completed[currentMissionIdx][currentStepIdx] = true;
+          starsEarned++;
+          document.getElementById("stars-count").innerText = starsEarned;
+          renderTabs();
+        }
+
+        // Μικρά κομφετί
+        confetti({
+          particleCount: 25,
+          spread: 40,
+          origin: { y: 0.8 }
+        });
+
+        // Εμφάνιση κουμπιού επόμενου
+        nextBtn.className = "px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-200 transition-all flex items-center gap-2";
+
+        // Αν τελείωσαν και τα 24 αστέρια!
+        if (starsEarned === 24) {
+          setTimeout(showDiploma, 800);
+        }
+
+      } else {
+        playSound('wrong');
+        fBox.className = "mt-4 p-4 rounded-2xl text-center font-bold text-base bg-rose-100 border-2 border-rose-300 text-rose-800 block shadow-sm";
+        fBox.innerHTML = `❌ Δεν πειράζει! ${hint || "Δοκίμασε ξανά!"}`;
+      }
+    }
+
+    // Μετάβαση στην επόμενη υπο-δραστηριότητα ή στην επόμενη αποστολή
+    function nextAction() {
+      playSound('click');
+      if (currentStepIdx < 2) {
+        // Επόμενο βήμα της ίδιας αποστολής
+        loadMission(currentMissionIdx, currentStepIdx + 1);
+      } else {
+        // Επόμενη αποστολή
+        if (currentMissionIdx < missions.length - 1) {
+          loadMission(currentMissionIdx + 1, 0);
+        } else {
+          showDiploma();
+        }
+      }
+    }
+
+    // --- ΔΙΠΛΩΜΑ ---
+    function showDiploma() {
+      playSound('correct');
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+      document.getElementById("diploma-modal").classList.remove("hidden");
+    }
+
+    function closeDiploma() {
+      playSound('click');
+      document.getElementById("diploma-modal").classList.add("hidden");
+    }
+
+    // Έναρξη
+    init();
+  </script>
+</body>
+</html>
