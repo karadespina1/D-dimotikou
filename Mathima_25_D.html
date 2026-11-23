@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Μάθημα 25: Βασικές Δυνατότητες Επεξεργαστή Κειμένου - Παιχνιδιάρικος Οδηγός</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      font-size: 16px;
+    }
+    body {
+      font-family: 'Fredoka', cursive, sans-serif;
+      background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 50%, #fdf2f8 100%);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .title-font {
+      font-family: 'Comfortaa', cursive, sans-serif;
+    }
+    .bounce-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    @media (hover: hover) {
+      .bounce-hover:hover {
+        transform: translateY(-4px) scale(1.015);
+      }
+    }
+    .bounce-hover:active {
+      transform: scale(0.98);
+    }
+    .toolbar-btn {
+      transition: all 0.15s ease;
+    }
+    .toolbar-btn.active {
+      background-color: #2563eb;
+      color: white;
+      border-color: #1d4ed8;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.25);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between text-base sm:text-lg">
+
+  <!-- HEADER (Responsive για κινητό, τάμπλετ & υπολογιστή) -->
+  <header class="bg-white/95 backdrop-blur shadow-md sticky top-0 z-50 px-3 sm:px-6 py-3 sm:py-4 border-b-4 border-blue-500">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 sm:gap-4">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl sm:text-3xl font-black shadow-md shrink-0">W</div>
+        <div>
+          <span class="inline-block bg-blue-100 text-blue-800 text-xs sm:text-sm px-3 py-0.5 rounded-full font-bold">ΠΛΗΡΟΦΟΡΙΚΗ Δ' ΔΗΜΟΤΙΚΟΥ • ΜΑΘΗΜΑ 25</span>
+          <h1 class="text-lg sm:text-2xl md:text-3xl font-bold text-slate-800 title-font leading-snug mt-0.5">Ο Μαγικός Επεξεργαστής Κειμένου</h1>
+        </div>
+      </div>
+      
+      <!-- Progress & Stars -->
+      <div class="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 px-4 py-2 rounded-2xl shadow-sm ml-auto sm:ml-0">
+        <span class="text-2xl sm:text-3xl">⭐</span>
+        <div class="text-right">
+          <div class="text-xs sm:text-sm text-amber-800 font-bold">ΑΣΤΕΡΙΑ ΟΔΗΓΟΥ</div>
+          <div class="text-xl sm:text-2xl font-black text-amber-600 leading-none"><span id="stars-count">0</span> / 6</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-8 flex-grow space-y-10">
+
+    <!-- HERO BANNER WITH SVG ILLUSTRATION -->
+    <section class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-6 sm:p-8 md:p-10 text-white shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden">
+      <div class="space-y-4 z-10 max-w-2xl text-center lg:text-left">
+        <span class="inline-block bg-white/20 backdrop-blur px-3.5 py-1 rounded-full text-xs sm:text-sm font-bold tracking-wider uppercase">ΣΕΛΙΔΕΣ 97 - 101 ΣΧΟΛΙΚΟΥ ΒΙΒΛΙΟΥ</span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black title-font leading-tight">Γίνε Καλλιτέχνης των Κειμένων! 🎨✍️</h2>
+        <p class="text-blue-50 text-base sm:text-lg md:text-xl font-medium leading-relaxed">
+          Ένα όμορφο κείμενο διαβάζεται πολύ πιο εύκολα! Εδώ θα γνωρίσεις τα εργαλεία <strong>μορφοποίησης</strong>, τη <strong>στοίχιση</strong>, τις <strong>λίστες</strong>, την <strong>αναίρεση</strong> και την <strong>αντιγραφή-επικόλληση</strong> εικόνων!
+        </p>
+      </div>
+
+      <!-- Custom Cute SVG Illustration (Scalable) -->
+      <div class="z-10 floating shrink-0 w-48 sm:w-56 md:w-64">
+        <svg class="w-full h-auto" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="35" y="15" width="150" height="105" rx="14" fill="#1E293B" stroke="#93C5FD" stroke-width="4"/>
+          <rect x="45" y="25" width="130" height="82" rx="8" fill="#FFFFFF"/>
+          <rect x="53" y="32" width="114" height="14" rx="4" fill="#DBEAFE"/>
+          <circle cx="61" cy="39" r="3" fill="#EF4444"/>
+          <circle cx="70" cy="39" r="3" fill="#F59E0B"/>
+          <circle cx="79" cy="39" r="3" fill="#10B981"/>
+          <rect x="55" y="53" width="65" height="6" rx="3" fill="#3B82F6"/>
+          <rect x="55" y="64" width="95" height="5" rx="2.5" fill="#94A3B8"/>
+          <rect x="55" y="74" width="80" height="5" rx="2.5" fill="#94A3B8"/>
+          <rect x="55" y="84" width="50" height="5" rx="2.5" fill="#F59E0B"/>
+          <rect x="130" y="53" width="35" height="35" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+          <circle cx="140" cy="63" r="4" fill="#F59E0B"/>
+          <path d="M133 83L143 72L150 79L156 74L162 83H133Z" fill="#10B981"/>
+          <path d="M95 120H125L132 142H88L95 120Z" fill="#64748B"/>
+          <rect x="75" y="140" width="70" height="8" rx="4" fill="#475569"/>
+          <g transform="rotate(-25 180 40)">
+            <rect x="172" y="15" width="14" height="55" rx="4" fill="#FBBF24" stroke="#B45309" stroke-width="2"/>
+            <polygon points="172,70 186,70 179,84" fill="#FDE68A" stroke="#B45309" stroke-width="2"/>
+            <polygon points="177,79 181,79 179,84" fill="#1E293B"/>
+            <rect x="172" y="12" width="14" height="8" rx="2" fill="#F43F5E"/>
+          </g>
+          <path d="M22 45L25 52L32 55L25 58L22 65L19 58L12 55L19 52L22 45Z" fill="#FDE047"/>
+          <path d="M198 110L200 115L205 117L200 119L198 124L196 119L191 117L196 115L198 110Z" fill="#FDE047"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- VISUAL GUIDE CARDS (ΟΠΤΙΚΟΣ ΟΔΗΓΟΣ ΜΕ ΕΙΚΟΝΕΣ & ΜΕΓΑΛΑ ΓΡΑΜΜΑΤΑ) -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">📚</span>
+        <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 title-font">1. Οπτικός Οδηγός Εργαλείων</h3>
+      </div>
+      <p class="text-base sm:text-lg text-slate-600 font-medium">Πάτησε πάνω σε κάθε κάρτα για να ανακαλύψεις το μυστικό της!</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        
+        <!-- Card 1: Επιλογή Κειμένου -->
+        <div onclick="revealTip(this, '✨ Πρώτα επιλέγουμε το κείμενο (σύροντας το ποντίκι ή με διπλό κλικ για 1 λέξη και τριπλό κλικ για 1 παράγραφο) και μετά πατάμε το εργαλείο!')" class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-sky-200 shadow-md hover:shadow-xl bounce-hover cursor-pointer">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-sky-100 text-sky-800 font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full">ΒΗΜΑ 1</span>
+            <span class="text-3xl">🖱️</span>
+          </div>
+          <h4 class="font-bold text-xl sm:text-2xl text-slate-800 mb-3">Επιλογή Κειμένου</h4>
+          <div class="bg-sky-50 rounded-2xl p-3 mb-4 flex items-center justify-center border border-sky-100">
+            <svg class="w-full max-w-[220px] h-auto" viewBox="0 0 190 60">
+              <rect x="5" y="12" width="180" height="36" rx="8" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+              <rect x="44" y="18" width="84" height="24" rx="4" fill="#BAE6FD"/>
+              <text x="14" y="35" font-family="sans-serif" font-size="14" fill="#334155">Η <tspan font-weight="bold" fill="#0369A1">αγαπημένη</tspan> μου λέξη</text>
+              <path d="M124 38L132 54L135 47L142 47L124 38Z" fill="#1E293B" stroke="white" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <p class="text-base text-slate-700 leading-relaxed">
+            Για να αλλάξουμε εμφάνιση σε μια λέξη, πρέπει <strong>πρώτα να την επιλέξουμε</strong>!
+          </p>
+          <div class="tip-box hidden mt-4 p-3.5 bg-sky-100 text-sky-950 rounded-2xl text-sm sm:text-base font-bold leading-snug"></div>
+        </div>
+
+        <!-- Card 2: B I U -->
+        <div onclick="revealTip(this, '💡 Σκέψου τα κουμπιά B, I, U σαν τον διακόπτη του φωτός: τα πατάς και ανάβουν, τα ξαναπατάς και σβήνουν!')" class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-purple-200 shadow-md hover:shadow-xl bounce-hover cursor-pointer">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-purple-100 text-purple-800 font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full">ΜΟΡΦΟΠΟΙΗΣΗ</span>
+            <span class="text-3xl">🔤</span>
+          </div>
+          <h4 class="font-bold text-xl sm:text-2xl text-slate-800 mb-3">Έντονα, Πλάγια, Υπογράμμιση</h4>
+          <div class="bg-purple-50 rounded-2xl p-3.5 mb-4 flex items-center justify-around border border-purple-100">
+            <div class="text-center">
+              <div class="w-12 h-12 bg-white rounded-xl border-2 border-purple-300 flex items-center justify-center font-black text-2xl text-purple-700 shadow-sm mx-auto">B</div>
+              <span class="text-xs sm:text-sm font-bold text-slate-700 mt-1.5 block">Έντονη</span>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 bg-white rounded-xl border-2 border-purple-300 flex items-center justify-center italic font-serif font-bold text-2xl text-purple-700 shadow-sm mx-auto">I</div>
+              <span class="text-xs sm:text-sm font-bold text-slate-700 mt-1.5 block">Πλάγια</span>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 bg-white rounded-xl border-2 border-purple-300 flex items-center justify-center underline font-bold text-2xl text-purple-700 shadow-sm mx-auto">U</div>
+              <span class="text-xs sm:text-sm font-bold text-slate-700 mt-1.5 block">Υπογράμμιση</span>
+            </div>
+          </div>
+          <p class="text-base text-slate-700 leading-relaxed">
+            Τονίζουμε σημαντικές λέξεις με <strong>B (Bold)</strong>, <em>I (Italic)</em> και <u>U (Underline)</u>!
+          </p>
+          <div class="tip-box hidden mt-4 p-3.5 bg-purple-100 text-purple-950 rounded-2xl text-sm sm:text-base font-bold leading-snug"></div>
+        </div>
+
+        <!-- Card 3: Γραμματοσειρά, Μέγεθος, Χρώμα -->
+        <div onclick="revealTip(this, '🌈 Μπορείς να αλλάξεις τη γραμματοσειρά (π.χ. Comic Sans MS), το μέγεθος (π.χ. 14), το χρώμα των γραμμάτων και να βάλεις κίτρινο μαρκαδόρο!')" class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-pink-200 shadow-md hover:shadow-xl bounce-hover cursor-pointer">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-pink-100 text-pink-800 font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full">ΧΡΩΜΑΤΑ & ΣΤΥΛ</span>
+            <span class="text-3xl">🖍️</span>
+          </div>
+          <h4 class="font-bold text-xl sm:text-2xl text-slate-800 mb-3">Γράμματα & Μαρκαδόρος</h4>
+          <div class="bg-pink-50 rounded-2xl p-3.5 mb-4 flex flex-wrap items-center justify-center gap-2 border border-pink-100">
+            <span class="bg-white px-3 py-1.5 rounded-xl border border-pink-200 text-sm font-bold text-slate-700">Comic Sans ▾</span>
+            <span class="bg-white px-3 py-1.5 rounded-xl border border-pink-200 text-sm font-bold text-slate-700">14 ▾</span>
+            <span class="bg-white px-3 py-1.5 rounded-xl border border-pink-200 font-black text-red-600 border-b-4 border-b-red-500 text-base">A</span>
+            <span class="bg-yellow-300 px-3 py-1.5 rounded-xl border border-yellow-500 font-bold text-slate-900 text-sm">ab🖍️</span>
+          </div>
+          <p class="text-base text-slate-700 leading-relaxed">
+            Δίνουμε ζωντάνια αλλάζοντας <strong>γραμματοσειρά</strong>, <strong>μέγεθος</strong>, <strong>χρώμα</strong> και <strong>επισήμανση</strong>!
+          </p>
+          <div class="tip-box hidden mt-4 p-3.5 bg-pink-100 text-pink-950 rounded-2xl text-sm sm:text-base font-bold leading-snug"></div>
+        </div>
+
+        <!-- Card 4: Στοίχιση Κειμένου -->
+        <div onclick="revealTip(this, '📐 Στο κέντρο βάζουμε συνήθως τους τίτλους, ενώ πλήρη στοίχιση βάζουμε στις μεγάλες παραγράφους όπως στα βιβλία!')" class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-emerald-200 shadow-md hover:shadow-xl bounce-hover cursor-pointer">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-emerald-100 text-emerald-800 font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full">ΘΕΣΗ ΣΤΗ ΣΕΛΙΔΑ</span>
+            <span class="text-3xl">📏</span>
+          </div>
+          <h4 class="font-bold text-xl sm:text-2xl text-slate-800 mb-3">4 Εργαλεία Στοίχισης</h4>
+          <div class="bg-emerald-50 rounded-2xl p-3 mb-4 grid grid-cols-4 gap-2 text-center border border-emerald-100">
+            <div class="bg-white p-2 rounded-xl border border-emerald-200">
+              <div class="space-y-1"><div class="h-1.5 bg-emerald-600 w-full"></div><div class="h-1.5 bg-emerald-600 w-2/3"></div><div class="h-1.5 bg-emerald-600 w-full"></div></div>
+              <span class="text-xs font-bold block mt-1.5">Αριστερά</span>
+            </div>
+            <div class="bg-white p-2 rounded-xl border border-emerald-200">
+              <div class="space-y-1 flex flex-col items-center"><div class="h-1.5 bg-emerald-600 w-full"></div><div class="h-1.5 bg-emerald-600 w-2/3"></div><div class="h-1.5 bg-emerald-600 w-full"></div></div>
+              <span class="text-xs font-bold block mt-1.5">Κέντρο</span>
+            </div>
+            <div class="bg-white p-2 rounded-xl border border-emerald-200">
+              <div class="space-y-1 flex flex-col items-end"><div class="h-1.5 bg-emerald-600 w-full"></div><div class="h-1.5 bg-emerald-600 w-2/3"></div><div class="h-1.5 bg-emerald-600 w-full"></div></div>
+              <span class="text-xs font-bold block mt-1.5">Δεξιά</span>
+            </div>
+            <div class="bg-white p-2 rounded-xl border border-emerald-200">
+              <div class="space-y-1"><div class="h-1.5 bg-emerald-600 w-full"></div><div class="h-1.5 bg-emerald-600 w-full"></div><div class="h-1.5 bg-emerald-600 w-full"></div></div>
+              <span class="text-xs font-bold block mt-1.5">Πλήρης</span>
+            </div>
+          </div>
+          <p class="text-base text-slate-700 leading-relaxed">
+            Τοποθετούμε το κείμενο <strong>αριστερά</strong>, στο <strong>κέντρο</strong>, <strong>δεξιά</strong> ή <strong>όμοια</strong> και στις δύο πλευρές!
+          </p>
+          <div class="tip-box hidden mt-4 p-3.5 bg-emerald-100 text-emerald-950 rounded-2xl text-sm sm:text-base font-bold leading-snug"></div>
+        </div>
+
+        <!-- Card 5: Λίστες (Κουκκίδες & Αρίθμηση) -->
+        <div onclick="revealTip(this, '🔢 Αριθμημένη λίστα (1, 2, 3) βάζουμε όταν έχει σημασία η σειρά (π.χ. βούρτσισμα δοντιών). Κουκκίδες (•) όταν δεν έχει σημασία η σειρά (π.χ. ψώνια)!')" class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-amber-200 shadow-md hover:shadow-xl bounce-hover cursor-pointer">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-amber-100 text-amber-800 font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full">ΟΡΓΑΝΩΣΗ</span>
+            <span class="text-3xl">📝</span>
+          </div>
+          <h4 class="font-bold text-xl sm:text-2xl text-slate-800 mb-3">Κουκκίδες & Αρίθμηση</h4>
+          <div class="bg-amber-50 rounded-2xl p-3 mb-4 grid grid-cols-2 gap-2.5 border border-amber-100 text-sm font-bold">
+            <div class="bg-white p-2.5 rounded-xl border border-amber-200">
+              <div class="text-amber-700 mb-1">• Κουκκίδες</div>
+              <div class="text-slate-700 font-medium leading-snug">• Μήλα<br>• Γάλα<br>• Ψωμί</div>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-amber-200">
+              <div class="text-amber-700 mb-1">1. Αρίθμηση</div>
+              <div class="text-slate-700 font-medium leading-snug">1. Ξυπνώ<br>2. Ντύνομαι<br>3. Φεύγω</div>
+            </div>
+          </div>
+          <p class="text-base text-slate-700 leading-relaxed">
+            Οργανώνουμε βήματα με <strong>αριθμημένη λίστα</strong> ή πράγματα χωρίς σειρά με <strong>κουκκίδες</strong>!
+          </p>
+          <div class="tip-box hidden mt-4 p-3.5 bg-amber-100 text-amber-950 rounded-2xl text-sm sm:text-base font-bold leading-snug"></div>
+        </div>
+
+        <!-- Card 6: Αναίρεση & Αντιγραφή Εικόνας -->
+        <div onclick="revealTip(this, '↩️ Έκανες λάθος; Πάτα Αναίρεση (Undo) και γυρνάς πίσω! Επίσης, με Αντιγραφή & Επικόλληση φέρνεις εικόνες από το διαδίκτυο!')" class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-rose-200 shadow-md hover:shadow-xl bounce-hover cursor-pointer">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-rose-100 text-rose-800 font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full">ΣΩΤΗΡΙΑ ΕΡΓΑΛΕΙΑ</span>
+            <span class="text-3xl">↩️</span>
+          </div>
+          <h4 class="font-bold text-xl sm:text-2xl text-slate-800 mb-3">Αναίρεση & Εικόνες</h4>
+          <div class="bg-rose-50 rounded-2xl p-3.5 mb-4 flex items-center justify-around gap-2 border border-rose-100">
+            <div class="text-center bg-white px-4 py-2 rounded-xl border border-rose-200 shadow-sm">
+              <span class="text-2xl block">↩️</span>
+              <span class="text-sm font-bold text-rose-800">Αναίρεση</span>
+            </div>
+            <div class="text-center bg-white px-4 py-2 rounded-xl border border-rose-200 shadow-sm">
+              <span class="text-2xl block">🖼️📋</span>
+              <span class="text-sm font-bold text-rose-800">Επικόλληση</span>
+            </div>
+          </div>
+          <p class="text-base text-slate-700 leading-relaxed">
+            Το κουμπί <strong>Αναίρεση</strong> σβήνει το τελευταίο λάθος μας, ενώ η <strong>Επικόλληση</strong> βάζει εικόνες!
+          </p>
+          <div class="tip-box hidden mt-4 p-3.5 bg-rose-100 text-rose-950 rounded-2xl text-sm sm:text-base font-bold leading-snug"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE MINI WORD PROCESSOR SANDBOX (Touch-Friendly & Large Controls) -->
+    <section class="bg-white rounded-3xl shadow-xl border-4 border-blue-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-600 to-cyan-600 p-5 sm:p-6 text-white flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">💻</span>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold title-font">2. Δοκίμασε τον Μίνι Επεξεργαστή Κειμένου!</h3>
+            <p class="text-sm sm:text-base text-blue-100">Πάτησε τα μεγάλα κουμπιά της εργαλειοθήκης και δες το κείμενο να αλλάζει ζωντανά!</p>
+          </div>
+        </div>
+        <span id="sandbox-badge" class="bg-white/20 px-4 py-1.5 rounded-full text-sm font-bold">Δοκίμασε 3 εργαλεία (+1 ⭐)</span>
+      </div>
+
+      <!-- Simulated Toolbar (Large touch targets for mobile/tablet) -->
+      <div class="bg-slate-100 p-3.5 sm:p-4 border-b-2 border-slate-200 flex flex-wrap items-center gap-2.5 sm:gap-3">
+        <!-- Font Family -->
+        <select id="sb-font" onchange="updateSandbox('font')" class="bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-sm sm:text-base font-bold text-slate-700 focus:outline-none focus:border-blue-500 min-h-[44px]">
+          <option value="'Fredoka', sans-serif">Fredoka (Απλή)</option>
+          <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+          <option value="'Times New Roman', serif">Times New Roman</option>
+        </select>
+
+        <!-- Font Size -->
+        <select id="sb-size" onchange="updateSandbox('size')" class="bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-sm sm:text-base font-bold text-slate-700 focus:outline-none focus:border-blue-500 min-h-[44px]">
+          <option value="18px">Μέγεθος 12</option>
+          <option value="22px" selected>Μέγεθος 14</option>
+          <option value="28px">Μέγεθος 18</option>
+        </select>
+
+        <!-- B I U -->
+        <div class="flex gap-2">
+          <button id="btn-bold" onclick="toggleStyle('bold')" class="toolbar-btn w-11 h-11 bg-white border-2 border-slate-300 rounded-xl font-black text-lg">B</button>
+          <button id="btn-italic" onclick="toggleStyle('italic')" class="toolbar-btn w-11 h-11 bg-white border-2 border-slate-300 rounded-xl italic font-serif font-bold text-lg">I</button>
+          <button id="btn-underline" onclick="toggleStyle('underline')" class="toolbar-btn w-11 h-11 bg-white border-2 border-slate-300 rounded-xl underline font-bold text-lg">U</button>
+        </div>
+
+        <!-- Text Color & Highlight -->
+        <div class="flex gap-2">
+          <button onclick="setTextColor('#dc2626')" title="Κόκκινα γράμματα" class="w-11 h-11 bg-white border-2 border-slate-300 rounded-xl font-black text-red-600 hover:bg-red-50 text-lg">A</button>
+          <button onclick="setTextColor('#1e293b')" title="Μαύρα γράμματα" class="w-11 h-11 bg-white border-2 border-slate-300 rounded-xl font-black text-slate-800 hover:bg-slate-200 text-lg">A</button>
+          <button id="btn-highlight" onclick="toggleStyle('highlight')" title="Κίτρινη επισήμανση" class="toolbar-btn px-3 h-11 bg-yellow-200 border-2 border-yellow-400 rounded-xl font-bold text-sm sm:text-base text-slate-900">🖍️ Κίτρινο</button>
+        </div>
+
+        <!-- Alignments -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setAlign('left')" class="px-3 h-11 bg-white border-2 border-slate-300 rounded-xl text-sm font-bold hover:bg-blue-50">⬅️ Αριστερά</button>
+          <button onclick="setAlign('center')" class="px-3 h-11 bg-white border-2 border-slate-300 rounded-xl text-sm font-bold hover:bg-blue-50">↔️ Κέντρο</button>
+          <button onclick="setAlign('right')" class="px-3 h-11 bg-white border-2 border-slate-300 rounded-xl text-sm font-bold hover:bg-blue-50">➡️ Δεξιά</button>
+        </div>
+
+        <!-- Add Picture & Undo -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="insertCuteImage()" class="px-3.5 h-11 bg-emerald-100 border-2 border-emerald-400 text-emerald-900 rounded-xl text-sm font-bold hover:bg-emerald-200">🖼️ Επικόλληση Εικόνας</button>
+          <button onclick="undoSandbox()" class="px-3.5 h-11 bg-rose-100 border-2 border-rose-400 text-rose-900 rounded-xl text-sm font-bold hover:bg-rose-200">↩️ Αναίρεση</button>
+        </div>
+      </div>
+
+      <!-- Editable Paper Area -->
+      <div class="p-4 sm:p-6 bg-slate-50">
+        <div id="paper-sheet" class="bg-white max-w-3xl mx-auto min-h-[160px] p-5 sm:p-7 rounded-2xl shadow-inner border-2 border-slate-200 transition-all">
+          <p id="editable-text" contenteditable="true" class="outline-none text-slate-800 leading-relaxed" style="font-size: 22px;">
+            Η πρώτη μου μορφοποίηση κειμένου! (Κάνε κλικ εδώ και γράψε κι εσύ ό,τι θέλεις!)
+          </p>
+          <div id="pasted-image-box" class="hidden mt-5 flex justify-center">
+            <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 inline-flex items-center gap-3 shadow-sm">
+              <span class="text-5xl">🐶</span>
+              <div class="text-left">
+                <div class="text-sm sm:text-base font-bold text-amber-900">Εικόνα από το διαδίκτυο!</div>
+                <div class="text-xs sm:text-sm text-amber-700">Έγινε επικόλληση στο έγγραφο!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAYFUL CHALLENGES (5 ΔΙΑΔΡΑΣΤΙΚΑ ΠΑΙΧΝΙΔΙΑ ΜΕ ΜΕΓΑΛΑ ΚΟΥΜΠΙΑ) -->
+    <section class="space-y-5">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🎮</span>
+        <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 title-font">3. Παιχνίδια Εξάσκησης (Κέρδισε 5 Αστέρια!)</h3>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Challenge 1: Βάλε την εικόνα στη σωστή σειρά -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-indigo-200 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="bg-indigo-100 text-indigo-800 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">ΠΑΙΧΝΙΔΙ 1</span>
+              <span id="c1-star" class="text-2xl opacity-30">⭐</span>
+            </div>
+            <h4 class="font-bold text-lg sm:text-xl text-slate-800 mb-2">Πώς φέρνουμε μια εικόνα από το διαδίκτυο;</h4>
+            <p class="text-sm sm:text-base text-slate-600 mb-4">Πάτησε τα 3 βήματα με τη σωστή σειρά:</p>
+            <div id="order-game" class="space-y-2.5">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div id="c1-feedback" class="mt-4 text-sm sm:text-base font-bold text-center hidden p-3 rounded-2xl"></div>
+        </div>
+
+        <!-- Challenge 2: Κουκκίδες ή Αρίθμηση; -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-amber-200 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="bg-amber-100 text-amber-800 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">ΠΑΙΧΝΙΔΙ 2</span>
+              <span id="c2-star" class="text-2xl opacity-30">⭐</span>
+            </div>
+            <h4 class="font-bold text-lg sm:text-xl text-slate-800 mb-2">Λίστα προετοιμασίας για πάρτι γενεθλίων!</h4>
+            <p class="text-sm sm:text-base text-slate-700 mb-4 bg-amber-50 p-3.5 rounded-2xl border border-amber-200 leading-relaxed">
+              Θέλουμε να γράψουμε: <em>Θέμα πάρτι, Καλεσμένοι, Φαγητό, Δώρα</em>. Εδώ <strong>δεν</strong> έχει σημασία η σειρά. Τι λίστα θα διαλέξουμε;
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="checkChallenge2('numbers')" class="p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-amber-50 font-bold text-base text-slate-800 min-h-[52px]">1. Αριθμημένη λίστα</button>
+              <button onclick="checkChallenge2('bullets')" class="p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-amber-50 font-bold text-base text-slate-800 min-h-[52px]">• Λίστα με κουκκίδες</button>
+            </div>
+          </div>
+          <div id="c2-feedback" class="mt-4 text-sm sm:text-base font-bold text-center hidden p-3 rounded-2xl"></div>
+        </div>
+
+        <!-- Challenge 3: Συνδυασμός B + I + U -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-purple-200 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="bg-purple-100 text-purple-800 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">ΠΑΙΧΝΙΔΙ 3</span>
+              <span id="c3-star" class="text-2xl opacity-30">⭐</span>
+            </div>
+            <h4 class="font-bold text-lg sm:text-xl text-slate-800 mb-2">Ντετέκτιβ Μορφοποίησης!</h4>
+            <p class="text-sm sm:text-base text-slate-700 mb-4 leading-relaxed">
+              Κοίταξε τη λέξη: <span class="bg-purple-100 px-2.5 py-1 rounded-lg font-black italic underline text-purple-900 text-lg">Υπολογιστής</span>. Ποια κουμπιά πατήθηκαν;
+            </p>
+            <div class="space-y-3">
+              <button onclick="checkChallenge3(false)" class="w-full p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-purple-50 text-left text-base font-bold text-slate-800 min-h-[52px]">Α) Μόνο το B (Έντονη γραφή)</button>
+              <button onclick="checkChallenge3(true)" class="w-full p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-purple-50 text-left text-base font-bold text-slate-800 min-h-[52px]">Β) Και τα τρία μαζί: B, I και U!</button>
+            </div>
+          </div>
+          <div id="c3-feedback" class="mt-4 text-sm sm:text-base font-bold text-center hidden p-3 rounded-2xl"></div>
+        </div>
+
+        <!-- Challenge 4: Εργαλείο Αναίρεσης -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-rose-200 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="bg-rose-100 text-rose-800 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">ΠΑΙΧΝΙΔΙ 4</span>
+              <span id="c4-star" class="text-2xl opacity-30">⭐</span>
+            </div>
+            <h4 class="font-bold text-lg sm:text-xl text-slate-800 mb-2">Ωχ! Έκανα λάθος!</h4>
+            <p class="text-sm sm:text-base text-slate-700 mb-4 leading-relaxed">
+              Κατά λάθος έσβησες μια ολόκληρη παράγραφο ή άλλαξες το μέγεθος των γραμμάτων. Ποιο κουμπί σε σώζει αμέσως;
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="checkChallenge4(true)" class="p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-rose-50 font-bold text-base text-slate-800 min-h-[52px]">↩️ Αναίρεση</button>
+              <button onclick="checkChallenge4(false)" class="p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-rose-50 font-bold text-base text-slate-800 min-h-[52px]">🖨️ Εκτύπωση</button>
+            </div>
+          </div>
+          <div id="c4-feedback" class="mt-4 text-sm sm:text-base font-bold text-center hidden p-3 rounded-2xl"></div>
+        </div>
+
+        <!-- Challenge 5: Μεταφορά ανάμεσα σε εφαρμογές -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-emerald-200 shadow-md lg:col-span-2 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">ΠΑΙΧΝΙΔΙ 5 • ΤΕΛΙΚΗ ΠΡΟΚΛΗΣΗ</span>
+              <span id="c5-star" class="text-2xl opacity-30">⭐</span>
+            </div>
+            <h4 class="font-bold text-lg sm:text-xl text-slate-800 mb-2">Από την Παρουσίαση στο Έγγραφο!</h4>
+            <p class="text-sm sm:text-base text-slate-700 mb-4 leading-relaxed">
+              Έχεις μια ωραία εικόνα σε μια παρουσίαση και θέλεις να τη βάλεις στο έγγραφο κειμένου σου. Γίνεται;
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <button onclick="checkChallenge5(true)" class="p-4 rounded-2xl border-2 border-slate-200 hover:bg-emerald-50 font-bold text-base text-emerald-900 min-h-[56px]">👍 ΝΑΙ! Με Αντιγραφή (Copy) και Επικόλληση (Paste)!</button>
+              <button onclick="checkChallenge5(false)" class="p-4 rounded-2xl border-2 border-slate-200 hover:bg-rose-50 font-bold text-base text-rose-900 min-h-[56px]">👎 ΟΧΙ, δεν μεταφέρονται ποτέ εικόνες.</button>
+            </div>
+          </div>
+          <div id="c5-feedback" class="mt-4 text-sm sm:text-base font-bold text-center hidden p-3 rounded-2xl"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DIPLOMA MODAL -->
+    <div id="diploma-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 text-center shadow-2xl border-4 border-blue-400 relative">
+        <button onclick="closeDiploma()" class="absolute top-4 right-4 text-3xl font-bold text-slate-400 hover:text-slate-600">✕</button>
+        <div class="text-6xl mb-2">🏆</div>
+        <h3 class="text-2xl sm:text-3xl font-black text-blue-600 title-font">ΣΥΓΧΑΡΗΤΗΡΙΑ!</h3>
+        <p class="text-base sm:text-lg text-slate-600 mb-5 font-bold">Συγκέντρωσες και τα 6 αστέρια στον Οδηγό του Μαθήματος 25!</p>
+        
+        <div class="border-4 border-dashed border-blue-300 rounded-2xl p-5 bg-blue-50/60 mb-6">
+          <p class="text-xs sm:text-sm uppercase font-bold text-blue-700 tracking-wider">ΕΠΙΣΗΜΟ ΔΙΠΛΩΜΑ</p>
+          <h4 class="text-xl sm:text-2xl font-bold text-slate-800 my-1.5">MASTER ΕΠΕΞΕΡΓΑΣΙΑΣ ΚΕΙΜΕΝΟΥ</h4>
+          <p class="text-sm text-slate-500 mb-3">Απονέμεται στον/στη μαθητή/τρια:</p>
+          <input type="text" id="student-name" placeholder="Γράψε το όνομά σου εδώ..." class="w-full max-w-sm px-4 py-2.5 text-center text-base sm:text-lg font-bold text-slate-800 bg-white border-2 border-blue-300 rounded-xl focus:outline-none focus:border-blue-500 mb-2">
+          <div class="text-xs sm:text-sm text-slate-500 font-semibold">Πληροφορική Δ' Δημοτικού • Μάθημα 25</div>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3">
+          <button onclick="window.print()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-base font-bold shadow-md">🖨️ Εκτύπωση</button>
+          <button onclick="closeDiploma()" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl text-base font-bold shadow-md">Τέλεια! 👍</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-5 px-4 text-sm sm:text-base text-slate-600 font-bold border-t bg-white/80 mt-10">
+    Βασισμένο στο σχολικό βιβλίο Πληροφορικής Δ' Δημοτικού • Μάθημα 25 (Σελίδες 97 - 101)
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Sound Effects
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+      if (type === 'correct') {
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now); osc.stop(now + 0.35);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(140, now + 0.25);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now); osc.stop(now + 0.3);
+      } else {
+        osc.frequency.setValueAtTime(480, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        osc.start(now); osc.stop(now + 0.05);
+      }
+    }
+
+    // Star Management
+    const earned = { sandbox: false, c1: false, c2: false, c3: false, c4: false, c5: false };
+    function awardStar(key) {
+      if (!earned[key]) {
+        earned[key] = true;
+        const count = Object.values(earned).filter(Boolean).length;
+        document.getElementById('stars-count').innerText = count;
+        if (document.getElementById(key + '-star')) {
+          document.getElementById(key + '-star').classList.remove('opacity-30');
+        }
+        confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
+        if (count === 6) {
+          setTimeout(() => {
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            document.getElementById('diploma-modal').classList.remove('hidden');
+          }, 700);
+        }
+      }
+    }
+
+    // Reveal Visual Guide Tips
+    function revealTip(card, text) {
+      playSound('click');
+      const box = card.querySelector('.tip-box');
+      box.innerText = text;
+      box.classList.toggle('hidden');
+    }
+
+    // Mini Word Processor Sandbox
+    let sandboxToolsUsed = new Set();
+    let historyStack = [];
+
+    function saveHistory() {
+      const el = document.getElementById('editable-text');
+      historyStack.push({
+        fontFamily: el.style.fontFamily,
+        fontSize: el.style.fontSize,
+        fontWeight: el.style.fontWeight,
+        fontStyle: el.style.fontStyle,
+        textDecoration: el.style.textDecoration,
+        color: el.style.color,
+        backgroundColor: el.style.backgroundColor,
+        textAlign: el.style.textAlign,
+        imgHidden: document.getElementById('pasted-image-box').classList.contains('hidden')
+      });
+    }
+
+    function registerSandboxTool(toolName) {
+      playSound('click');
+      sandboxToolsUsed.add(toolName);
+      if (sandboxToolsUsed.size >= 3 && !earned.sandbox) {
+        document.getElementById('sandbox-badge').innerText = "⭐ Μπράβο! Κέρδισες 1 Αστέρι!";
+        document.getElementById('sandbox-badge').className = "bg-amber-400 text-amber-950 px-4 py-1.5 rounded-full text-sm font-black";
+        playSound('correct');
+        awardStar('sandbox');
+      }
+    }
+
+    function updateSandbox(type) {
+      saveHistory();
+      const el = document.getElementById('editable-text');
+      if (type === 'font') el.style.fontFamily = document.getElementById('sb-font').value;
+      if (type === 'size') el.style.fontSize = document.getElementById('sb-size').value;
+      registerSandboxTool(type);
+    }
+
+    function toggleStyle(style) {
+      saveHistory();
+      const el = document.getElementById('editable-text');
+      if (style === 'bold') {
+        const isBold = el.style.fontWeight === 'bold';
+        el.style.fontWeight = isBold ? 'normal' : 'bold';
+        document.getElementById('btn-bold').classList.toggle('active', !isBold);
+      } else if (style === 'italic') {
+        const isItalic = el.style.fontStyle === 'italic';
+        el.style.fontStyle = isItalic ? 'normal' : 'italic';
+        document.getElementById('btn-italic').classList.toggle('active', !isItalic);
+      } else if (style === 'underline') {
+        const isUnder = el.style.textDecoration === 'underline';
+        el.style.textDecoration = isUnder ? 'none' : 'underline';
+        document.getElementById('btn-underline').classList.toggle('active', !isUnder);
+      } else if (style === 'highlight') {
+        const isHigh = el.style.backgroundColor === 'rgb(253, 224, 71)';
+        el.style.backgroundColor = isHigh ? 'transparent' : '#fde047';
+        document.getElementById('btn-highlight').classList.toggle('active', !isHigh);
+      }
+      registerSandboxTool(style);
+    }
+
+    function setTextColor(color) {
+      saveHistory();
+      document.getElementById('editable-text').style.color = color;
+      registerSandboxTool('color');
+    }
+
+    function setAlign(align) {
+      saveHistory();
+      document.getElementById('editable-text').style.textAlign = align;
+      registerSandboxTool('align');
+    }
+
+    function insertCuteImage() {
+      saveHistory();
+      document.getElementById('pasted-image-box').classList.remove('hidden');
+      registerSandboxTool('image');
+    }
+
+    function undoSandbox() {
+      playSound('click');
+      if (historyStack.length === 0) return;
+      const prev = historyStack.pop();
+      const el = document.getElementById('editable-text');
+      el.style.fontFamily = prev.fontFamily;
+      el.style.fontSize = prev.fontSize;
+      el.style.fontWeight = prev.fontWeight;
+      el.style.fontStyle = prev.fontStyle;
+      el.style.textDecoration = prev.textDecoration;
+      el.style.color = prev.color;
+      el.style.backgroundColor = prev.backgroundColor;
+      el.style.textAlign = prev.textAlign;
+      document.getElementById('btn-bold').classList.toggle('active', prev.fontWeight === 'bold');
+      document.getElementById('btn-italic').classList.toggle('active', prev.fontStyle === 'italic');
+      document.getElementById('btn-underline').classList.toggle('active', prev.textDecoration === 'underline');
+      document.getElementById('btn-highlight').classList.toggle('active', prev.backgroundColor === 'rgb(253, 224, 71)');
+      document.getElementById('pasted-image-box').classList.toggle('hidden', prev.imgHidden);
+    }
+
+    // Challenge 1: Order Game
+    const orderSteps = [
+      { id: 1, text: "Βρίσκω την εικόνα στον φυλλομετρητή" },
+      { id: 2, text: "Κάνω δεξί κλικ και επιλέγω «Αντιγραφή εικόνας»" },
+      { id: 3, text: "Πάω στο έγγραφο και πατάω «Επικόλληση»" }
+    ];
+    let pickedOrder = [];
+
+    function initOrderGame() {
+      pickedOrder = [];
+      const container = document.getElementById('order-game');
+      container.innerHTML = '';
+      const shuffled = [...orderSteps].sort(() => 0.5 - Math.random());
+      shuffled.forEach(step => {
+        const btn = document.createElement('button');
+        btn.className = "w-full p-3.5 rounded-2xl border-2 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-left text-sm sm:text-base font-bold text-indigo-950 flex justify-between items-center gap-2 transition-all min-h-[52px]";
+        btn.innerHTML = `<span>${step.text}</span><span id="obadge-${step.id}" class="bg-white px-2.5 py-1 rounded-lg text-xs sm:text-sm border border-indigo-200 shrink-0">Πάτησε</span>`;
+        btn.onclick = () => {
+          if (pickedOrder.includes(step.id)) return;
+          playSound('click');
+          pickedOrder.push(step.id);
+          const badge = document.getElementById(`obadge-${step.id}`);
+          badge.innerText = `Βήμα ${pickedOrder.length}`;
+          badge.className = "bg-indigo-600 text-white px-2.5 py-1 rounded-lg text-xs sm:text-sm shrink-0";
+          if (pickedOrder.length === 3) {
+            const fb = document.getElementById('c1-feedback');
+            fb.classList.remove('hidden');
+            if (pickedOrder[0] === 1 && pickedOrder[1] === 2 && pickedOrder[2] === 3) {
+              playSound('correct');
+              fb.className = "mt-4 text-sm sm:text-base font-bold text-center p-3 rounded-2xl bg-emerald-100 text-emerald-900 block";
+              fb.innerText = "🎉 Τέλεια! Αυτή είναι η σωστή σειρά!";
+              awardStar('c1');
+            } else {
+              playSound('wrong');
+              fb.className = "mt-4 text-sm sm:text-base font-bold text-center p-3 rounded-2xl bg-rose-100 text-rose-900 block";
+              fb.innerHTML = `❌ Λάθος σειρά! <button onclick="initOrderGame()" class="underline ml-1 font-black">Δοκίμασε ξανά</button>`;
+            }
+          }
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    // Challenges 2 - 5
+    function showChallengeFeedback(id, isCorrect, msg) {
+      const fb = document.getElementById(id + '-feedback');
+      fb.classList.remove('hidden');
+      if (isCorrect) {
+        playSound('correct');
+        fb.className = "mt-4 text-sm sm:text-base font-bold text-center p-3 rounded-2xl bg-emerald-100 text-emerald-900 block";
+        fb.innerText = "🎉 Σωστά! " + msg;
+        awardStar(id);
+      } else {
+        playSound('wrong');
+        fb.className = "mt-4 text-sm sm:text-base font-bold text-center p-3 rounded-2xl bg-rose-100 text-rose-900 block";
+        fb.innerText = "❌ Όχι ακριβώς! " + msg + " Δοκίμασε ξανά!";
+      }
+    }
+
+    function checkChallenge2(ans) {
+      if (ans === 'bullets') {
+        showChallengeFeedback('c2', true, "Όταν δεν έχει σημασία η σειρά, βάζουμε κουκκίδες!");
+      } else {
+        showChallengeFeedback('c2', false, "Η αρίθμηση μπαίνει όταν έχει σημασία η σειρά (π.χ. βήματα).");
+      }
+    }
+
+    function checkChallenge3(isRight) {
+      if (isRight) {
+        showChallengeFeedback('c3', true, "Συνδυάσαμε έντονη, πλάγια και υπογραμμισμένη γραφή!");
+      } else {
+        showChallengeFeedback('c3', false, "Κοίτα προσεκτικά: είναι και έντονη, και πλάγια, και υπογραμμισμένη!");
+      }
+    }
+
+    function checkChallenge4(isRight) {
+      if (isRight) {
+        showChallengeFeedback('c4', true, "Η Αναίρεση γυρνάει το έγγραφο ένα βήμα πίσω!");
+      } else {
+        showChallengeFeedback('c4', false, "Η εκτύπωση βγάζει το έγγραφο στο χαρτί.");
+      }
+    }
+
+    function checkChallenge5(isRight) {
+      if (isRight) {
+        showChallengeFeedback('c5', true, "Με Αντιγραφή και Επικόλληση μεταφέρουμε εύκολα εικόνες ανάμεσα σε εφαρμογές!");
+      } else {
+        showChallengeFeedback('c5', false, "Κι όμως! Μπορούμε να μεταφέρουμε εικόνες από παρουσίαση σε έγγραφο και αντίστροφα!");
+      }
+    }
+
+    function closeDiploma() {
+      playSound('click');
+      document.getElementById('diploma-modal').classList.add('hidden');
+    }
+
+    initOrderGame();
+  </script>
+</body>
+</html>
