@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Μάθημα 13: Οι εφαρμογές του υπολογιστή</title>
+<style>
+:root{--bg:#f6f8fc;--card:#fff;--text:#1d2433;--muted:#5a6478;--accent:#2f6fed;--soft:#e8f0ff;--line:#dbe2ef;--ok:#157347;--okbg:#e4f6ec;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141d;--card:#1a2030;--text:#e8ecf5;--muted:#9aa5bd;--accent:#7aa5ff;--soft:#222c45;--line:#2d3650;--ok:#6fdc9f;--okbg:#17302a}}
+:root[data-theme="dark"]{--bg:#10141d;--card:#1a2030;--text:#e8ecf5;--muted:#9aa5bd;--accent:#7aa5ff;--soft:#222c45;--line:#2d3650;--ok:#6fdc9f;--okbg:#17302a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:780px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.7rem;margin:.2em 0 .1em}
+h2{font-size:1.25rem;margin:1.8em 0 .6em;color:var(--accent)}
+.sub{color:var(--muted);margin:0 0 1em}
+.box{background:var(--soft);border-left:5px solid var(--accent);padding:12px 16px;border-radius:10px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card h3{margin:0 0 4px;font-size:1.05rem}
+.card p{margin:0;font-size:.95rem}
+.tag{display:inline-block;background:var(--soft);color:var(--accent);border-radius:999px;padding:1px 10px;font-size:.82rem;font-weight:600;margin-top:8px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+.ans{color:var(--ok);background:var(--okbg);border-radius:8px;padding:6px 10px;margin-top:8px;font-weight:600}
+ul{padding-left:1.2em}
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.q p{margin:0 0 8px;font-weight:600}
+.q select{width:100%;font:inherit;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.fb{margin-top:8px;padding:6px 10px;border-radius:8px;font-weight:600;display:none}
+.fb.good{display:block;color:var(--ok);background:var(--okbg)}
+.fb.bad{display:block;color:#b42318;background:#fdecea}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fb.bad{color:#ff9a8f;background:#3a1d1b}}
+</style>
+</head>
+<body>
+<main>
+<h1>🧰 Μάθημα 13ο: Οι εφαρμογές του υπολογιστή</h1>
+<p class="sub">Πληροφορική Δ΄ Δημοτικού · σελίδες 50–53</p>
+
+<div class="box"><strong>Τι θα μάθεις:</strong> να χωρίζεις τις εφαρμογές σε κατηγορίες, να εξηγείς τι κάνει το λειτουργικό σύστημα και να ρυθμίζεις την οθόνη και το περιβάλλον εργασίας.</div>
+
+<h2>1. Οι εφαρμογές και οι κατηγορίες τους</h2>
+<p>Οι εφαρμογές είναι πάρα πολλές, γι’ αυτό τις χωρίζουμε σε κατηγορίες ανάλογα με το τι κάνουν. Σε κάθε κατηγορία υπάρχουν πολλές παρόμοιες εφαρμογές.</p>
+<div class="box">💡 <strong>Ελεύθερο λογισμικό</strong> = δωρεάν. <strong>Εμπορικό λογισμικό</strong> = πωλείται.</div>
+
+<div class="grid">
+<div class="card"><h3>🧩 Προγραμματισμός</h3><p>Φτιάχνουμε προγράμματα και βλέπουμε το αποτέλεσμα.</p><span class="tag">ScratchJr, Scratch, MakeCode</span></div>
+<div class="card"><h3>🌐 Φυλλομετρητής (browser)</h3><p>Επισκεπτόμαστε ιστοσελίδες του διαδικτύου.</p><span class="tag">Firefox, Chrome, Edge</span></div>
+<div class="card"><h3>🎮 Παιχνίδια</h3><p>Παίζουμε παιχνίδια.</p></div>
+<div class="card"><h3>🎨 Ζωγραφική</h3><p>Δημιουργούμε και επεξεργαζόμαστε ψηφιακές ζωγραφιές.</p><span class="tag">TuxPaint, Ζωγραφική</span></div>
+<div class="card"><h3>📝 Επεξεργασία κειμένου</h3><p>Γράφουμε και διορθώνουμε κείμενο. Κάνουμε λέξεις πιο έντονες, βάζουμε σχήματα και εικόνες.</p><span class="tag">Writer, Word</span></div>
+<div class="card"><h3>📊 Παρουσιάσεις</h3><p>Φτιάχνουμε διαφάνειες με λίγες λέξεις, εικόνες και σχήματα για να παρουσιάσουμε τις ιδέες μας στην τάξη.</p><span class="tag">Impress, PowerPoint</span></div>
+<div class="card"><h3>🧮 Υπολογιστικά φύλλα</h3><p>Κάνουμε αριθμητικές πράξεις και δείχνουμε δεδομένα σε πίνακες ή σχήματα.</p><span class="tag">Calc, Excel</span></div>
+<div class="card"><h3>🖼️ Επεξεργασία εικόνας</h3><p>Αλλάζουμε ψηφιακές εικόνες, π.χ. το χρώμα σε κάποιο σημείο.</p><span class="tag">Gimp</span></div>
+</div>
+<p>Υπάρχουν και άλλες κατηγορίες: επεξεργασία βίντεο, επεξεργασία ήχου, εννοιολογικός χάρτης κ.ά.</p>
+<div class="box">🏢 <strong>Εφαρμογές γραφείου:</strong> επεξεργασία κειμένου, παρουσιάσεις και υπολογιστικά φύλλα. Τα <strong>Writer, Impress και Calc</strong> ανήκουν στο <strong>LibreOffice</strong> και είναι δωρεάν.</div>
+
+<h2>2. Το λειτουργικό σύστημα</h2>
+<ul>
+<li>Είναι το <strong>πρώτο λογισμικό</strong> που ξεκινά όταν ανοίγουμε τον υπολογιστή.</li>
+<li>Δείχνει την <strong>επιφάνεια εργασίας</strong> και τα <strong>εικονίδια</strong>, για να ξεκινήσουμε μια εργασία.</li>
+<li><strong>Ελέγχει</strong> πώς συνεργάζονται όλες οι εφαρμογές και οι συσκευές.</li>
+<li>Χωρίς λειτουργικό σύστημα, ο υπολογιστής δεν μπορεί να κάνει καμία εργασία.</li>
+</ul>
+<div class="grid">
+<div class="card"><h3>Υπολογιστές</h3><p>Linux, Windows, MAC OS</p></div>
+<div class="card"><h3>Ταμπλέτες και κινητά</h3><p>Android, iOS</p></div>
+</div>
+
+<h2>3. Ρυθμίσεις του υπολογιστή</h2>
+<p>Χρησιμοποιούμε την εφαρμογή <strong>«Ρυθμίσεις»</strong> του λειτουργικού συστήματος. Αξίζει να την εξερευνήσεις, γιατί διαφέρει ανάμεσα σε λειτουργικά συστήματα και εκδόσεις.</p>
+<div class="grid">
+<div class="card"><h3>🎛️ Εξατομίκευση</h3><p>Αλλάζουμε πώς φαίνεται το περιβάλλον εργασίας (επιφάνεια εργασίας, γραμμή εργασιών, μενού «Έναρξη»): εικόνα φόντου, θέματα, χρώματα, γραμματοσειρές, προφύλαξη οθόνης.</p></div>
+<div class="card"><h3>🖥️ Οθόνη</h3><p>Αλλάζουμε τη <strong>φωτεινότητα</strong> και την <strong>ανάλυση</strong>.</p></div>
+</div>
+<div class="box"><strong>Ανάλυση οθόνης:</strong> δείχνει σε πόσες στήλες × γραμμές εικονοστοιχείων (pixel) χωρίζεται η οθόνη. Όσο <strong>περισσότερα</strong> εικονοστοιχεία, τόσο <strong>περισσότερες λεπτομέρειες</strong> φαίνονται.</div>
+
+<h2>4. Δοκίμασε τον εαυτό σου</h2>
+<p class="sub">Διάλεξε μία απάντηση από το αναπτυσσόμενο μενού. Θα δεις αμέσως αν είναι σωστή.</p>
+<div class="q"><p>1. Με ποια εφαρμογή γράφω μια έκθεση;</p><select><option value="">Διάλεξε απάντηση…</option><option>Φυλλομετρητή</option><option data-ok>Επεξεργαστή κειμένου (Writer, Word)</option><option>Υπολογιστικό φύλλο</option><option>Επεξεργασία εικόνας</option></select><div class="fb"></div></div>
+<div class="q"><p>2. Με ποια εφαρμογή κάνω παρουσίαση στην τάξη;</p><select><option value="">Διάλεξε απάντηση…</option><option>Ζωγραφική</option><option>Επεξεργαστή κειμένου</option><option data-ok>Παρουσιάσεις (Impress, PowerPoint)</option><option>Προγραμματισμό</option></select><div class="fb"></div></div>
+<div class="q"><p>3. Με ποια εφαρμογή βλέπω ιστοσελίδες;</p><select><option value="">Διάλεξε απάντηση…</option><option data-ok>Φυλλομετρητή (Firefox, Chrome, Edge)</option><option>Υπολογιστικό φύλλο</option><option>Παρουσιάσεις</option><option>Επεξεργασία εικόνας (Gimp)</option></select><div class="fb"></div></div>
+<div class="q"><p>4. Ποιο είναι το πρώτο λογισμικό που ξεκινά στον υπολογιστή;</p><select><option value="">Διάλεξε απάντηση…</option><option>Ο φυλλομετρητής</option><option data-ok>Το λειτουργικό σύστημα</option><option>Το Scratch</option><option>Το Writer</option></select><div class="fb"></div></div>
+<div class="q"><p>5. Τι δείχνει η ανάλυση της οθόνης;</p><select><option value="">Διάλεξε απάντηση…</option><option>Πόσο φωτεινή είναι η οθόνη</option><option data-ok>Σε πόσες στήλες × γραμμές εικονοστοιχείων χωρίζεται η οθόνη</option><option>Πόσα ίντσες είναι η οθόνη</option><option>Ποιο λειτουργικό σύστημα έχει ο υπολογιστής</option></select><div class="fb"></div></div>
+<div class="q"><p>6. Ποιο από τα παρακάτω είναι ελεύθερο λογισμικό (δωρεάν);</p><select><option value="">Διάλεξε απάντηση…</option><option>Λογισμικό που πωλείται</option><option data-ok>Λογισμικό που παρέχεται δωρεάν, όπως το LibreOffice</option><option>Λογισμικό που δεν χρειάζεται υπολογιστή</option><option>Κανένα από τα παραπάνω</option></select><div class="fb"></div></div>
+<script>
+document.querySelectorAll('.q select').forEach(function(s){
+  s.addEventListener('change',function(){
+    var fb=s.parentNode.querySelector('.fb'),o=s.options[s.selectedIndex];
+    if(!s.value){fb.className='fb';return;}
+    if(o.hasAttribute('data-ok')){fb.className='fb good';fb.textContent='✅ Σωστά, μπράβο!';}
+    else{fb.className='fb bad';fb.textContent='❌ Όχι ακριβώς. Δοκίμασε ξανά!';}
+  });
+});
+</script>
+
+</main>
+</body>
+</html>
